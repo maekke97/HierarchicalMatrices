@@ -38,6 +38,6 @@ Python suits well because of object oriented structure of the problem
 1. Description of implementation
     1. General description of algorithms
     1. Problems / traps in the implementation and their solutions
-    1. Complete analysis of resource usage
+    1. Complete complexity analysis of the code
 1. Short summary of performance tests
 1. Description of the physical problem and the simulated results
