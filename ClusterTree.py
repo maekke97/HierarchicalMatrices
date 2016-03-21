@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-"""ClusterTree.py: Implementation of a binary cluster tree for 1D lists of indices.
+"""ClusterTree.py: Implementation of a binary cluster tree for 1D, 2D and 3D lists of indices.
     Part of master thesis "Hierarchical Matrices".
 
     Classes:
@@ -9,47 +9,81 @@
 
 
 class ClusterTree:
-    """Binary cluster tree for 1D index lists.
+    """Binary cluster tree for 1D, 2D and 3D index lists.
 
     """
-    start_index = 0
-    list_size = 0
-    step_size = 0
     indices = ()
-    children = None
+    min_leaf_size = 0
     level = 0
-    child_id = 0
-    leaf_size = 0
+    root = None
+    children = None
+    minimal_rectangle = None
+    ax_parallel_rectangle = None
 
-    def __init__(self, indices=(), leaf_size=0, step_size=0, start_index=0, level=0, child_id=0, root=None):
-        """ClusterTree(indices, leaf_size, step_size) -> ClusterTree
+    def __init__(self, indices=(), min_leaf_size=0, _level=0, _root=None,
+                 minimal_rectangle=None, ax_parallel_rectangle=None):
+        """ClusterTree(indices, min_leaf_size) -> ClusterTree
 
-            indices:    list of indices,                iterable;
-            leaf_size:  max size of a leaf,             int;
-            step_size:  distance between to indices,    float;
+            mandatory arguments:
+
+            indices:            list of indices,                iterable;
+            min_leaf_size:      max size of a leaf,             int;
+
+            optional arguments:
+
+            minimal_rectangle:
+                instruction on how to compute the minimal rectangle/cube of a
+                subset of indices,                              function;
+            ax_parallel_rectangle:
+                instruction on how to compute the ax-parallel rectangle/cube of a
+                subset of indices,                              function;
+
+            See the examples and README on how to write and use the rectangle functions.
+            Defaults are provided for standard Euclidean space.
         """
         length = len(indices)
         self.indices = indices
-        self.leaf_size = leaf_size
-        self.start_index = start_index
-        self.list_size = length
-        self.level = level
-        self.child_id = child_id
-        self.root = root
-        if step_size != 0:
-            self.step_size = step_size
+        self.min_leaf_size = min_leaf_size
+        self.level = _level
+        self.root = _root
+        dimension = len(indices[0])
+        if minimal_rectangle:
+            self.minimal_rectangle = minimal_rectangle
         else:
-            try:
-                self.step_size = float(indices[1]-indices[0])/len(indices)
-            except IndexError:
-                self.step_size = 0
-        if length > self.leaf_size:
+            # Choose suitable default
+            if dimension == 3:
+                self.minimal_rectangle = self.minimal_rectangle_3d
+            elif dimension == 2:
+                self.minimal_rectangle = self.minimal_rectangle_2d
+            else:
+                # in 1D, the minimal rectangle of a point is empty
+                self.minimal_rectangle = None
+        if ax_parallel_rectangle:
+            self.ax_parallel_rectangle = ax_parallel_rectangle
+        else:
+            # Choose suitable default
+            if dimension == 3:
+                self.ax_parallel_rectangle = self.ax_parallel_rectangle_3d
+            elif dimension == 2:
+                self.ax_parallel_rectangle = self.ax_parallel_rectangle_2d
+            else:
+                self.ax_parallel_rectangle = None
+        if length > self.min_leaf_size:
             split = length/2
-            self.children = {"first": ClusterTree(indices=indices[:split], leaf_size=self.leaf_size, start_index=0,
-                                                  level=self.level+1, child_id=1, root=self),
-                             "second": ClusterTree(indices=indices[split:], leaf_size=self.leaf_size,
-                                                   start_index=split+self.start_index, level=self.level+1,
-                                                   child_id=2, root=self),
+            self.children = {"first": ClusterTree(indices=indices[:split],
+                                                  min_leaf_size=self.min_leaf_size,
+                                                  _level=self.level+1,
+                                                  _root=self,
+                                                  minimal_rectangle=self.minimal_rectangle,
+                                                  ax_parallel_rectangle=self.ax_parallel_rectangle
+                                                  ),
+                             "second": ClusterTree(indices=indices[split:],
+                                                   min_leaf_size=self.min_leaf_size,
+                                                   _level=self.level+1,
+                                                   _root=self,
+                                                   minimal_rectangle=self.minimal_rectangle,
+                                                   ax_parallel_rectangle=self.ax_parallel_rectangle
+                                                   )
                              }
 
     def depth(self):
@@ -62,12 +96,26 @@ class ClusterTree:
         else:
             return max([self.children["first"].depth(), self.children["second"].depth()])
 
+    @staticmethod
+    def minimal_rectangle_3d(indices):
+        return len(indices)
+
+    @staticmethod
+    def minimal_rectangle_2d(indices):
+        return len(indices)
+
+    @staticmethod
+    def ax_parallel_rectangle_3d(indices):
+        return len(indices)
+
+    @staticmethod
+    def ax_parallel_rectangle_2d(indices):
+        return len(indices)
+
     def __str__(self):
-        """Return string representation."""
         out_str = "ClusterTree with properties:\n\tIndices: " + str(self.indices) + ",\n\tDepth: " + str(self.depth()) \
-            + ",\n\tLeaf size: " + str(self.leaf_size) + "."
+            + ",\n\tLeaf size: " + str(self.min_leaf_size) + "."
         return out_str
 
     def __repr__(self):
-        """Representation same as __str__."""
         return str(self)
