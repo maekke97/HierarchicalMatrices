@@ -9,12 +9,13 @@
 
 
 class ClusterTree:
-    """Binary cluster tree for 1D, 2D and 3D index lists.
+    """Abstract binary cluster tree that is inherited by the 1D, 2D and 3D classes.
 
     """
     indices = ()
     min_leaf_size = 0
     level = 0
+    dimension = 0
     root = None
     children = None
     minimal_rectangle = None
@@ -42,18 +43,18 @@ class ClusterTree:
             Defaults are provided for standard Euclidean space.
         """
         length = len(indices)
+        self.dimension = len(indices[0])
         self.indices = indices
         self.min_leaf_size = min_leaf_size
         self.level = _level
         self.root = _root
-        dimension = len(indices[0])
         if minimal_rectangle:
             self.minimal_rectangle = minimal_rectangle
         else:
             # Choose suitable default
-            if dimension == 3:
+            if self.dimension == 3:
                 self.minimal_rectangle = self.minimal_rectangle_3d
-            elif dimension == 2:
+            elif self.dimension == 2:
                 self.minimal_rectangle = self.minimal_rectangle_2d
             else:
                 # in 1D, the minimal rectangle of a point is empty
@@ -62,29 +63,47 @@ class ClusterTree:
             self.ax_parallel_rectangle = ax_parallel_rectangle
         else:
             # Choose suitable default
-            if dimension == 3:
+            if self.dimension == 3:
                 self.ax_parallel_rectangle = self.ax_parallel_rectangle_3d
-            elif dimension == 2:
+            elif self.dimension == 2:
                 self.ax_parallel_rectangle = self.ax_parallel_rectangle_2d
             else:
                 self.ax_parallel_rectangle = None
         if length > self.min_leaf_size:
             split = length/2
-            self.children = {"first": ClusterTree(indices=indices[:split],
-                                                  min_leaf_size=self.min_leaf_size,
-                                                  _level=self.level+1,
-                                                  _root=self,
-                                                  minimal_rectangle=self.minimal_rectangle,
-                                                  ax_parallel_rectangle=self.ax_parallel_rectangle
-                                                  ),
-                             "second": ClusterTree(indices=indices[split:],
-                                                   min_leaf_size=self.min_leaf_size,
-                                                   _level=self.level+1,
-                                                   _root=self,
-                                                   minimal_rectangle=self.minimal_rectangle,
-                                                   ax_parallel_rectangle=self.ax_parallel_rectangle
-                                                   )
-                             }
+            if self.dimension == 1:
+                self.children = {1: ClusterTree(indices=indices[:split],
+                                                min_leaf_size=self.min_leaf_size,
+                                                _level=self.level+1,
+                                                _root=self,
+                                                minimal_rectangle=self.minimal_rectangle,
+                                                ax_parallel_rectangle=self.ax_parallel_rectangle
+                                                ),
+                                 2: ClusterTree(indices=indices[split:],
+                                                min_leaf_size=self.min_leaf_size,
+                                                _level=self.level+1,
+                                                _root=self,
+                                                minimal_rectangle=self.minimal_rectangle,
+                                                ax_parallel_rectangle=self.ax_parallel_rectangle
+                                                )
+                                 }
+            else:
+                indices1, indices2 = self.split_indices(indices)
+                self.children = {1: ClusterTree(indices=indices1,
+                                                min_leaf_size=self.min_leaf_size,
+                                                _level=self.level+1,
+                                                _root=self,
+                                                minimal_rectangle=self.minimal_rectangle,
+                                                ax_parallel_rectangle=self.ax_parallel_rectangle
+                                                ),
+                                 2: ClusterTree(indices=indices2,
+                                                min_leaf_size=self.min_leaf_size,
+                                                _level=self.level+1,
+                                                _root=self,
+                                                minimal_rectangle=self.minimal_rectangle,
+                                                ax_parallel_rectangle=self.ax_parallel_rectangle
+                                                )
+                                 }
 
     def depth(self):
         """Return the depth of the cluster.
@@ -94,7 +113,7 @@ class ClusterTree:
         if not self.children:
             return self.level
         else:
-            return max([self.children["first"].depth(), self.children["second"].depth()])
+            return max([self.children[1].depth(), self.children[2].depth()])
 
     @staticmethod
     def minimal_rectangle_3d(indices):
@@ -111,6 +130,38 @@ class ClusterTree:
     @staticmethod
     def ax_parallel_rectangle_2d(indices):
         return len(indices)
+
+    @staticmethod
+    def split_rectangle_2d(indices):
+        rect1 = rect2 = None
+        return [rect1, rect2]
+
+    @staticmethod
+    def split_rectangle_3d(indices):
+        rect1 = rect2 = None
+        return [rect1, rect2]
+
+    @staticmethod
+    def split_rectangle(rectangle):
+        q1 = q2 = None
+        return q1, q2
+
+    @staticmethod
+    def split_indices(indices):
+        indices1 = indices2 = None
+        return indices1, indices2
+
+    @staticmethod
+    def split_indices(indices):
+        left_indices = []
+        right_indices = []
+        minq1, minq2 = ClusterTree.split_rectangle()
+        for p in indices:
+            if min(a < b):
+                left_indices.append(p)
+            else:
+                right_indices.append(p)
+        return left_indices, right_indices
 
     def __str__(self):
         out_str = "ClusterTree with properties:\n\tIndices: " + str(self.indices) + ",\n\tDepth: " + str(self.depth()) \
