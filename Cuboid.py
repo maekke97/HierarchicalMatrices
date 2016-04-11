@@ -21,8 +21,8 @@ class Cuboid(object):
     def __init__(self, low_corner, high_corner=None):
         # Check if iterable, cast to np.array (should be safe)
         if isinstance(low_corner, collections.Iterable) and isinstance(high_corner, collections.Iterable):
-            self.low_corner = np.array(low_corner)
-            self.high_corner = np.array(high_corner)
+            self.low_corner = np.array(low_corner, float)
+            self.high_corner = np.array(high_corner, float)
         # Only one argument
         elif not high_corner:
             # Copy
@@ -33,17 +33,25 @@ class Cuboid(object):
             else:
                 self.__init__(self.make_minimal(low_corner))
 
+    def __eq__(self, other):
+        return (self.low_corner == other.low_corner).all() and (self.high_corner == other.high_corner).all()
+
+    def __contains__(self, item):
+        return (self.low_corner < item).all() and (self.high_corner > item).all()
+
     def split(self):
         """Split the cuboid in the largest dimension.
             Return two new Cuboids.
         """
         # determine dimension in which to split
-        index = np.argmin(abs(self.low_corner - self.high_corner))
+        index = np.argmax(abs(self.low_corner - self.high_corner))
         # determine value at splitting point
-        split = self.high_corner[index] - self.low_corner[index]
-        low_corner1 = low_corner2 = self.low_corner
+        split = (self.high_corner[index] - self.low_corner[index])/2
+        low_corner1 = np.array(self.low_corner)
+        low_corner2 = np.array(self.low_corner)
         low_corner2[index] = split
-        high_corner1 = high_corner2 = self.high_corner
+        high_corner1 = np.array(self.high_corner)
+        high_corner2 = np.array(self.high_corner)
         high_corner1[index] = split
         return Cuboid(low_corner1, high_corner1), Cuboid(low_corner2, high_corner2)
 

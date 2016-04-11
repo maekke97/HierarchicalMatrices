@@ -115,54 +115,6 @@ class ClusterTree:
         else:
             return max([self.children[1].depth(), self.children[2].depth()])
 
-    @staticmethod
-    def minimal_rectangle_3d(indices):
-        return len(indices)
-
-    @staticmethod
-    def minimal_rectangle_2d(indices):
-        return len(indices)
-
-    @staticmethod
-    def ax_parallel_rectangle_3d(indices):
-        return len(indices)
-
-    @staticmethod
-    def ax_parallel_rectangle_2d(indices):
-        return len(indices)
-
-    @staticmethod
-    def split_rectangle_2d(indices):
-        rect1 = rect2 = None
-        return [rect1, rect2]
-
-    @staticmethod
-    def split_rectangle_3d(indices):
-        rect1 = rect2 = None
-        return [rect1, rect2]
-
-    @staticmethod
-    def split_rectangle(rectangle):
-        q1 = q2 = None
-        return q1, q2
-
-    @staticmethod
-    def split_indices(indices):
-        indices1 = indices2 = None
-        return indices1, indices2
-
-    @staticmethod
-    def split_indices(indices):
-        left_indices = []
-        right_indices = []
-        minq1, minq2 = ClusterTree.split_rectangle()
-        for p in indices:
-            if min(a < b):
-                left_indices.append(p)
-            else:
-                right_indices.append(p)
-        return left_indices, right_indices
-
     def __str__(self):
         out_str = "ClusterTree with properties:\n\tIndices: " + str(self.indices) + ",\n\tDepth: " + str(self.depth()) \
             + ",\n\tLeaf size: " + str(self.min_leaf_size) + "."
