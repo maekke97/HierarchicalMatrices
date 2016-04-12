@@ -34,10 +34,14 @@ class Cuboid(object):
                 self.__init__(self.make_minimal(low_corner))
 
     def __eq__(self, other):
-        return (self.low_corner == other.low_corner).all() and (self.high_corner == other.high_corner).all()
+        low_eq = self.low_corner == other.low_corner
+        high_eq = self.high_corner == other.high_corner
+        return low_eq.all() and high_eq.all()
 
     def __contains__(self, item):
-        return (self.low_corner < item).all() and (self.high_corner > item).all()
+        lower = self.low_corner <= item
+        higher = item <= self.high_corner
+        return lower.all() and higher.all()
 
     def split(self):
         """Split the cuboid in the largest dimension.
@@ -46,7 +50,7 @@ class Cuboid(object):
         # determine dimension in which to split
         index = np.argmax(abs(self.low_corner - self.high_corner))
         # determine value at splitting point
-        split = (self.high_corner[index] - self.low_corner[index])/2
+        split = (self.high_corner[index] + self.low_corner[index])/2
         low_corner1 = np.array(self.low_corner)
         low_corner2 = np.array(self.low_corner)
         low_corner2[index] = split
@@ -61,6 +65,18 @@ class Cuboid(object):
         :param points:
         :return:
         """
-        low_corner = None
-        high_corner = None
+        low_corner = np.array(points[0], float, ndmin=1)
+        high_corner = np.array(points[0], float, ndmin=1)
+        for p in points:
+            p = np.array(p, float, ndmin=1)
+            lower = p >= low_corner
+            if not lower.all():
+                for i in xrange(len(low_corner)):
+                    if not lower[i]:
+                        low_corner[i] = p[i]
+            higher = p <= high_corner
+            if not higher.all():
+                for i in xrange(len(high_corner)):
+                    if not higher[i]:
+                        high_corner[i] = p[i]
         return Cuboid(low_corner, high_corner)
