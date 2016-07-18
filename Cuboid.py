@@ -43,9 +43,18 @@ class Cuboid(object):
         higher = item <= self.high_corner
         return lower.all() and higher.all()
 
+    def __repr__(self):
+        """
+        :return: String representation
+        """
+        out_str = "Cuboid with corners " + str(self.low_corner) + " and " + str(self.high_corner) + "."
+        return out_str
+
     def split(self):
-        """Split the cuboid in the largest dimension.
-            Return two new Cuboids.
+        """
+        :return Cuboid, Cuboid
+        Split the cuboid in the largest dimension.
+        Return two new Cuboids.
         """
         # determine dimension in which to split
         index = np.argmax(abs(self.low_corner - self.high_corner))
@@ -62,8 +71,9 @@ class Cuboid(object):
     @staticmethod
     def make_minimal(points):
         """
-        :param points:
-        :return:
+        make_minimal(points) -> Cuboid
+        return minimal cuboid containing all points.
+        points can be any iterable of points
         """
         low_corner = np.array(points[0], float, ndmin=1)
         high_corner = np.array(points[0], float, ndmin=1)
