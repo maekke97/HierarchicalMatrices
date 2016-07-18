@@ -13,7 +13,8 @@ import collections
 
 
 class Cuboid(object):
-    """Ax-parallel Cuboid. Only two diagonal corners are stored. NumPy.array used as type.
+    """
+    Ax-parallel Cuboid. Only two diagonal corners are stored. NumPy.array used as type.
     """
     low_corner = None
     high_corner = None
@@ -52,9 +53,9 @@ class Cuboid(object):
 
     def split(self):
         """
-        :return Cuboid, Cuboid
         Split the cuboid in the largest dimension.
         Return two new Cuboids.
+        :return Cuboid, Cuboid
         """
         # determine dimension in which to split
         index = np.argmax(abs(self.low_corner - self.high_corner))
