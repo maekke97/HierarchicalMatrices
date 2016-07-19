@@ -16,6 +16,7 @@ class Cuboid(object):
     """
     low_corner = None
     high_corner = None
+    diam = 0
 
     def __init__(self, low_corner, high_corner=None):
         # Check if iterable, cast to np.array (should be safe)
@@ -31,6 +32,7 @@ class Cuboid(object):
             # Try to build minimal cuboid around input
             else:
                 self.__init__(self.make_minimal(low_corner))
+        self.diam = self.diameter()
 
     def __eq__(self, other):
         low_eq = self.low_corner == other.low_corner
@@ -66,6 +68,14 @@ class Cuboid(object):
         high_corner2 = np.array(self.high_corner)
         high_corner1[index] = split
         return Cuboid(low_corner1, high_corner1), Cuboid(low_corner2, high_corner2)
+
+    def diameter(self):
+        """
+        Cuboid.diameter() -> float
+        Return the diameter of the cluster.
+        :return: diameter (float)
+        """
+        return np.linalg.norm(self.high_corner-self.low_corner)
 
     @staticmethod
     def make_minimal(points):
