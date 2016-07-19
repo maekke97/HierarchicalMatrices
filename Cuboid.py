@@ -77,6 +77,25 @@ class Cuboid(object):
         """
         return np.linalg.norm(self.high_corner-self.low_corner)
 
+    def distance(self, other):
+        """
+        Return Euclidean distance to other Cuboid.
+        :param other: Cuboid
+        :return: distance (float)
+        """
+        dimension = len(self.low_corner)
+        distance1 = self.low_corner - other.low_corner
+        distance2 = self.low_corner - other.high_corner
+        distance3 = self.high_corner - other.low_corner
+        distance4 = self.high_corner - other.high_corner
+        distance_matrix = np.array((distance1, distance2, distance3, distance4))
+        checks = abs(np.sum(np.sign(distance_matrix), 0)) == 4*np.ones(dimension)
+        distance_vector = np.array(checks, dtype=float)
+        for dim in xrange(dimension):
+            if distance_vector[dim]:
+                distance_vector[dim] = min(abs(dmat[:, dim]))
+        return np.linalg.norm(distance_vector)
+
     @staticmethod
     def make_minimal(points):
         """
