@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-
+import numpy as np
+import collections
 """Cuboid.py: Implementation of ax-parallel minimal- and splitting-cuboid to provide support for the geometric
     properties of ClusterTree and BlockClusterTree.
     Part of master thesis "Hierarchical Matrices".
@@ -7,9 +8,6 @@
     Classes:
         Cuboid: Gives an ax-parallel cuboid.
 """
-
-import numpy as np
-import collections
 
 
 class Cuboid(object):
