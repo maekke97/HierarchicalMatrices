@@ -1,5 +1,5 @@
 from unittest import TestCase
-from Cuboid import Cuboid
+from cuboid import Cuboid
 import numpy as np
 
 
