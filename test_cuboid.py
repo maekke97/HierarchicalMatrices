@@ -29,11 +29,12 @@ class TestCuboid(TestCase):
         self.split3l = Cuboid(ll3, split3r)
         self.split3r = Cuboid(split3l, ur3)
         self.minimal1 = Cuboid(ll1, ur1)
-        self.cluster1 = Cluster(range(6), range(6))
+        self.cluster1 = Cluster([np.array(i) for i in xrange(6)], [[np.array(i) for i in (1, 2)] for j in xrange(6)])
         self.minimal2 = Cuboid(ll2, ur2)
-        self.cluster2 = Cluster([[x, y] for x in xrange(6) for y in xrange(6)], range(36))
+        self.cluster2 = Cluster([np.array([x, y]) for x in xrange(6) for y in xrange(6)],
+                                [[np.array([i, j]) for j in xrange(3)] for i in xrange(36)])
         self.minimal3 = Cuboid(ll3, ur3)
-        self.cluster3 = Cluster([[0, 0, 0], [5, 5, 5]], range(2))
+        self.cluster3 = Cluster([np.array([0, 0, 0]), np.array([5, 5, 5])], [[np.array(2)] for i in xrange(2)])
 
     def test_init(self):
         test = Cuboid([0.5, 1, 1.5], [1, 2, 2])

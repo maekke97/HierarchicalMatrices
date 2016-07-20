@@ -2,20 +2,40 @@ import numpy as np
 
 
 class Cluster(object):
-    """
-    Gives a cluster.
+    """Cluster that is a collection of connected points in Cartesian coordinates.
+
+    Attributes:
+        points: List of points in Cartesian coordinates.
+            List of numpy.arrays
+        links: For each point in points a list of points that it is connected with.
+            List of lists of numpy.arrays
+
+    Part of master thesis "Hierarchical Matrices".
     """
     points = []
     links = []
     diam = 0
 
     def __init__(self, points, links):
-        if len(points) == len(links):
-            self.points = np.array(points)
-            self.links = np.array(links)
+        """Create a cluster.
+
+        Create a cluster from a list of numpy.arrays.
+
+        Args:
+            points: List of points in Cartesian coordinates.
+                List of numpy.arrays
+            links: For each point in points a list of points that it is connected with.
+                List of lists of numpy.arrays
+
+        Raises:
+            TypeError:
+        """
+        if isinstance(points[0], np.ndarray) and isinstance(links[0][0], np.ndarray):
+            self.points = points
+            self.links = links
             self.diam = self.diameter()
         else:
-            raise IOError("points and links must have same length!")
+            raise TypeError("points must be list of numpy arrays and links must be list of lists of numpy arrays!")
 
     def diameter(self):
         """
