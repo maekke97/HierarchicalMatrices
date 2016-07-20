@@ -1,5 +1,6 @@
 from unittest import TestCase
-from cuboid import Cuboid
+from cuboid import *
+from cluster import *
 import numpy as np
 
 
@@ -28,22 +29,22 @@ class TestCuboid(TestCase):
         self.split3l = Cuboid(ll3, split3r)
         self.split3r = Cuboid(split3l, ur3)
         self.minimal1 = Cuboid(ll1, ur1)
-        self.points1 = range(6)
+        self.cluster1 = Cluster(range(6), range(6))
         self.minimal2 = Cuboid(ll2, ur2)
-        self.points2 = [[x, y] for x in xrange(6) for y in xrange(6)]
+        self.cluster2 = Cluster([[x, y] for x in xrange(6) for y in xrange(6)], range(36))
         self.minimal3 = Cuboid(ll3, ur3)
-        self.points3 = [[0, 0, 0], [5, 5, 5]]
+        self.cluster3 = Cluster([[0, 0, 0], [5, 5, 5]], range(2))
 
     def test_init(self):
-        test = Cuboid([0.5, 1, 1.5])
+        test = Cuboid([0.5, 1, 1.5], [1, 2, 2])
         self.assertIsInstance(test, Cuboid)
 
-    def test_make_minimal(self):
-        self.assertEqual(self.minimal1, Cuboid.make_minimal(self.points1))
-        self.assertEqual(self.minimal2, Cuboid.make_minimal(self.points2))
-        self.assertEqual(self.minimal3, Cuboid.make_minimal(self.points3))
+    def test_minimal_cuboid(self):
+        self.assertEqual(self.minimal1, minimal_cuboid(self.cluster1))
+        self.assertEqual(self.minimal2, minimal_cuboid(self.cluster2))
+        self.assertEqual(self.minimal3, minimal_cuboid(self.cluster3))
 
-    def test_split(self):
+    def test_half(self):
         split1l, split1r = self.cub1.half()
         self.assertEqual(split1l, self.split1l)
         self.assertEqual(split1r, self.split1r)

@@ -1,11 +1,4 @@
-#!/usr/bin/env python
 import numpy as np
-"""Cluster: Implementation of a Cluster.
-    Part of master thesis "Hierarchical Matrices".
-
-    Classes:
-        Cluster: Gives a cluster.
-"""
 
 
 class Cluster(object):
