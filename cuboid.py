@@ -1,9 +1,8 @@
 import numpy as np
-import collections
 
 
 class Cuboid(object):
-    """Axis-parallel cuboid.
+    """Cuboid that is parallel to the axis in Cartesian coordinates.
 
     Characterized by two diagonal corners.
 
@@ -116,7 +115,7 @@ class Cuboid(object):
 def minimal_cuboid(cluster):
     """Build minimal cuboid.
 
-    Build minimal axis-parallel cuboid around cluster.
+    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates.
 
     Args:
         cluster: A Cluster instance.
