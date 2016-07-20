@@ -44,12 +44,12 @@ class TestCuboid(TestCase):
         self.assertEqual(self.minimal3, Cuboid.make_minimal(self.points3))
 
     def test_split(self):
-        split1l, split1r = self.cub1.split()
+        split1l, split1r = self.cub1.half()
         self.assertEqual(split1l, self.split1l)
         self.assertEqual(split1r, self.split1r)
-        split2l, split2r = self.cub2.split()
+        split2l, split2r = self.cub2.half()
         self.assertEqual(split2l, self.split2l)
         self.assertEqual(split2r, self.split2r)
-        split3l, split3r = self.cub3.split()
+        split3l, split3r = self.cub3.half()
         self.assertEqual(split3l, self.split3l)
         self.assertEqual(split3r, self.split3r)

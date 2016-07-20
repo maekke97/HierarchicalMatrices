@@ -3,10 +3,9 @@ import collections
 
 
 class Cuboid(object):
-    """Ax-parallel cuboid.
+    """Axis-parallel cuboid.
 
     Characterized by two diagonal corners.
-    Supports any dimension of points.
 
     Attributes:
         low_corner: numpy.array with minimal values in each dimension
@@ -29,6 +28,8 @@ class Cuboid(object):
     def __eq__(self, other):
         """Check if self is equal to other.
 
+        Checks for equality in both low_corners and high_corners.
+
         Args:
             other: another instance of Cuboid.
         """
@@ -36,17 +37,19 @@ class Cuboid(object):
         high_eq = self.high_corner == other.high_corner
         return low_eq.all() and high_eq.all()
 
-    def __contains__(self, item):
-        """Check if item is inside the cuboid.
+    def __contains__(self, point):
+        """Check if point is inside the cuboid.
+
+        True if point is between low_corner and high_corner.
 
         Args:
-            item: numpy.array of correct dimension.
+            point: numpy.array of correct dimension.
 
         Returns:
-            contained: boolean. True iff item is between low_corner and high_corner.
+            contained: boolean.
         """
-        lower = self.low_corner <= item
-        higher = item <= self.high_corner
+        lower = self.low_corner <= point
+        higher = point <= self.high_corner
         return lower.all() and higher.all()
 
     def __repr__(self):
@@ -55,16 +58,15 @@ class Cuboid(object):
         out_str = "Cuboid with corners " + str(self.low_corner) + " and " + str(self.high_corner) + "."
         return out_str
 
-    def split(self):
+    def half(self):
         """Split the cuboid in  half.
 
-        Find dimension with largest diameter, split in half and create two new cuboids.
-        One with low_corner at splitting point, the other with high_corner at splitting point.
+        Split in half along the dimension with largest diameter.
 
         Returns:
             Tuple containing the smaller cuboids.
         """
-        # determine dimension in which to split
+        # determine dimension in which to half
         index = np.argmax(abs(self.high_corner - self.low_corner))
         # determine value at splitting point
         split = (self.high_corner[index] + self.low_corner[index])/2
@@ -77,7 +79,7 @@ class Cuboid(object):
         return Cuboid(low_corner1, high_corner1), Cuboid(low_corner2, high_corner2)
 
     def diameter(self):
-        """Return the diameter of the cluster.
+        """Return the diameter of the cuboid.
 
         Diameter is the Euclidean distance between low_corner and high_corner.
 
@@ -111,10 +113,10 @@ class Cuboid(object):
         return np.linalg.norm(distance_vector)
 
 
-def make_minimal_cuboid(cluster):
+def minimal_cuboid(cluster):
     """Build minimal cuboid.
 
-    Build minimal ax-parallel cuboid around cluster.
+    Build minimal axis-parallel cuboid around cluster.
 
     Args:
         cluster: A Cluster instance.
