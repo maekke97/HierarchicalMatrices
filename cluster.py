@@ -46,7 +46,8 @@ class Cluster(object):
         Returns:
             diameter: float.
         """
-        return max([np.linalg.norm(x-y) for x in xrange(len(self.points)) for y in xrange(x+1, len(self.points))])
+        return max([np.linalg.norm(self.points[x]-self.points[y]) for x in xrange(len(self.points))
+                    for y in xrange(x+1, len(self.points))])
 
     def distance(self, other):
         """Compute distance to other cluster.
