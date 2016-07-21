@@ -2,6 +2,7 @@ from unittest import TestCase
 from cuboid import *
 from cluster import *
 import numpy as np
+import math
 
 
 class TestCuboid(TestCase):
@@ -35,6 +36,9 @@ class TestCuboid(TestCase):
                                 [[np.array([i, j]) for j in xrange(3)] for i in xrange(36)])
         self.minimal3 = Cuboid(ll3, ur3)
         self.cluster3 = Cluster([np.array([0, 0, 0]), np.array([5, 5, 5])], [[np.array(2)] for i in xrange(2)])
+        self.control_cuboid1 = Cuboid(np.array([6], float), np.array([8], float))
+        self.control_cuboid2 = Cuboid(np.array([6, 6], float), np.array([8, 8], float))
+        self.control_cuboid3 = Cuboid(np.array([6, 6, 6], float), np.array([8, 8, 8], float))
 
     def test_init(self):
         test = Cuboid([0.5, 1, 1.5], [1, 2, 2])
@@ -55,3 +59,19 @@ class TestCuboid(TestCase):
         split3l, split3r = self.cub3.half()
         self.assertEqual(split3l, self.split3l)
         self.assertEqual(split3r, self.split3r)
+
+    def test_diameter(self):
+        self.assertEquals(self.cub1.diameter(), 5.)
+        self.assertEquals(self.cub2.diameter(), math.sqrt(50.))
+        self.assertEquals(self.cub3.diameter(), math.sqrt(75.))
+
+    def test_distance(self):
+        self.assertEquals(self.cub1.distance(self.control_cuboid1), 1.)
+        self.assertEquals(self.cub2.distance(self.control_cuboid2), math.sqrt(2))
+        self.assertEquals(self.cub3.distance(self.control_cuboid3), math.sqrt(3))
+        self.assertEquals(self.control_cuboid1.distance(self.cub1),
+                          self.cub1.distance(self.control_cuboid1))
+        self.assertEquals(self.control_cuboid2.distance(self.cub2),
+                          self.cub2.distance(self.control_cuboid2))
+        self.assertEquals(self.control_cuboid3.distance(self.cub3),
+                          self.cub3.distance(self.control_cuboid3))

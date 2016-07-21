@@ -106,10 +106,8 @@ class Cuboid(object):
         distance_matrix = np.array((distance1, distance2, distance3, distance4))
         checks = abs(np.sum(np.sign(distance_matrix), 0)) == 4*np.ones(dimension)
         distance_vector = np.array(checks, dtype=float)
-        for dim in xrange(dimension):
-            if distance_vector[dim]:
-                distance_vector[dim] = min(abs(distance_matrix[:, dim]))
-        return np.linalg.norm(distance_vector)
+        min_vector = np.amin(abs(distance_matrix), axis=0)
+        return np.linalg.norm(min_vector * distance_vector)
 
 
 def minimal_cuboid(cluster):
