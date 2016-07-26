@@ -1,5 +1,5 @@
 from unittest import TestCase
-from ClusterTree import ClusterTree
+from clustertree import ClusterTree
 
 
 class TestClusterTree(TestCase):
