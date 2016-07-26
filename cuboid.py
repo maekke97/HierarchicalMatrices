@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import array
 
 
 class Cuboid(object):
@@ -21,8 +22,8 @@ class Cuboid(object):
         Args:
             low_corner, high_corner: np.array of same length.
         """
-        self.low_corner = np.array(low_corner, float)
-        self.high_corner = np.array(high_corner, float)
+        self.low_corner = array(low_corner, float)
+        self.high_corner = array(high_corner, float)
 
     def __eq__(self, other):
         """Check if self is equal to other.
@@ -52,9 +53,15 @@ class Cuboid(object):
         return lower.all() and higher.all()
 
     def __repr__(self):
+        """Representation of Cuboid
+        """
+        return "Cuboid({0},{1})".format(str(self.low_corner), str(self.high_corner))
+
+    def __str__(self):
         """Return string representation.
         """
-        out_str = "Cuboid with corners " + str(self.low_corner) + " and " + str(self.high_corner) + "."
+        out_str = "Cuboid with:\n\tlow corner: {0},\n\thigh corner{1}.".format(str(self.low_corner),
+                                                                               str(self.high_corner))
         return out_str
 
     def half(self):
@@ -69,11 +76,11 @@ class Cuboid(object):
         index = np.argmax(abs(self.high_corner - self.low_corner))
         # determine value at splitting point
         split = (self.high_corner[index] + self.low_corner[index])/2
-        low_corner1 = np.array(self.low_corner)
-        low_corner2 = np.array(self.low_corner)
+        low_corner1 = array(self.low_corner)
+        low_corner2 = array(self.low_corner)
         low_corner2[index] = split
-        high_corner1 = np.array(self.high_corner)
-        high_corner2 = np.array(self.high_corner)
+        high_corner1 = array(self.high_corner)
+        high_corner2 = array(self.high_corner)
         high_corner1[index] = split
         return Cuboid(low_corner1, high_corner1), Cuboid(low_corner2, high_corner2)
 
@@ -103,9 +110,9 @@ class Cuboid(object):
         distance2 = self.low_corner - other.high_corner
         distance3 = self.high_corner - other.low_corner
         distance4 = self.high_corner - other.high_corner
-        distance_matrix = np.array((distance1, distance2, distance3, distance4))
+        distance_matrix = array((distance1, distance2, distance3, distance4))
         checks = abs(np.sum(np.sign(distance_matrix), 0)) == 4*np.ones(dimension)
-        distance_vector = np.array(checks, dtype=float)
+        distance_vector = array(checks, dtype=float)
         min_vector = np.amin(abs(distance_matrix), axis=0)
         return np.linalg.norm(min_vector * distance_vector)
 
@@ -116,7 +123,7 @@ def minimal_cuboid(cluster):
     Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates.
 
     Args:
-        cluster: A Cluster instance.
+        cluster: Cluster instance.
 
     Returns:
         Minimal Cuboid.
