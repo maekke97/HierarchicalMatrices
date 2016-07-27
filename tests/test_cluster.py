@@ -51,9 +51,9 @@ class TestCluster(unittest.TestCase):
         self.assertIsInstance(self.cluster3, Cluster)
 
     def test__diameter(self):
-        self.assertEquals(self.cluster1.diam, self.check1)
-        self.assertEquals(self.cluster2.diam, self.check2)
-        self.assertEquals(self.cluster3.diam, self.check3)
+        self.assertEquals(self.cluster1.diameter, self.check1)
+        self.assertEquals(self.cluster2.diameter, self.check2)
+        self.assertEquals(self.cluster3.diameter, self.check3)
 
     def test_distance(self):
         self.assertEquals(self.cluster1.distance(self.dist_cluster1), self.dist_check1)

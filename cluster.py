@@ -14,7 +14,7 @@ class Cluster(object):
     """
     points = []
     links = []
-    diam = 0
+    diameter = 0
 
     def __init__(self, points, links):
         """Create a cluster.
@@ -33,7 +33,7 @@ class Cluster(object):
         if isinstance(points[0], np.ndarray) and isinstance(links[0][0], np.ndarray):
             self.points = points
             self.links = links
-            self.diam = self._diameter()
+            self.diameter = self._diameter()
         else:
             raise TypeError("points must be list of numpy arrays and links must be list of lists of numpy arrays!")
 
@@ -41,7 +41,7 @@ class Cluster(object):
         """Compute diameter.
 
         Return the maximal Euclidean distance between two points.
-        For big lists of points this is costly. That's why the diameter is computed at creation and saved to self.diam.
+        For big lists of points this is costly. That's why the diameter is computed at creation and saved to self.diameter.
 
         Returns:
             diameter: float.
