@@ -64,16 +64,22 @@ class Cuboid(object):
                                                                                str(self.high_corner))
         return out_str
 
-    def half(self):
-        """Split the cuboid in  half.
+    def half(self, axis=None):
+        """Split the cuboid in half.
 
-        Split in half along the dimension with largest diameter.
+        If axis is specified, the cuboid is split along the given axis, else the maximal axis is chosen.
+
+        Optional args:
+            axis: integer specifying the axis to choose.
 
         Returns:
-            Tuple containing the smaller cuboids.
+            cuboid1, cuboid2: Cuboids
         """
-        # determine dimension in which to half
-        index = np.argmax(abs(self.high_corner - self.low_corner))
+        if axis:
+            index = axis
+        else:
+            # determine dimension in which to half
+            index = np.argmax(abs(self.high_corner - self.low_corner))
         # determine value at splitting point
         split = (self.high_corner[index] + self.low_corner[index])/2
         low_corner1 = array(self.low_corner)
