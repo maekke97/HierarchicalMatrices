@@ -1,4 +1,5 @@
 import numpy as np
+from cuboid import Cuboid, minimal_cuboid
 
 
 class Cluster(object):
@@ -15,8 +16,10 @@ class Cluster(object):
     points = []
     links = []
     diameter = 0
+    # TODO: change from points/links to list of indices
 
     def __init__(self, points, links):
+        # type: (list, list) -> Cluster
         """Create a cluster.
 
         Create a cluster from a list of numpy.arrays.
@@ -36,6 +39,9 @@ class Cluster(object):
             self.diameter = self._diameter()
         else:
             raise TypeError("points must be list of numpy arrays and links must be list of lists of numpy arrays!")
+
+    def __len__(self):
+        return len(self.points)
 
     def _diameter(self):
         """Compute diameter.
