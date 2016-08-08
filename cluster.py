@@ -36,7 +36,7 @@ class Cluster(object):
         if isinstance(points[0], np.ndarray) and isinstance(links[0][0], np.ndarray):
             self.points = points
             self.links = links
-            self.diameter = self._diameter()
+            self.diameter = None
         else:
             raise TypeError("points must be list of numpy arrays and links must be list of lists of numpy arrays!")
 
