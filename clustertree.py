@@ -1,4 +1,4 @@
-"""clustertree.py: Implementation of a binary cluster tree for lists of indices.
+"""clustertree.py: Implementation of a cluster tree for lists of indices.
     Part of master thesis "Hierarchical Matrices".
 
     Classes:
@@ -6,6 +6,11 @@
 """
 from cluster import Cluster
 from cuboid import minimal_cuboid
+
+
+def admissible(left_splitable, right_splitable):
+    """Default admissible condition for BlockClusterTree."""
+    return max(left_splitable.diameter(), right_splitable.diameter()) < left_splitable.distance(right_splitable)
 
 
 class BlockClusterTree(object):
@@ -18,34 +23,31 @@ class ClusterTree(object):
     """
     level = 0
     splitable = None
-    left_son = None
-    right_son = None
+    sons = []
 
     def __init__(self, splitable, max_leaf_size=0, level=0):
         """"""
         self.level = level
         self.splitable = splitable
+        self.sons = []
         if len(splitable) > max_leaf_size:
-            left_splitable, right_splitable = splitable.split()
-            self.left_son = ClusterTree(left_splitable, max_leaf_size, self.level + 1)
-            self.right_son = ClusterTree(right_splitable, max_leaf_size, self.level + 1)
+            self.splits = splitable.split()
+            for split in self.splits:
+                self.sons.append(ClusterTree(split, max_leaf_size, self.level + 1))
 
     def __repr__(self):
-        optional_string = " with children" if self.left_son and self.right_son else ""
+        optional_string = " with children {0!s}".format(self.sons) if self.sons else ""
         return "<ClusterTree at level {0}{1}>".format(str(self.level), optional_string)
 
     def export(self, out_string='', outfile='./ct.dot'):
         """.dot representation of tree."""
         if self.level == 0:
             out_string = "graph {\n"
-        if self.left_son:
-            out_string += "\"{0!s}\" -- \"{1!s}\"\n".format(self.splitable.cluster.points,
-                                                        self.left_son.splitable.cluster.points)
-            out_string = self.left_son.export(out_string=out_string)
-        if self.right_son:
-            out_string += "\"{0!s}\" -- \"{1!s}\"\n".format(self.splitable.cluster.points,
-                                                        self.right_son.splitable.cluster.points)
-            out_string = self.right_son.export(out_string=out_string)
+        if self.sons:
+            for son in self.sons:
+                out_string += "\"{0!s}\" -- \"{1!s}\"\n".format(self.splitable.cluster.points,
+                                                                son.splitable.cluster.points)
+                out_string = son.export(out_string=out_string)
         if not self.level == 0:
             return out_string
         else:
@@ -55,10 +57,10 @@ class ClusterTree(object):
             of_handle.close()
 
     def depth(self):
-        if not self.left_son and not self.right_son:
+        if not self.sons:
             return self.level
         else:
-            return max((self.left_son.depth(), self.right_son.depth()))
+            return max([son.depth() for son in self.sons])
 
 
 class Splitable(object):
@@ -66,7 +68,7 @@ class Splitable(object):
 
     Methods that need to be implemented by subclasses:
         __len__: return the length of the cluster
-        split: split the object in two, return two new instances
+        split: split the object in two or more, return new instances
         diameter: return the diameter of the object
         distance: return the distance to other object
     """
@@ -75,7 +77,7 @@ class Splitable(object):
         raise NotImplementedError()
 
     def split(self):
-        # type: () -> (Splitable, Splitable)
+        # type: () -> (Splitables)
         raise NotImplementedError()
 
     def diameter(self):
@@ -93,6 +95,8 @@ class RegularCuboid(Splitable):
     Minimal cuboid is built around initial list of indices. Split is then
     implemented by splitting the surrounding cuboid in half and distributing indices according to the cuboid they
     belong to.
+
+    Gives a binary tree.
     """
     def __init__(self, cluster, cuboid=None):
         """Build a RegularCuboid
@@ -175,8 +179,3 @@ class Balanced(Splitable):
 
     def distance(self, other):
         pass
-
-
-def admissible(left_splitable, right_splitable):
-    """Default admissible condition for BlockClusterTree."""
-    return max(left_splitable.diameter(), right_splitable.diameter()) < left_splitable.distance(right_splitable)
