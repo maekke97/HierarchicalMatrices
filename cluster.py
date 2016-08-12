@@ -33,12 +33,9 @@ class Cluster(object):
         Raises:
             TypeError: points must be a list of numpy arrays and links must be a list of lists of numpy arrays!
         """
-        if isinstance(points[0], np.ndarray) and isinstance(links[0][0], np.ndarray):
-            self.points = points
-            self.links = links
-            self.diameter = None
-        else:
-            raise TypeError("points must be list of numpy arrays and links must be list of lists of numpy arrays!")
+        self.points = points
+        self.links = links
+        self.diameter = None
 
     def __len__(self):
         return len(self.points)

@@ -14,8 +14,27 @@ def admissible(left_splitable, right_splitable):
 
 
 class BlockClusterTree(object):
-    def __init__(self, left_clustertree, right_clustertree, admissible_function=admissible):
-        pass
+    def __init__(self, left_clustertree, right_clustertree, admissible_function=admissible, level=0):
+        self.sons = []
+        self.left_clustertree = left_clustertree
+        self.right_clustertree = right_clustertree
+        self.admissible = admissible_function
+        self.level = level
+        for left_son in self.left_clustertree.sons:
+            for right_son in self.right_clustertree.sons:
+                if not self.admissible(left_son, right_son):
+                    self.sons.append(BlockClusterTree(left_son, right_son, self.admissible, self.level+1))
+
+    def _export(self):
+        return "[{0},{1}]\n".format(self.left_clustertree._export(), self.right_clustertree._export())
+
+    def export(self):
+        if self.sons:
+            out = [self._export()]
+            out.append([son.export() for son in self.sons])
+        else:
+            out = self._export()
+        return out
 
 
 class ClusterTree(object):
@@ -57,6 +76,12 @@ class ClusterTree(object):
             return self.level
         else:
             return max([son.depth() for son in self.sons])
+
+    def diameter(self):
+        return self.splitable.diameter()
+
+    def distance(self, other):
+        return self.splitable.distance(other.splitable)
 
 
 class Splitable(object):
@@ -188,11 +213,11 @@ def export(obj, form='xml', out_file='./out'):
         else:
             value_string = lst
         value_string = value_string.replace('array', '')
-        value_string = value_string.replace(' ', '')
-        value_string = value_string.replace('([', '(')
-        value_string = value_string.replace('])', ')')
-        value_string = value_string.replace('.)', ')')
-        value_string = value_string.replace('.,', ',')
+        # value_string = value_string.replace(' ', '')
+        # value_string = value_string.replace('([', '(')
+        # value_string = value_string.replace('])', ')')
+        # value_string = value_string.replace('.)', ')')
+        # value_string = value_string.replace('.,', ',')
         display_string = len(eval(value_string))
         out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
         if len(lst) > 1 and type(lst[1]) is list:
@@ -207,41 +232,42 @@ def export(obj, form='xml', out_file='./out'):
                 if type(item) is list:
                     value_string = str(lst[0])
                     value_string = value_string.replace('array', '')
-                    value_string = value_string.replace(' ', '')
-                    value_string = value_string.replace('([', '(')
-                    value_string = value_string.replace('])', ')')
-                    value_string = value_string.replace('.)', ')')
-                    value_string = value_string.replace('.,', ',')
+                    # value_string = value_string.replace(' ', '')
+                    # value_string = value_string.replace('([', '(')
+                    # value_string = value_string.replace('])', ')')
+                    # value_string = value_string.replace('.)', ')')
+                    # value_string = value_string.replace('.,', ',')
                     item_string = str(item[0])
                     item_string = item_string.replace('array', '')
-                    item_string = item_string.replace(' ', '')
-                    item_string = item_string.replace('([', '(')
-                    item_string = item_string.replace('])', ')')
-                    item_string = item_string.replace('.)', ')')
-                    item_string = item_string.replace('.,', ',')
+                    # item_string = item_string.replace(' ', '')
+                    # item_string = item_string.replace('([', '(')
+                    # item_string = item_string.replace('])', ')')
+                    # item_string = item_string.replace('.)', ')')
+                    # item_string = item_string.replace('.,', ',')
                     label_string = len(eval(value_string))
-                    out_string += '"{0}" -- "{1}";\n"{0}"[label="{2}",color="#cccccc",style="filled"];\n'.format(
+                    out_string += '''"{0}" -- "{1}";
+                    "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
                         value_string, item_string, label_string)
                     out_string = _to_dot(item, out_string)
                 else:
                     value_string = str(lst[0])
                     value_string = value_string.replace('array', '')
-                    value_string = value_string.replace(' ', '')
-                    value_string = value_string.replace('([', '(')
-                    value_string = value_string.replace('])', ')')
-                    value_string = value_string.replace('.)', ')')
-                    value_string = value_string.replace('.,', ',')
+                    # value_string = value_string.replace(' ', '')
+                    # value_string = value_string.replace('([', '(')
+                    # value_string = value_string.replace('])', ')')
+                    # value_string = value_string.replace('.)', ')')
+                    # value_string = value_string.replace('.,', ',')
                     item_string = item
                     item_string = item_string.replace('array', '')
-                    item_string = item_string.replace(' ', '')
-                    item_string = item_string.replace('([', '(')
-                    item_string = item_string.replace('])', ')')
-                    item_string = item_string.replace('.)', ')')
-                    item_string = item_string.replace('.,', ',')
+                    # item_string = item_string.replace(' ', '')
+                    # item_string = item_string.replace('([', '(')
+                    # item_string = item_string.replace('])', ')')
+                    # item_string = item_string.replace('.)', ')')
+                    # item_string = item_string.replace('.,', ',')
                     label_string = len(eval(value_string))
                     out_string += '''"{0}" -- "{1}";
-                    "{0}"[label="{2}",color="#cccccc",style="filled"];
-                    "{1}"[color="#cccccc",style="filled"];\n'''.format(value_string, item_string, label_string)
+                    "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
+                    "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string, item_string, label_string)
         return out_string
 
     export_list = obj.export()
