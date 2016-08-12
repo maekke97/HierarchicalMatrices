@@ -4,9 +4,9 @@ import numpy as np
 import random
 
 
-lim1 = 8
-lim2 = 8
-lim3 = 8
+lim1 = 2**4
+lim2 = 2**3
+lim3 = 2**2
 link_num = 4
 points1 = [np.array([float(i) / lim1]) for i in xrange(lim1)]
 links1 = [[points1[l] for l in [random.randint(0, lim1 - 1) for x in xrange(link_num)]] for i in xrange(lim1)]
@@ -25,6 +25,6 @@ cluster3 = Cluster(points3, links3)
 rc1 = RegularCuboid(cluster1)
 rc2 = RegularCuboid(cluster2)
 rc3 = RegularCuboid(cluster3)
-ct1 = ClusterTree(rc1, 1)
-ct2 = ClusterTree(rc2, 1)
-ct3 = ClusterTree(rc3, 1)
+ct1 = ClusterTree(rc1, 2)
+ct2 = ClusterTree(rc2, 2)
+ct3 = ClusterTree(rc3, 2)

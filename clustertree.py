@@ -39,22 +39,18 @@ class ClusterTree(object):
         optional_string = " with children {0!s}".format(self.sons) if self.sons else ""
         return "<ClusterTree at level {0}{1}>".format(str(self.level), optional_string)
 
-    def export(self, out_string='', outfile='./ct.dot'):
-        """.dot representation of tree."""
-        if self.level == 0:
-            out_string = "graph {\n"
+    def _export(self):
+        """give str representation of self. (Internal)"""
+        return "{0!s}".format(self.splitable.cluster.points)
+
+    def export(self):
+        """List representation of tree."""
         if self.sons:
-            for son in self.sons:
-                out_string += "\"{0!s}\" -- \"{1!s}\"\n".format(self.splitable.cluster.points,
-                                                                son.splitable.cluster.points)
-                out_string = son.export(out_string=out_string)
-        if not self.level == 0:
-            return out_string
+            out = [self._export()]
+            out.append([son.export() for son in self.sons])
         else:
-            out_string += "}"
-            of_handle = open(outfile, "w")
-            of_handle.write(out_string)
-            of_handle.close()
+            out = self._export()
+        return out
 
     def depth(self):
         if not self.sons:
@@ -179,3 +175,85 @@ class Balanced(Splitable):
 
     def distance(self, other):
         pass
+
+
+def export(obj, form='xml', out_file='./out'):
+    """Export obj in specified format.
+
+    implemented: xml, dot
+    """
+    def _to_xml(lst, out_string=''):
+        if type(lst) is list:
+            value_string = str(lst[0])
+        else:
+            value_string = lst
+        value_string = value_string.replace('array', '')
+        value_string = value_string.replace(' ', '')
+        value_string = value_string.replace('([', '(')
+        value_string = value_string.replace('])', ')')
+        value_string = value_string.replace('.)', ')')
+        value_string = value_string.replace('.,', ',')
+        display_string = len(eval(value_string))
+        out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
+        if len(lst) > 1 and type(lst[1]) is list:
+            for item in lst[1]:
+                out_string = _to_xml(item, out_string)
+        out_string += "</node>\n"
+        return out_string
+
+    def _to_dot(lst, out_string=''):
+        if len(lst) > 1 and type(lst[1]) is list:
+            for item in lst[1]:
+                if type(item) is list:
+                    value_string = str(lst[0])
+                    value_string = value_string.replace('array', '')
+                    value_string = value_string.replace(' ', '')
+                    value_string = value_string.replace('([', '(')
+                    value_string = value_string.replace('])', ')')
+                    value_string = value_string.replace('.)', ')')
+                    value_string = value_string.replace('.,', ',')
+                    item_string = str(item[0])
+                    item_string = item_string.replace('array', '')
+                    item_string = item_string.replace(' ', '')
+                    item_string = item_string.replace('([', '(')
+                    item_string = item_string.replace('])', ')')
+                    item_string = item_string.replace('.)', ')')
+                    item_string = item_string.replace('.,', ',')
+                    label_string = len(eval(value_string))
+                    out_string += '"{0}" -- "{1}";\n"{0}"[label="{2}",color="#cccccc",style="filled"];\n'.format(
+                        value_string, item_string, label_string)
+                    out_string = _to_dot(item, out_string)
+                else:
+                    value_string = str(lst[0])
+                    value_string = value_string.replace('array', '')
+                    value_string = value_string.replace(' ', '')
+                    value_string = value_string.replace('([', '(')
+                    value_string = value_string.replace('])', ')')
+                    value_string = value_string.replace('.)', ')')
+                    value_string = value_string.replace('.,', ',')
+                    item_string = item
+                    item_string = item_string.replace('array', '')
+                    item_string = item_string.replace(' ', '')
+                    item_string = item_string.replace('([', '(')
+                    item_string = item_string.replace('])', ')')
+                    item_string = item_string.replace('.)', ')')
+                    item_string = item_string.replace('.,', ',')
+                    label_string = len(eval(value_string))
+                    out_string += '''"{0}" -- "{1}";
+                    "{0}"[label="{2}",color="#cccccc",style="filled"];
+                    "{1}"[color="#cccccc",style="filled"];\n'''.format(value_string, item_string, label_string)
+        return out_string
+
+    export_list = obj.export()
+    if form == 'xml':
+        head = '<?xml version="1.0" encoding="utf-8"?>\n'
+        output = _to_xml(export_list)
+        tail = ''
+    elif form == 'dot':
+        head = 'graph {\n'
+        output = _to_dot(export_list)
+        tail = '}'
+    else:
+        raise NotImplementedError()
+    with open(out_file, "w") as out:
+        out.write(head + output + tail)
