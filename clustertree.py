@@ -25,6 +25,10 @@ class BlockClusterTree(object):
                 if not self.admissible(left_son, right_son):
                     self.sons.append(BlockClusterTree(left_son, right_son, self.admissible, self.level+1))
 
+    def __repr__(self):
+        optional_string = " with children {0!s}".format(self.sons) if self.sons else ""
+        return "<BlockClusterTree at level {0}{1}>".format(str(self.level), optional_string)
+
     def _export(self):
         return "[{0},{1}]\n".format(self.left_clustertree._export(), self.right_clustertree._export())
 
