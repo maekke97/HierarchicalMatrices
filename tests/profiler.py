@@ -5,6 +5,7 @@ import random
 import argparse
 from timeit import default_timer as timer
 
+
 @profile
 def main(args):
     lim1 = 0
