@@ -8,9 +8,9 @@ from cluster import Cluster
 from cuboid import minimal_cuboid
 
 
-def admissible(left_splitable, right_splitable):
+def admissible(left_clustertree, right_clustertree):
     """Default admissible condition for BlockClusterTree."""
-    return max(left_splitable.diameter(), right_splitable.diameter()) < left_splitable.distance(right_splitable)
+    return max(left_clustertree.diameter(), right_clustertree.diameter()) < left_clustertree.distance(right_clustertree)
 
 
 class BlockClusterTree(object):
@@ -28,6 +28,14 @@ class BlockClusterTree(object):
     def __repr__(self):
         optional_string = " with children {0!s}".format(self.sons) if self.sons else ""
         return "<BlockClusterTree at level {0}{1}>".format(str(self.level), optional_string)
+
+    def depth(self, root_level=None):
+        if root_level is None:
+            root_level = self.level
+        if not self.sons:
+            return self.level - root_level
+        else:
+            return max([son.depth(root_level) for son in self.sons])
 
     def _export(self):
         return "[{0},{1}]\n".format(self.left_clustertree._export(), self.right_clustertree._export())
@@ -75,11 +83,13 @@ class ClusterTree(object):
             out = self._export()
         return out
 
-    def depth(self):
+    def depth(self, root_level=None):
+        if root_level is None:
+            root_level = self.level
         if not self.sons:
-            return self.level
+            return self.level - root_level
         else:
-            return max([son.depth() for son in self.sons])
+            return max([son.depth(root_level) for son in self.sons])
 
     def diameter(self):
         return self.splitable.diameter()
@@ -209,7 +219,7 @@ class Balanced(Splitable):
 def export(obj, form='xml', out_file='./out'):
     """Export obj in specified format.
 
-    implemented: xml, dot
+    implemented: xml, dot, bin
     """
     def _to_xml(lst, out_string=''):
         if type(lst) is list:
@@ -217,11 +227,11 @@ def export(obj, form='xml', out_file='./out'):
         else:
             value_string = lst
         value_string = value_string.replace('array', '')
-        # value_string = value_string.replace(' ', '')
+        value_string = value_string.replace(' ', '')
         # value_string = value_string.replace('([', '(')
         # value_string = value_string.replace('])', ')')
-        # value_string = value_string.replace('.)', ')')
-        # value_string = value_string.replace('.,', ',')
+        value_string = value_string.replace('.)', ')')
+        value_string = value_string.replace('.,', ',')
         display_string = len(eval(value_string))
         out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
         if len(lst) > 1 and type(lst[1]) is list:
@@ -236,18 +246,18 @@ def export(obj, form='xml', out_file='./out'):
                 if type(item) is list:
                     value_string = str(lst[0])
                     value_string = value_string.replace('array', '')
-                    # value_string = value_string.replace(' ', '')
+                    value_string = value_string.replace(' ', '')
                     # value_string = value_string.replace('([', '(')
                     # value_string = value_string.replace('])', ')')
-                    # value_string = value_string.replace('.)', ')')
-                    # value_string = value_string.replace('.,', ',')
+                    value_string = value_string.replace('.)', ')')
+                    value_string = value_string.replace('.,', ',')
                     item_string = str(item[0])
                     item_string = item_string.replace('array', '')
-                    # item_string = item_string.replace(' ', '')
+                    item_string = item_string.replace(' ', '')
                     # item_string = item_string.replace('([', '(')
                     # item_string = item_string.replace('])', ')')
-                    # item_string = item_string.replace('.)', ')')
-                    # item_string = item_string.replace('.,', ',')
+                    item_string = item_string.replace('.)', ')')
+                    item_string = item_string.replace('.,', ',')
                     label_string = len(eval(value_string))
                     out_string += '''"{0}" -- "{1}";
                     "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
@@ -256,34 +266,46 @@ def export(obj, form='xml', out_file='./out'):
                 else:
                     value_string = str(lst[0])
                     value_string = value_string.replace('array', '')
-                    # value_string = value_string.replace(' ', '')
+                    value_string = value_string.replace(' ', '')
                     # value_string = value_string.replace('([', '(')
                     # value_string = value_string.replace('])', ')')
-                    # value_string = value_string.replace('.)', ')')
-                    # value_string = value_string.replace('.,', ',')
+                    value_string = value_string.replace('.)', ')')
+                    value_string = value_string.replace('.,', ',')
                     item_string = item
                     item_string = item_string.replace('array', '')
-                    # item_string = item_string.replace(' ', '')
+                    item_string = item_string.replace(' ', '')
                     # item_string = item_string.replace('([', '(')
                     # item_string = item_string.replace('])', ')')
-                    # item_string = item_string.replace('.)', ')')
-                    # item_string = item_string.replace('.,', ',')
+                    item_string = item_string.replace('.)', ')')
+                    item_string = item_string.replace('.,', ',')
                     label_string = len(eval(value_string))
                     out_string += '''"{0}" -- "{1}";
                     "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
                     "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string, item_string, label_string)
         return out_string
 
-    export_list = obj.export()
     if form == 'xml':
+        openstring = 'w'
+        export_list = obj.export()
         head = '<?xml version="1.0" encoding="utf-8"?>\n'
         output = _to_xml(export_list)
-        tail = ''
+        output = head + output
+        with open(out_file, "w") as out:
+            out.write(output)
     elif form == 'dot':
+        openstring = 'w'
+        export_list = obj.export()
         head = 'graph {\n'
         output = _to_dot(export_list)
         tail = '}'
+        output = head + output + tail
+        with open(out_file, "w") as out:
+            out.write(output)
+    elif form == 'bin':
+        import pickle
+        openstring = 'wb'
+        file_handle = open(out_file, openstring)
+        pickle.dump(obj, file_handle)
+        file_handle.close()
     else:
         raise NotImplementedError()
-    with open(out_file, "w") as out:
-        out.write(head + output + tail)
