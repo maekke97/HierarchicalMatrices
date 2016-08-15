@@ -305,7 +305,7 @@ def export(obj, form='xml', out_file='./out'):
         import pickle
         openstring = 'wb'
         file_handle = open(out_file, openstring)
-        pickle.dump(obj, file_handle)
+        pickle.dump(obj, file_handle, protocol=-1)
         file_handle.close()
     else:
         raise NotImplementedError()
