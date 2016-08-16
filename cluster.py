@@ -15,7 +15,6 @@ class Cluster(object):
     """
     points = []
     links = []
-    diameter = 0
     # TODO: change from points/links to list of indices
 
     def __init__(self, points, links):
@@ -35,12 +34,11 @@ class Cluster(object):
         """
         self.points = points
         self.links = links
-        self.diameter = None
 
     def __len__(self):
         return len(self.points)
 
-    def _diameter(self):
+    def diameter(self):
         """Compute diameter.
 
         Return the maximal Euclidean distance between two points.
