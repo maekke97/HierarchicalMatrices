@@ -38,7 +38,7 @@ class BlockClusterTree(object):
             return max([son.depth(root_level) for son in self.sons])
 
     def _export(self):
-        return "[{0},{1}]\n".format(self.left_clustertree._export(), self.right_clustertree._export())
+        return "[{0}|{1}]\n".format(self.left_clustertree._export(), self.right_clustertree._export())
 
     def export(self):
         if self.sons:
@@ -62,8 +62,8 @@ class ClusterTree(object):
         self.splitable = splitable
         self.sons = []
         if len(splitable) > max_leaf_size:
-            self.splits = splitable.split()
-            for split in self.splits:
+            splits = splitable.split()
+            for split in splits:
                 self.sons.append(ClusterTree(split, max_leaf_size, self.level + 1))
 
     def __repr__(self):
@@ -72,15 +72,12 @@ class ClusterTree(object):
 
     def _export(self):
         """give str representation of self. (Internal)"""
-        return "{0!s}".format(self.splitable.cluster.points)
+        return ",".join([str(p) for p in self.splitable.cluster.indices])
 
     def export(self):
         """List representation of tree."""
-        if self.sons:
-            out = [self._export()]
-            out.append([son.export() for son in self.sons])
-        else:
-            out = self._export()
+        out = [self._export()]
+        out.append([son.export() for son in self.sons])
         return out
 
     def depth(self, root_level=None):
@@ -152,17 +149,13 @@ class RegularCuboid(Splitable):
         left_cuboid, right_cuboid = self.cuboid.half()
         left_points = []
         right_points = []
-        left_links = []
-        right_links = []
-        for index in xrange(len(self.cluster)):
-            if self.cluster.points[index] in left_cuboid:
-                left_points.append(self.cluster.points[index])
-                left_links.append(self.cluster.links[index])
+        for index in self.cluster.indices:
+            if self.cluster.grid.points[index] in left_cuboid:
+                left_points.append(index)
             else:
-                right_points.append(self.cluster.points[index])
-                right_links.append(self.cluster.links[index])
-        left_cluster = Cluster(left_points, left_links)
-        right_cluster = Cluster(right_points, right_links)
+                right_points.append(index)
+        left_cluster = Cluster(self.cluster.grid, left_points)
+        right_cluster = Cluster(self.cluster.grid, right_points)
         return RegularCuboid(left_cluster, left_cuboid), RegularCuboid(right_cluster, right_cuboid)
 
     def __len__(self):
@@ -222,17 +215,12 @@ def export(obj, form='xml', out_file='./out'):
     implemented: xml, dot, bin
     """
     def _to_xml(lst, out_string=''):
-        if type(lst) is list:
+        if len(lst[1]):
             value_string = str(lst[0])
+            display_string = str(len(lst[1]))
         else:
-            value_string = lst
-        value_string = value_string.replace('array', '')
-        value_string = value_string.replace(' ', '')
-        # value_string = value_string.replace('([', '(')
-        # value_string = value_string.replace('])', ')')
-        value_string = value_string.replace('.)', ')')
-        value_string = value_string.replace('.,', ',')
-        display_string = len(eval(value_string))
+            value_string = str(lst[0])
+            display_string = str(lst[0])
         out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
         if len(lst) > 1 and type(lst[1]) is list:
             for item in lst[1]:
@@ -245,43 +233,20 @@ def export(obj, form='xml', out_file='./out'):
             for item in lst[1]:
                 if type(item) is list:
                     value_string = str(lst[0])
-                    value_string = value_string.replace('array', '')
-                    value_string = value_string.replace(' ', '')
-                    # value_string = value_string.replace('([', '(')
-                    # value_string = value_string.replace('])', ')')
-                    value_string = value_string.replace('.)', ')')
-                    value_string = value_string.replace('.,', ',')
                     item_string = str(item[0])
-                    item_string = item_string.replace('array', '')
-                    item_string = item_string.replace(' ', '')
-                    # item_string = item_string.replace('([', '(')
-                    # item_string = item_string.replace('])', ')')
-                    item_string = item_string.replace('.)', ')')
-                    item_string = item_string.replace('.,', ',')
-                    label_string = len(eval(value_string))
+                    label_string = len(eval(value_string.replace('|', ',')))
                     out_string += '''"{0}" -- "{1}";
                     "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
                         value_string, item_string, label_string)
                     out_string = _to_dot(item, out_string)
                 else:
                     value_string = str(lst[0])
-                    value_string = value_string.replace('array', '')
-                    value_string = value_string.replace(' ', '')
-                    # value_string = value_string.replace('([', '(')
-                    # value_string = value_string.replace('])', ')')
-                    value_string = value_string.replace('.)', ')')
-                    value_string = value_string.replace('.,', ',')
                     item_string = item
-                    item_string = item_string.replace('array', '')
-                    item_string = item_string.replace(' ', '')
-                    # item_string = item_string.replace('([', '(')
-                    # item_string = item_string.replace('])', ')')
-                    item_string = item_string.replace('.)', ')')
-                    item_string = item_string.replace('.,', ',')
-                    label_string = len(eval(value_string))
+                    label_string = len(eval(value_string.replace('|', ',')))
                     out_string += '''"{0}" -- "{1}";
                     "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
-                    "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string, item_string, label_string)
+                    "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string, item_string,
+                                                                                   label_string)
         return out_string
 
     if form == 'xml':

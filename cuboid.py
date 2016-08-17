@@ -134,7 +134,7 @@ def minimal_cuboid(cluster):
     Returns:
         Minimal Cuboid.
     """
-    points = cluster.points
+    points = cluster.grid.points
     low_corner = np.array(points[0], float, ndmin=1)
     high_corner = np.array(points[0], float, ndmin=1)
     for p in points:
