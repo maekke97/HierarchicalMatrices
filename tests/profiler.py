@@ -1,5 +1,5 @@
 from clustertree import ClusterTree, RegularCuboid, BlockClusterTree, export
-from cluster import Cluster
+from cluster import Cluster, Grid
 import numpy as np
 import random
 import argparse
@@ -30,7 +30,8 @@ def main(args):
                   xrange(lim2) for k in xrange(lim3)]
         links = [[points[l] for l in [random.randint(0, lim1 * lim2 * lim3 - 1) for x in xrange(link_num)]]
                  for k in xrange(lim3) for j in xrange(lim2) for i in xrange(lim1)]
-    cluster = Cluster(points, links)
+    grid = Grid(points, links)
+    cluster = Cluster(grid)
     rc = RegularCuboid(cluster)
     start = timer()
     ct = ClusterTree(rc, 1)
