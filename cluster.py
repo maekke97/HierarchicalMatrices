@@ -47,8 +47,8 @@ class Cluster(object):
         Raises:
             TypeError: points must be a list of numpy arrays and links must be a list of lists of numpy arrays!
         """
-        self.indices = range(len(grid)) if not indices else indices
         self.grid = grid
+        self.indices = range(len(grid)) if not indices else indices
 
     def __len__(self):
         return len(self.indices)
