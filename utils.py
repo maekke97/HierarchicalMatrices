@@ -19,7 +19,7 @@
         minimal_cuboid: Build a minimal Cuboid around a Cluster
 """
 import numpy
-from numpy.core.numeric import array
+from numpy import array
 
 
 class BlockClusterTree(object):
