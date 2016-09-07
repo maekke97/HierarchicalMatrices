@@ -1,4 +1,4 @@
-import numpy as np
+import numpy
 from numpy import array
 
 
@@ -20,7 +20,7 @@ class Cuboid(object):
         """Build a cuboid.
 
         Args:
-            low_corner, high_corner: np.array of same length.
+            low_corner, high_corner: numpy.array of same length.
         """
         self.low_corner = array(low_corner, float)
         self.high_corner = array(high_corner, float)
@@ -38,34 +38,31 @@ class Cuboid(object):
         return low_eq.all() and high_eq.all()
 
     def __contains__(self, point):
-        """Check if point is inside the cuboid.
+        """Check if point is inside the cuboid
 
-        True if point is between low_corner and high_corner.
+        True if point is between low_corner and high_corner
 
         Args:
-            point: numpy.array of correct dimension.
+            point: numpy.array of correct dimension
 
         Returns:
-            contained: boolean.
+            contained: boolean
         """
         lower = self.low_corner <= point
         higher = point <= self.high_corner
         return lower.all() and higher.all()
 
     def __repr__(self):
-        """Representation of Cuboid
-        """
+        """Representation of Cuboid"""
         return "Cuboid({0},{1})".format(str(self.low_corner), str(self.high_corner))
 
     def __str__(self):
-        """Return string representation.
-        """
-        out_str = "Cuboid with:\n\tlow corner: {0},\n\thigh corner{1}.".format(str(self.low_corner),
+        """Return string representation"""
+        return "Cuboid with:\n\tlow corner: {0},\n\thigh corner{1}.".format(str(self.low_corner),
                                                                                str(self.high_corner))
-        return out_str
 
     def half(self, axis=None):
-        """Split the cuboid in half.
+        """Split the cuboid in half
 
         If axis is specified, the cuboid is split along the given axis, else the maximal axis is chosen.
 
@@ -79,7 +76,7 @@ class Cuboid(object):
             index = axis
         else:
             # determine dimension in which to half
-            index = np.argmax(abs(self.high_corner - self.low_corner))
+            index = numpy.argmax(abs(self.high_corner - self.low_corner))
         # determine value at splitting point
         split = (self.high_corner[index] + self.low_corner[index])/2
         low_corner1 = array(self.low_corner)
@@ -98,7 +95,7 @@ class Cuboid(object):
         Returns:
             diameter: float
         """
-        return np.linalg.norm(self.high_corner-self.low_corner)
+        return numpy.linalg.norm(self.high_corner-self.low_corner)
 
     def distance(self, other):
         """Return distance to other Cuboid.
@@ -117,28 +114,28 @@ class Cuboid(object):
         distance3 = self.high_corner - other.low_corner
         distance4 = self.high_corner - other.high_corner
         distance_matrix = array((distance1, distance2, distance3, distance4))
-        checks = abs(np.sum(np.sign(distance_matrix), 0)) == 4*np.ones(dimension)
+        checks = abs(numpy.sum(numpy.sign(distance_matrix), 0)) == 4*numpy.ones(dimension)
         distance_vector = array(checks, dtype=float)
-        min_vector = np.amin(abs(distance_matrix), axis=0)
-        return np.linalg.norm(min_vector * distance_vector)
+        min_vector = numpy.amin(abs(distance_matrix), axis=0)
+        return numpy.linalg.norm(min_vector * distance_vector)
 
 
 def minimal_cuboid(cluster):
-    """Build minimal cuboid.
+    """Build minimal cuboid
 
-    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates.
+    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
 
     Args:
-        cluster: Cluster instance.
+        cluster: Cluster instance
 
     Returns:
-        Minimal Cuboid.
+        Minimal Cuboid
     """
     points = cluster.grid.points
-    low_corner = np.array(points[0], float, ndmin=1)
-    high_corner = np.array(points[0], float, ndmin=1)
+    low_corner = numpy.array(points[0], float, ndmin=1)
+    high_corner = numpy.array(points[0], float, ndmin=1)
     for p in points:
-        p = np.array(p, float, ndmin=1)
+        p = numpy.array(p, float, ndmin=1)
         lower = p >= low_corner
         if not lower.all():
             for i in xrange(len(low_corner)):
