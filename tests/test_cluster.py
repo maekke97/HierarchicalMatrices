@@ -1,5 +1,5 @@
 import unittest
-from cluster import Cluster
+from utils import Cluster
 import numpy as np
 import random
 

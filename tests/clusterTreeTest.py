@@ -1,4 +1,4 @@
-from clustertree import ClusterTree, RegularCuboid, BlockClusterTree, export
+from utils import ClusterTree, RegularCuboid, BlockClusterTree, export, Grid, Cluster
 from cluster import Cluster, Grid
 import numpy as np
 import random

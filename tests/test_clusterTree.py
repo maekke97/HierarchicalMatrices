@@ -1,5 +1,5 @@
 from unittest import TestCase
-from clustertree import ClusterTree, RegularCuboid
+from utils import ClusterTree, RegularCuboid, Cluster
 from cluster import Cluster
 import numpy as np
 import random

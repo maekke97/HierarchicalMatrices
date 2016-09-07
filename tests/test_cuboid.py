@@ -1,8 +1,10 @@
-from unittest import TestCase
-from cuboid import *
-from cluster import *
-import numpy as np
 import math
+from unittest import TestCase
+
+import numpy as np
+from cuboid import *
+
+from utils import minimal_cuboid, Cluster
 
 
 class TestCuboid(TestCase):
