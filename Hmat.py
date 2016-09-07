@@ -1,6 +1,14 @@
-"""Hierarchische Matrizen"""
+"""HMat.py"""
+
+
 class Hmat(object):
-    """Hmat implements a hierarchical Matrix."""
-    block_structure = None
-    blocks = {}
-    number_of_blocks = 0
+    """Implement a hierarchical Matrix"""
+    def __init__(self):
+        self.tl = None
+        self.tr = None
+        self.bl = None
+        self.br = None
+
+
+class RMat(object):
+    """Rank-k matrix"""
