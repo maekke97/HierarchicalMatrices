@@ -22,6 +22,107 @@ import numpy
 from numpy import array
 
 
+def export(obj, form='xml', out_file='./out'):
+    """Export obj in specified format.
+
+    implemented: xml, dot, bin
+    """
+    def _to_xml(lst, out_string=''):
+        if len(lst[1]):
+            value_string = str(lst[0])
+            display_string = str(len(lst[1]))
+        else:
+            value_string = str(lst[0])
+            display_string = str(lst[0])
+        out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
+        if len(lst) > 1 and type(lst[1]) is list:
+            for item in lst[1]:
+                out_string = _to_xml(item, out_string)
+        out_string += "</node>\n"
+        return out_string
+
+    def _to_dot(lst, out_string=''):
+        if len(lst) > 1 and type(lst[1]) is list:
+            for item in lst[1]:
+                if type(item) is list:
+                    value_string = str(lst[0])
+                    item_string = str(item[0])
+                    label_string = len(eval(value_string.replace('|', ',')))
+                    out_string += '''"{0}" -- "{1}";
+                    "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
+                        value_string, item_string, label_string)
+                    out_string = _to_dot(item, out_string)
+                else:
+                    value_string = str(lst[0])
+                    item_string = item
+                    label_string = len(eval(value_string.replace('|', ',')))
+                    out_string += '''"{0}" -- "{1}";
+                    "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
+                    "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string, item_string,
+                                                                                   label_string)
+        return out_string
+
+    if form == 'xml':
+        openstring = 'w'
+        export_list = obj.export()
+        head = '<?xml version="1.0" encoding="utf-8"?>\n'
+        output = _to_xml(export_list)
+        output = head + output
+        with open(out_file, "w") as out:
+            out.write(output)
+    elif form == 'dot':
+        openstring = 'w'
+        export_list = obj.export()
+        head = 'graph {\n'
+        output = _to_dot(export_list)
+        tail = '}'
+        output = head + output + tail
+        with open(out_file, "w") as out:
+            out.write(output)
+    elif form == 'bin':
+        import pickle
+        openstring = 'wb'
+        file_handle = open(out_file, openstring)
+        pickle.dump(obj, file_handle, protocol=-1)
+        file_handle.close()
+    else:
+        raise NotImplementedError()
+
+
+def minimal_cuboid(cluster):
+    """Build minimal cuboid
+
+    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
+
+    Args:
+        cluster: Cluster instance
+
+    Returns:
+        Minimal Cuboid
+    """
+    points = cluster.grid.points
+    low_corner = numpy.array(points[0], float, ndmin=1)
+    high_corner = numpy.array(points[0], float, ndmin=1)
+    for p in points:
+        p = numpy.array(p, float, ndmin=1)
+        lower = p >= low_corner
+        if not lower.all():
+            for i in xrange(len(low_corner)):
+                if not lower[i]:
+                    low_corner[i] = p[i]
+        higher = p <= high_corner
+        if not higher.all():
+            for i in xrange(len(high_corner)):
+                if not higher[i]:
+                    high_corner[i] = p[i]
+    return Cuboid(low_corner, high_corner)
+
+
+def admissible(left_clustertree, right_clustertree):
+    """Default admissible condition for BlockClusterTree."""
+    return max(left_clustertree.diameter(), right_clustertree.diameter()) < left_clustertree.distance(right_clustertree)
+
+
 class BlockClusterTree(object):
     def __init__(self, left_clustertree, right_clustertree, admissible_function=admissible, level=0):
         self.sons = []
@@ -348,6 +449,7 @@ class Cluster(object):
         diameter: diameter
         distance(other): distance to other Cluster
     """
+
     def __init__(self, grid, indices=None):
         """Create a cluster
 
@@ -359,7 +461,8 @@ class Cluster(object):
         self._current = 0
 
     def __getitem__(self, item):
-        return self.grid[self.indices[item]]
+        index = self.indices[item]
+        return self.grid[index]
 
     def __iter__(self):
         """Iterate through Cluster"""
@@ -393,9 +496,9 @@ class Cluster(object):
         # get all points from grid in indices
         points = [self.grid.points[i] for i in self.indices]
         # add relevant links
-        points += [p for p in self.grid.links[i] for i in self.indices if p not in points]
+        points += [p for p in self.grid.links[i] for i in self.indices]
         # compute distance matrix
-        dist_mat = [numpy.linalg.norm(x, y) for x in points for y in points]
+        dist_mat = [numpy.linalg.norm(x - y) for x in points for y in points]
         return max(dist_mat)
 
     def distance(self, other):
@@ -409,7 +512,7 @@ class Cluster(object):
         Returns:
             distance: float
         """
-        return min([numpy.linalg.norm(x - y) for x in self.points for y in other.points])
+        return min([numpy.linalg.norm(x - y) for x in self for y in other])
 
 
 class Grid(object):
@@ -425,6 +528,7 @@ class Grid(object):
         dim(): dimension
 
     """
+
     def __init__(self, points, links):
         """Create a Grid
 
@@ -459,111 +563,9 @@ class Grid(object):
         else:
             self._current += 1
             return self[self._current - 1]
-
     def dim(self):
         """Dimension of the Grid"""
         if len(self):
             return len(self[0])
         else:
             return 0
-
-
-def admissible(left_clustertree, right_clustertree):
-    """Default admissible condition for BlockClusterTree."""
-    return max(left_clustertree.diameter(), right_clustertree.diameter()) < left_clustertree.distance(right_clustertree)
-
-
-def export(obj, form='xml', out_file='./out'):
-    """Export obj in specified format.
-
-    implemented: xml, dot, bin
-    """
-    def _to_xml(lst, out_string=''):
-        if len(lst[1]):
-            value_string = str(lst[0])
-            display_string = str(len(lst[1]))
-        else:
-            value_string = str(lst[0])
-            display_string = str(lst[0])
-        out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
-        if len(lst) > 1 and type(lst[1]) is list:
-            for item in lst[1]:
-                out_string = _to_xml(item, out_string)
-        out_string += "</node>\n"
-        return out_string
-
-    def _to_dot(lst, out_string=''):
-        if len(lst) > 1 and type(lst[1]) is list:
-            for item in lst[1]:
-                if type(item) is list:
-                    value_string = str(lst[0])
-                    item_string = str(item[0])
-                    label_string = len(eval(value_string.replace('|', ',')))
-                    out_string += '''"{0}" -- "{1}";
-                    "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
-                        value_string, item_string, label_string)
-                    out_string = _to_dot(item, out_string)
-                else:
-                    value_string = str(lst[0])
-                    item_string = item
-                    label_string = len(eval(value_string.replace('|', ',')))
-                    out_string += '''"{0}" -- "{1}";
-                    "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
-                    "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string, item_string,
-                                                                                   label_string)
-        return out_string
-
-    if form == 'xml':
-        openstring = 'w'
-        export_list = obj.export()
-        head = '<?xml version="1.0" encoding="utf-8"?>\n'
-        output = _to_xml(export_list)
-        output = head + output
-        with open(out_file, "w") as out:
-            out.write(output)
-    elif form == 'dot':
-        openstring = 'w'
-        export_list = obj.export()
-        head = 'graph {\n'
-        output = _to_dot(export_list)
-        tail = '}'
-        output = head + output + tail
-        with open(out_file, "w") as out:
-            out.write(output)
-    elif form == 'bin':
-        import pickle
-        openstring = 'wb'
-        file_handle = open(out_file, openstring)
-        pickle.dump(obj, file_handle, protocol=-1)
-        file_handle.close()
-    else:
-        raise NotImplementedError()
-
-
-def minimal_cuboid(cluster):
-    """Build minimal cuboid
-
-    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
-
-    Args:
-        cluster: Cluster instance
-
-    Returns:
-        Minimal Cuboid
-    """
-    points = cluster.grid.points
-    low_corner = numpy.array(points[0], float, ndmin=1)
-    high_corner = numpy.array(points[0], float, ndmin=1)
-    for p in points:
-        p = numpy.array(p, float, ndmin=1)
-        lower = p >= low_corner
-        if not lower.all():
-            for i in xrange(len(low_corner)):
-                if not lower[i]:
-                    low_corner[i] = p[i]
-        higher = p <= high_corner
-        if not higher.all():
-            for i in xrange(len(high_corner)):
-                if not higher[i]:
-                    high_corner[i] = p[i]
-    return Cuboid(low_corner, high_corner)
