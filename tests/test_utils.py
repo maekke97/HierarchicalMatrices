@@ -67,32 +67,33 @@ class TestUtils(TestCase):
         dist_points1 = [numpy.array([2 + float(i) / self.lim1]) for i in xrange(self.lim1)]
         dist_links1 = [[dist_points1[l] for l in [random.randint(0, self.lim1 - 1) for x in xrange(self.link_num)]]
                        for i in xrange(self.lim1)]
-        dist_cluster1 = Cluster(dist_points1, dist_links1)
+        dist_grid1 = Grid(dist_points1, dist_links1)
+        dist_cluster1 = Cluster(dist_grid1)
         dist_check1 = numpy.linalg.norm(numpy.array([2 - float(self.lim1 - 1) / self.lim1]))
         self.assertEquals(self.cluster1.distance(dist_cluster1), dist_check1)
 
     def test_distance2(self):
-        dist_points2 = [numpy.array([2 + float(i) / self.lim1, 2 + float(j) / self.lim2])
-                        for i in xrange(self.lim1) for j in xrange(self.lim2)]
-        dist_links2 = [[dist_points2[l] for l in [random.randint(0, (self.lim1 - 1) * (self.lim2 - 2))
+        dist_points2 = [numpy.array([2 + float(i) / self.lim2, 2 + float(j) / self.lim2])
+                        for i in xrange(self.lim2) for j in xrange(self.lim2)]
+        dist_links2 = [[dist_points2[l] for l in [random.randint(0, (self.lim2 - 1) ** 2)
                                                   for x in xrange(self.link_num)]]
-                       for j in xrange(self.lim2) for i in xrange(self.lim1)]
-        dist_cluster2 = Cluster(dist_points2, dist_links2)
-        dist_check2 = numpy.linalg.norm(numpy.array([2 - float(self.lim1 - 1) / self.lim1,
+                       for j in xrange(self.lim2) for i in xrange(self.lim2)]
+        dist_grid2 = Grid(dist_points2, dist_links2)
+        dist_cluster2 = Cluster(dist_grid2)
+        dist_check2 = numpy.linalg.norm(numpy.array([2 - float(self.lim2 - 1) / self.lim2,
                                                      2 - float(self.lim2 - 1) / self.lim2]))
         self.assertEquals(self.cluster2.distance(dist_cluster2), dist_check2)
 
     def test_distance3(self):
-        dist_points3 = [numpy.array([2 + float(i) / self.lim1, 2 + float(j) / self.lim2, 2 + float(k) / self.lim3])
-                        for i in xrange(self.lim1) for j in xrange(self.lim2) for k in xrange(self.lim3)]
-        dist_links3 = [[dist_points3[l] for l in [random.randint(0, (self.lim1 - 1) * (self.lim2 - 1) * (self.lim3 - 1))
+        dist_points3 = [numpy.array([2 + float(i) / self.lim3, 2 + float(j) / self.lim3, 2 + float(k) / self.lim3])
+                        for i in xrange(self.lim3) for j in xrange(self.lim3) for k in xrange(self.lim3)]
+        dist_links3 = [[dist_points3[l] for l in [random.randint(0, (self.lim3 - 1) ** 3)
                                                   for x in xrange(self.link_num)]]
-                       for k in xrange(self.lim3) for j in xrange(self.lim2) for i in xrange(self.lim1)]
-
-        dist_cluster3 = Cluster(dist_points3, dist_links3)
-
-        dist_check3 = numpy.linalg.norm(numpy.array([2 - float(self.lim1 - 1) / self.lim1,
-                                                     2 - float(self.lim2 - 1) / self.lim2,
+                       for k in xrange(self.lim3) for j in xrange(self.lim3) for i in xrange(self.lim3)]
+        dist_grid3 = Grid(dist_points3, dist_links3)
+        dist_cluster3 = Cluster(dist_grid3)
+        dist_check3 = numpy.linalg.norm(numpy.array([2 - float(self.lim3 - 1) / self.lim3,
+                                                     2 - float(self.lim3 - 1) / self.lim3,
                                                      2 - float(self.lim3 - 1) / self.lim3]))
         self.assertEquals(self.cluster3.distance(dist_cluster3), dist_check3)
 

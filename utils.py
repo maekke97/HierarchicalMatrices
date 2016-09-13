@@ -461,8 +461,7 @@ class Cluster(object):
         self._current = 0
 
     def __getitem__(self, item):
-        index = self.indices[item]
-        return self.grid[index]
+        return self.grid[self.indices[item]]
 
     def __iter__(self):
         """Iterate through Cluster"""
@@ -517,7 +516,7 @@ class ClusterIterator(object):
         return self
 
     def next(self):
-        if self._counter >= len(self.grid):
+        if self._counter >= len(self.cluster):
             raise StopIteration
         else:
             self._counter += 1
@@ -559,7 +558,7 @@ class Grid(object):
 
     def __getitem__(self, item):
         """Return point "item" and its links"""
-        return self.points[item], self.links[item]
+        return self.points[item]
 
     def __iter__(self):
         """Iterate trough Grid"""
@@ -587,4 +586,4 @@ class GridIterator(object):
             raise StopIteration
         else:
             self._counter += 1
-            return self.grid[self._counter -1]
+            return self.grid[self._counter - 1]
