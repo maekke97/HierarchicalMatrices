@@ -466,15 +466,7 @@ class Cluster(object):
 
     def __iter__(self):
         """Iterate through Cluster"""
-        return self
-
-    def next(self):
-        if self._current >= len(self):
-            self._current = 0
-            raise StopIteration
-        else:
-            self._current += 1
-            return self[self._current - 1]
+        return ClusterIterator(self)
 
     def __len__(self):
         """Number of points"""
@@ -513,6 +505,23 @@ class Cluster(object):
             distance: float
         """
         return min([numpy.linalg.norm(x - y) for x in self for y in other])
+
+
+class ClusterIterator(object):
+    """Iterator to Cluster object"""
+    def __init__(self, cluster):
+        self.cluster = cluster
+        self._counter = 0
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self._counter >= len(self.grid):
+            raise StopIteration
+        else:
+            self._counter += 1
+            return self.cluster[self._counter - 1]
 
 
 class Grid(object):
@@ -554,18 +563,28 @@ class Grid(object):
 
     def __iter__(self):
         """Iterate trough Grid"""
-        return self
+        return GridIterator(self)
 
-    def next(self):
-        if self._current >= len(self):
-            self._current = 0
-            raise StopIteration
-        else:
-            self._current += 1
-            return self[self._current - 1]
     def dim(self):
         """Dimension of the Grid"""
         if len(self):
             return len(self[0])
         else:
             return 0
+
+
+class GridIterator(object):
+    """Iterator to Grid object"""
+    def __init__(self, grid):
+        self.grid = grid
+        self._counter = 0
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self._counter >= len(self.grid):
+            raise StopIteration
+        else:
+            self._counter += 1
+            return self.grid[self._counter -1]
