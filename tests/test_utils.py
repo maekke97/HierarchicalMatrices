@@ -188,3 +188,75 @@ class TestUtils(TestCase):
         self.assertEqual(len(self.grid3), self.lim3**3)
         self.assertEqual(len(self.cluster3), self.lim3**3)
         self.assertEqual(len(self.rc3), self.lim3**3)
+
+    def test_split1(self):
+        left_cub = Cuboid(numpy.array([0]), numpy.array([0.5]))
+        right_cub = Cuboid(numpy.array([0.5]), numpy.array([1]))
+        left_split, right_split = self.cub1.split()
+        self.assertEqual(left_cub, left_split)
+        self.assertEqual(right_cub, right_split)
+        left_cluster = Cluster(self.grid1, self.cluster1.indices[:self.lim1 / 2])
+        right_cluster = Cluster(self.grid1, self.cluster1.indices[self.lim1 / 2:])
+        left_cub = Cuboid(numpy.array([0]), numpy.array([float(self.lim1 - 1) / (2 * self.lim1)]))
+        right_cub = Cuboid(numpy.array([float(self.lim1 - 1) / (2 * self.lim1)]),
+                           numpy.array([float(self.lim1 - 1) / self.lim1]))
+        left_rc = RegularCuboid(left_cluster, left_cub)
+        right_rc = RegularCuboid(right_cluster, right_cub)
+        left_split, right_split = self.rc1.split()
+        self.assertEqual(left_rc, left_split)
+        self.assertEqual(right_rc, right_split)
+
+    def test_split2(self):
+        left_cub0 = Cuboid(numpy.array([0, 0]), numpy.array([0.5, 1]))
+        right_cub0 = Cuboid(numpy.array([0.5, 0]), numpy.array([1, 1]))
+        left_cub1 = Cuboid(numpy.array([0, 0]), numpy.array([1, 0.5]))
+        right_cub1 = Cuboid(numpy.array([0, 0.5]), numpy.array([1, 1]))
+        left_split0, right_split0 = self.cub2.split()
+        left_split1, right_split1 = self.cub2.split(1)
+        self.assertEqual(left_cub0, left_split0)
+        self.assertEqual(right_cub0, right_split0)
+        self.assertEqual(left_cub1, left_split1)
+        self.assertEqual(right_cub1, right_split1)
+        left_cluster = Cluster(self.grid2, self.cluster2.indices[:self.lim2 ** 2 / 2])
+        right_cluster = Cluster(self.grid2, self.cluster2.indices[self.lim2 ** 2 / 2:])
+        left_cub = Cuboid(numpy.array([0, 0]),
+                          numpy.array([float(self.lim2 - 1) / (2 * self.lim2), float(self.lim2 - 1) / self.lim2]))
+        right_cub = Cuboid(numpy.array([float(self.lim2 - 1) / (2 * self.lim2), 0]),
+                           numpy.array([float(self.lim2 - 1) / self.lim2, float(self.lim2 - 1) / self.lim2]))
+        left_rc = RegularCuboid(left_cluster, left_cub)
+        right_rc = RegularCuboid(right_cluster, right_cub)
+        left_split, right_split = self.rc2.split()
+        self.assertEqual(left_rc, left_split)
+        self.assertEqual(right_rc, right_split)
+
+    def test_split3(self):
+        left_cub0 = Cuboid(numpy.array([0, 0, 0]), numpy.array([0.5, 1, 1]))
+        right_cub0 = Cuboid(numpy.array([0.5, 0, 0]), numpy.array([1, 1, 1]))
+        left_cub1 = Cuboid(numpy.array([0, 0, 0]), numpy.array([1, 0.5, 1]))
+        right_cub1 = Cuboid(numpy.array([0, 0.5, 0]), numpy.array([1, 1, 1]))
+        left_cub2 = Cuboid(numpy.array([0, 0, 0]), numpy.array([1, 1, 0.5]))
+        right_cub2 = Cuboid(numpy.array([0, 0, 0.5]), numpy.array([1, 1, 1]))
+        left_split0, right_split0 = self.cub3.split()
+        left_split1, right_split1 = self.cub3.split(1)
+        left_split2, right_split2 = self.cub3.split(2)
+        self.assertEqual(left_cub0, left_split0)
+        self.assertEqual(right_cub0, right_split0)
+        self.assertEqual(left_cub1, left_split1)
+        self.assertEqual(right_cub1, right_split1)
+        self.assertEqual(left_cub2, left_split2)
+        self.assertEqual(right_cub2, right_split2)
+        left_cluster = Cluster(self.grid3, self.cluster2.indices[:self.lim3 ** 3 / 2])
+        right_cluster = Cluster(self.grid3, self.cluster2.indices[self.lim3 ** 3 / 2:])
+        left_cub = Cuboid(numpy.array([0, 0, 0]),
+                          numpy.array([float(self.lim3 - 1) / (2 * self.lim3),
+                                       float(self.lim3 - 1) / self.lim3,
+                                       float(self.lim3 - 1) / self.lim3]))
+        right_cub = Cuboid(numpy.array([float(self.lim3 - 1) / (2 * self.lim3), 0, 0]),
+                           numpy.array([float(self.lim3 - 1) / self.lim3,
+                                        float(self.lim3 - 1) / self.lim3,
+                                        float(self.lim3 - 1) / self.lim3]))
+        left_rc = RegularCuboid(left_cluster, left_cub)
+        right_rc = RegularCuboid(right_cluster, right_cub)
+        left_split, right_split = self.rc3.split()
+        self.assertEqual(left_rc, left_split)
+        self.assertEqual(right_rc, right_split)

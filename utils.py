@@ -218,6 +218,9 @@ class Splitable(object):
     def __getitem__(self, item):
         raise NotImplementedError()
 
+    def __eq__(self, other):
+        raise NotImplementedError()
+
     def split(self):
         # type: () -> (Splitables)
         raise NotImplementedError()
@@ -267,6 +270,9 @@ class RegularCuboid(Splitable):
         self.cluster = cluster
         self.cuboid = cuboid if cuboid else minimal_cuboid(cluster)
 
+    def __repr__(self):
+        return "<RegularCuboid with cluster {0} and cuboid {1}>".format(self.cluster, self.cuboid)
+
     def __getitem__(self, item):
         return self.cluster[item]
 
@@ -276,6 +282,10 @@ class RegularCuboid(Splitable):
     def __len__(self):
         """Return the length of the cluster"""
         return len(self.cluster)
+
+    def __eq__(self, other):
+        """Check for equality"""
+        return self.cluster == other.cluster and self.cuboid == other.cuboid
 
     def split(self):
         """Split the cuboid and distribute items in cluster according to the cuboid they belong to
@@ -486,6 +496,9 @@ class Cluster(object):
     def __getitem__(self, item):
         return self.grid[self.indices[item]]
 
+    def __repr__(self):
+        return "<Cluster object with grid {0} and indices {1}>".format(self.grid, self.indices)
+
     def __iter__(self):
         """Iterate through Cluster"""
         return ClusterIterator(self)
@@ -493,6 +506,10 @@ class Cluster(object):
     def __len__(self):
         """Number of points"""
         return len(self.indices)
+
+    def __eq__(self, other):
+        """Check for equality"""
+        return self.grid == other.grid and self.indices == other.indices
 
     def dim(self):
         """Compute dimension"""
