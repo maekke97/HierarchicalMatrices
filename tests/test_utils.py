@@ -1,7 +1,9 @@
-from unittest import TestCase
-from utils import BlockClusterTree, ClusterTree, RegularCuboid, Cuboid, Cluster, Grid, admissible
-import numpy
 import random
+from unittest import TestCase
+
+import numpy
+
+from utils import BlockClusterTree, ClusterTree, RegularCuboid, Cuboid, Cluster, Grid, admissible
 
 
 class TestUtils(TestCase):
@@ -64,6 +66,24 @@ class TestUtils(TestCase):
         self.assertIsInstance(self.rc3, RegularCuboid)
         self.assertIsInstance(self.ct3, ClusterTree)
         self.assertIsInstance(self.bct3, BlockClusterTree)
+
+    def test_iterator1(self):
+        grid_check = [p for p in self.grid1]
+        self.assertEqual(self.grid1.points, grid_check)
+        cluster_check = [c for c in self.cluster1]
+        self.assertEqual([self.cluster1.grid[i] for i in self.cluster1.indices], cluster_check)
+
+    def test_iterator2(self):
+        grid_check = [p for p in self.grid2]
+        self.assertEqual(self.grid2.points, grid_check)
+        cluster_check = [c for c in self.cluster2]
+        self.assertEqual([self.cluster2.grid[i] for i in self.cluster2.indices], cluster_check)
+
+    def test_iterator3(self):
+        grid_check = [p for p in self.grid3]
+        self.assertEqual(self.grid3.points, grid_check)
+        cluster_check = [c for c in self.cluster3]
+        self.assertEqual([self.cluster3.grid[i] for i in self.cluster3.indices], cluster_check)
 
     def test_diameter1(self):
         check1 = numpy.linalg.norm(numpy.array([float(self.lim1 - 1) / self.lim1]))
@@ -132,12 +152,15 @@ class TestUtils(TestCase):
 
     def test_depth1(self):
         self.assertEqual(self.ct1.depth(), numpy.log2(self.lim1))
+        self.assertEqual(self.bct1.depth(), numpy.log2(self.lim1))
 
     def test_depth2(self):
-        self.assertEqual(self.ct2.depth(), numpy.log2(self.lim2**2))
+        self.assertEqual(self.ct2.depth(), numpy.log2(self.lim2 ** 2))
+        self.assertEqual(self.bct2.depth(), numpy.log2(self.lim2 ** 2))
 
     def test_depth3(self):
-        self.assertEqual(self.ct3.depth(), numpy.log2(self.lim3**3))
+        self.assertEqual(self.ct3.depth(), numpy.log2(self.lim3 ** 3))
+        self.assertEqual(self.bct3.depth(), numpy.log2(self.lim3 ** 3))
 
     def test_dim1(self):
         self.assertEqual(self.grid1.dim(), 1)

@@ -232,7 +232,7 @@ class Splitable(object):
 
 
 class SplitableIterator(object):
-    """Interface for Iterators to the different strategies."""
+    """Iterator to the Splitable implementations."""
     def __init__(self, obj):
         self.obj = obj
         self.counter = 0
@@ -278,7 +278,7 @@ class RegularCuboid(Splitable):
         return len(self.cluster)
 
     def split(self):
-        """Split the cuboid in split and distribute items in cluster according to the cuboid they belong to
+        """Split the cuboid and distribute items in cluster according to the cuboid they belong to
 
         Returns:
             left_RegularCuboid, right_RegularCuboid
