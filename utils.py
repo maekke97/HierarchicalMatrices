@@ -22,73 +22,6 @@ import numpy
 from numpy import array
 
 
-def export(obj, form='xml', out_file='./out'):
-    """Export obj in specified format.
-
-    implemented: xml, dot, bin
-    """
-    def _to_xml(lst, out_string=''):
-        if len(lst[1]):
-            value_string = str(lst[0])
-            display_string = str(len(lst[1]))
-        else:
-            value_string = str(lst[0])
-            display_string = str(lst[0])
-        out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
-        if len(lst) > 1 and type(lst[1]) is list:
-            for item in lst[1]:
-                out_string = _to_xml(item, out_string)
-        out_string += "</node>\n"
-        return out_string
-
-    def _to_dot(lst, out_string=''):
-        if len(lst) > 1 and type(lst[1]) is list:
-            for item in lst[1]:
-                if type(item) is list:
-                    value_string = str(lst[0])
-                    item_string = str(item[0])
-                    label_string = len(eval(value_string.replace('|', ',')))
-                    out_string += '''"{0}" -- "{1}";
-                    "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
-                        value_string, item_string, label_string)
-                    out_string = _to_dot(item, out_string)
-                else:
-                    value_string = str(lst[0])
-                    item_string = item
-                    label_string = len(eval(value_string.replace('|', ',')))
-                    out_string += '''"{0}" -- "{1}";
-                    "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
-                    "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string, item_string,
-                                                                                   label_string)
-        return out_string
-
-    if form == 'xml':
-        openstring = 'w'
-        export_list = obj.export()
-        head = '<?xml version="1.0" encoding="utf-8"?>\n'
-        output = _to_xml(export_list)
-        output = head + output
-        with open(out_file, "w") as out:
-            out.write(output)
-    elif form == 'dot':
-        openstring = 'w'
-        export_list = obj.export()
-        head = 'graph {\n'
-        output = _to_dot(export_list)
-        tail = '}'
-        output = head + output + tail
-        with open(out_file, "w") as out:
-            out.write(output)
-    elif form == 'bin':
-        import pickle
-        openstring = 'wb'
-        file_handle = open(out_file, openstring)
-        pickle.dump(obj, file_handle, protocol=-1)
-        file_handle.close()
-    else:
-        raise NotImplementedError()
-
-
 def minimal_cuboid(cluster):
     """Build minimal cuboid
 
@@ -177,18 +110,79 @@ class ClusterTree(object):
                 self.sons.append(ClusterTree(split, max_leaf_size, self.level + 1))
 
     def __repr__(self):
-        optional_string = " with children {0!s}".format(self.sons) if self.sons else ""
+        optional_string = " with children {0}".format(self.sons) if self.sons else ""
         return "<ClusterTree at level {0}{1}>".format(str(self.level), optional_string)
 
-    def _export(self):
-        """give str representation of self. (Internal)"""
-        return ",".join([str(p) for p in self.splitable.cluster.indices])
+    def __str__(self):
+        """give str representation of self."""
+        return ",".join([str(p) for p in self.splitable])
 
-    def export(self):
-        """List representation of tree."""
-        out = [self._export()]
-        out.append([son.export() for son in self.sons])
-        return out
+    def export(self, form='xml', out_file='./out'):
+        """Export obj in specified format.
+
+        implemented: xml, dot, bin
+        """
+        # @TODO: Fix this!
+        def _to_xml(lst, out_string=''):
+            if len(lst[1]):
+                value_string = str(lst[0])
+                display_string = str(len(lst[1]))
+            else:
+                value_string = str(lst[0])
+                display_string = str(lst[0])
+            out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
+            if len(lst) > 1 and type(lst[1]) is list:
+                for item in lst[1]:
+                    out_string = _to_xml(item, out_string)
+            out_string += "</node>\n"
+            return out_string
+
+        def _to_dot(lst, out_string=''):
+            if len(lst) > 1 and type(lst[1]) is list:
+                for item in lst[1]:
+                    if type(item) is list:
+                        value_string = str(lst[0])
+                        item_string = str(item[0])
+                        label_string = len(eval(value_string.replace('|', ',')))
+                        out_string += '''"{0}" -- "{1}";
+                        "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
+                            value_string, item_string, label_string)
+                        out_string = _to_dot(item, out_string)
+                    else:
+                        value_string = str(lst[0])
+                        item_string = item
+                        label_string = len(eval(value_string.replace('|', ',')))
+                        out_string += '''"{0}" -- "{1}";
+                        "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
+                        "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string, item_string,
+                                                                                       label_string)
+            return out_string
+
+        if form == 'xml':
+            openstring = 'w'
+            export_list = obj.export()
+            head = '<?xml version="1.0" encoding="utf-8"?>\n'
+            output = _to_xml(export_list)
+            output = head + output
+            with open(out_file, "w") as out:
+                out.write(output)
+        elif form == 'dot':
+            openstring = 'w'
+            export_list = obj.export()
+            head = 'graph {\n'
+            output = _to_dot(export_list)
+            tail = '}'
+            output = head + output + tail
+            with open(out_file, "w") as out:
+                out.write(output)
+        elif form == 'bin':
+            import pickle
+            openstring = 'wb'
+            file_handle = open(out_file, openstring)
+            pickle.dump(obj, file_handle, protocol=-1)
+            file_handle.close()
+        else:
+            raise NotImplementedError()
 
     def depth(self, root_level=None):
         if root_level is None:
@@ -218,6 +212,12 @@ class Splitable(object):
         # type: () -> float
         raise NotImplementedError()
 
+    def __iter__(self):
+        return SplitableIterator(self)
+
+    def __getitem__(self, item):
+        raise NotImplementedError()
+
     def split(self):
         # type: () -> (Splitables)
         raise NotImplementedError()
@@ -231,11 +231,28 @@ class Splitable(object):
         raise NotImplementedError()
 
 
+class SplitableIterator(object):
+    """Interface for Iterators to the different strategies."""
+    def __init__(self, obj):
+        self.obj = obj
+        self.counter = 0
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        if self.counter >= len(self.obj):
+            raise StopIteration
+        else:
+            self.counter += 1
+            return self.obj[self.counter - 1]
+
+
 class RegularCuboid(Splitable):
     """Method of regular cuboids.
 
     Minimal cuboid is built around initial list of indices. Split is then
-    implemented by splitting the surrounding cuboid in half and distributing indices according to the cuboid they
+    implemented by splitting the surrounding cuboid in split and distributing indices according to the cuboid they
     belong to.
 
     Gives a binary tree.
@@ -250,13 +267,23 @@ class RegularCuboid(Splitable):
         self.cluster = cluster
         self.cuboid = cuboid if cuboid else minimal_cuboid(cluster)
 
+    def __getitem__(self, item):
+        return self.cluster[item]
+
+    def __iter__(self):
+        return SplitableIterator(self)
+
+    def __len__(self):
+        """Return the length of the cluster"""
+        return len(self.cluster)
+
     def split(self):
-        """Split the cuboid in half and distribute items in cluster according to the cuboid they belong to
+        """Split the cuboid in split and distribute items in cluster according to the cuboid they belong to
 
         Returns:
             left_RegularCuboid, right_RegularCuboid
         """
-        left_cuboid, right_cuboid = self.cuboid.half()
+        left_cuboid, right_cuboid = self.cuboid.split()
         left_points = []
         right_points = []
         for index in self.cluster.indices:
@@ -267,10 +294,6 @@ class RegularCuboid(Splitable):
         left_cluster = Cluster(self.cluster.grid, left_points)
         right_cluster = Cluster(self.cluster.grid, right_points)
         return RegularCuboid(left_cluster, left_cuboid), RegularCuboid(right_cluster, right_cuboid)
-
-    def __len__(self):
-        """Return the length of the cluster"""
-        return len(self.cluster)
 
     def diameter(self):
         """Return the diameter of the cuboid"""
@@ -378,8 +401,8 @@ class Cuboid(object):
         return "Cuboid with:\n\tlow corner: {0},\n\thigh corner{1}.".format(str(self.low_corner),
                                                                                str(self.high_corner))
 
-    def half(self, axis=None):
-        """Split the cuboid in half
+    def split(self, axis=None):
+        """Split the cuboid in split
 
         If axis is specified, the cuboid is split along the given axis, else the maximal axis is chosen.
 
@@ -392,7 +415,7 @@ class Cuboid(object):
         if axis:
             index = axis
         else:
-            # determine dimension in which to half
+            # determine dimension in which to split
             index = numpy.argmax(abs(self.high_corner - self.low_corner))
         # determine value at splitting point
         split = (self.high_corner[index] + self.low_corner[index])/2

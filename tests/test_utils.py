@@ -1,5 +1,5 @@
 from unittest import TestCase
-from utils import BlockClusterTree, ClusterTree, RegularCuboid, Cluster, Grid, admissible
+from utils import BlockClusterTree, ClusterTree, RegularCuboid, Cuboid, Cluster, Grid, admissible
 import numpy
 import random
 
@@ -8,8 +8,8 @@ class TestUtils(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.lim1 = 16
-        cls.lim2 = 4
-        cls.lim3 = 2
+        cls.lim2 = 8
+        cls.lim3 = 4
         cls.link_num = 4
         cls.points1 = [numpy.array([float(i) / cls.lim1]) for i in xrange(cls.lim1)]
         cls.links1 = [[cls.points1[l] for l in [random.randint(0, cls.lim1 - 1) for x in xrange(cls.link_num)]]
@@ -28,6 +28,9 @@ class TestUtils(TestCase):
         cls.cluster1 = Cluster(cls.grid1)
         cls.cluster2 = Cluster(cls.grid2)
         cls.cluster3 = Cluster(cls.grid3)
+        cls.cub1 = Cuboid(numpy.array([0]), numpy.array([1]))
+        cls.cub2 = Cuboid(numpy.array([0, 0]), numpy.array([1, 1]))
+        cls.cub3 = Cuboid(numpy.array([0, 0, 0]), numpy.array([1, 1, 1]))
         cls.rc1 = RegularCuboid(cls.cluster1)
         cls.rc2 = RegularCuboid(cls.cluster2)
         cls.rc3 = RegularCuboid(cls.cluster3)
@@ -41,27 +44,45 @@ class TestUtils(TestCase):
     def test_setup1(self):
         self.assertIsInstance(self.grid1, Grid)
         self.assertIsInstance(self.cluster1, Cluster)
+        self.assertIsInstance(self.cub1, Cuboid)
+        self.assertIsInstance(self.rc1, RegularCuboid)
         self.assertIsInstance(self.ct1, ClusterTree)
         self.assertIsInstance(self.bct1, BlockClusterTree)
 
     def test_setup2(self):
+        self.assertIsInstance(self.grid2, Grid)
         self.assertIsInstance(self.cluster2, Cluster)
+        self.assertIsInstance(self.cub2, Cuboid)
+        self.assertIsInstance(self.rc2, RegularCuboid)
+        self.assertIsInstance(self.ct2, ClusterTree)
+        self.assertIsInstance(self.bct2, BlockClusterTree)
 
     def test_setup3(self):
+        self.assertIsInstance(self.grid3, Grid)
         self.assertIsInstance(self.cluster3, Cluster)
+        self.assertIsInstance(self.cub3, Cuboid)
+        self.assertIsInstance(self.rc3, RegularCuboid)
+        self.assertIsInstance(self.ct3, ClusterTree)
+        self.assertIsInstance(self.bct3, BlockClusterTree)
 
     def test_diameter1(self):
         check1 = numpy.linalg.norm(numpy.array([float(self.lim1 - 1) / self.lim1]))
         self.assertEquals(self.cluster1.diameter(), check1)
+        self.assertEqual(self.cub1.diameter(), 1)
+        self.assertEqual(self.rc1.diameter(), check1)
 
     def test_diameter2(self):
         check2 = numpy.linalg.norm(numpy.array([float(self.lim2 - 1) / self.lim2, float(self.lim2 - 1) / self.lim2]))
         self.assertEquals(self.cluster2.diameter(), check2)
+        self.assertEqual(self.cub2.diameter(), numpy.sqrt(2))
+        self.assertEqual(self.rc2.diameter(), check2)
 
     def test_diameter3(self):
         check3 = numpy.linalg.norm(numpy.array([float(self.lim3 - 1) / self.lim3, float(self.lim3 - 1) / self.lim3,
                                                 float(self.lim3 - 1) / self.lim3]))
         self.assertEquals(self.cluster3.diameter(), check3)
+        self.assertEqual(self.cub3.diameter(), numpy.sqrt(3))
+        self.assertEqual(self.rc3.diameter(), check3)
 
     def test_distance1(self):
         dist_points1 = [numpy.array([2 + float(i) / self.lim1]) for i in xrange(self.lim1)]
@@ -71,6 +92,10 @@ class TestUtils(TestCase):
         dist_cluster1 = Cluster(dist_grid1)
         dist_check1 = numpy.linalg.norm(numpy.array([2 - float(self.lim1 - 1) / self.lim1]))
         self.assertEquals(self.cluster1.distance(dist_cluster1), dist_check1)
+        dist_cub1 = Cuboid(numpy.array([2]), numpy.array([3]))
+        self.assertEqual(self.cub1.distance(dist_cub1), 1)
+        dist_rc1 = RegularCuboid(dist_cluster1)
+        self.assertEqual(self.rc1.distance(dist_rc1), dist_check1)
 
     def test_distance2(self):
         dist_points2 = [numpy.array([2 + float(i) / self.lim2, 2 + float(j) / self.lim2])
@@ -83,6 +108,10 @@ class TestUtils(TestCase):
         dist_check2 = numpy.linalg.norm(numpy.array([2 - float(self.lim2 - 1) / self.lim2,
                                                      2 - float(self.lim2 - 1) / self.lim2]))
         self.assertEquals(self.cluster2.distance(dist_cluster2), dist_check2)
+        dist_cub2 = Cuboid(numpy.array([2, 2]), numpy.array([3, 3]))
+        self.assertEqual(self.cub1.distance(dist_cub2), numpy.sqrt(2))
+        dist_rc2 = RegularCuboid(dist_cluster2)
+        self.assertEqual(self.rc2.distance(dist_rc2), dist_check2)
 
     def test_distance3(self):
         dist_points3 = [numpy.array([2 + float(i) / self.lim3, 2 + float(j) / self.lim3, 2 + float(k) / self.lim3])
@@ -96,13 +125,43 @@ class TestUtils(TestCase):
                                                      2 - float(self.lim3 - 1) / self.lim3,
                                                      2 - float(self.lim3 - 1) / self.lim3]))
         self.assertEquals(self.cluster3.distance(dist_cluster3), dist_check3)
+        dist_cub3 = Cuboid(numpy.array([2, 2, 2]), numpy.array([3, 3, 3]))
+        self.assertEqual(self.cub1.distance(dist_cub3), numpy.sqrt(3))
+        dist_rc3 = RegularCuboid(dist_cluster3)
+        self.assertEqual(self.rc3.distance(dist_rc3), dist_check3)
 
     def test_depth1(self):
-        self.assertEqual(self.ct1.depth(), 4)
+        self.assertEqual(self.ct1.depth(), numpy.log2(self.lim1))
 
     def test_depth2(self):
-        self.assertEqual(self.ct2.depth(), 4)
+        self.assertEqual(self.ct2.depth(), numpy.log2(self.lim2**2))
 
     def test_depth3(self):
-        self.assertEqual(self.ct3.depth(), 3)
+        self.assertEqual(self.ct3.depth(), numpy.log2(self.lim3**3))
 
+    def test_dim1(self):
+        self.assertEqual(self.grid1.dim(), 1)
+        self.assertEqual(self.cluster1.dim(), 1)
+
+    def test_dim2(self):
+        self.assertEqual(self.grid2.dim(), 2)
+        self.assertEqual(self.cluster2.dim(), 2)
+
+    def test_dim3(self):
+        self.assertEqual(self.grid3.dim(), 3)
+        self.assertEqual(self.cluster3.dim(), 3)
+
+    def test_length1(self):
+        self.assertEqual(len(self.grid1), self.lim1)
+        self.assertEqual(len(self.cluster1), self.lim1)
+        self.assertEqual(len(self.rc1), self.lim1)
+
+    def test_length2(self):
+        self.assertEqual(len(self.grid2), self.lim2**2)
+        self.assertEqual(len(self.cluster2), self.lim2**2)
+        self.assertEqual(len(self.rc2), self.lim2**2)
+
+    def test_length3(self):
+        self.assertEqual(len(self.grid3), self.lim3**3)
+        self.assertEqual(len(self.cluster3), self.lim3**3)
+        self.assertEqual(len(self.rc3), self.lim3**3)
