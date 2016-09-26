@@ -3,7 +3,7 @@ from unittest import TestCase
 
 import numpy
 
-from utils import BlockClusterTree, ClusterTree, RegularCuboid, Cuboid, Cluster, Grid, admissible
+from utils import BlockClusterTree, ClusterTree, RegularCuboid, Cuboid, Cluster, Grid, admissible, load
 
 
 class TestUtils(TestCase):
@@ -260,3 +260,13 @@ class TestUtils(TestCase):
         left_split, right_split = self.rc3.split()
         self.assertEqual(left_rc, left_split)
         self.assertEqual(right_rc, right_split)
+
+    def test_export_import1(self):
+        out_file1_xml = 'test_EI_1.xml'
+        out_file1_dot = 'test_EI_1.dot'
+        out_file1_bin = 'test_EI_1.bin'
+        self.ct1.export('xml', out_file1_xml)
+        self.ct1.export('dot', out_file1_dot)
+        self.ct1.export('bin', out_file1_bin)
+        test_ct1 = load(out_file1_bin)
+        self.assertEqual(self.ct1, test_ct1)

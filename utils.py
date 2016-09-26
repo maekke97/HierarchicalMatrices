@@ -22,6 +22,14 @@ import numpy
 from numpy import array
 
 
+def load(filename):
+    """Load a ClusterTree or BlockClusterTree from file."""
+    import pickle
+    with open(filename, 'rb') as infile:
+        obj = pickle.load(infile)
+    return obj
+
+
 def minimal_cuboid(cluster):
     """Build minimal cuboid
 
@@ -72,6 +80,15 @@ class BlockClusterTree(object):
         optional_string = " with children {0!s}".format(self.sons) if self.sons else ""
         return "<BlockClusterTree at level {0}{1}>".format(str(self.level), optional_string)
 
+    def __eq__(self, other):
+        """Test for equality"""
+        return (self.left_clustertree == other.left_clustertree
+                and self.right_clustertree == other.right_clustertree
+                and self.sons == other.sons
+                and self.admissible == other.admissible
+                and self.level == other.level
+                )
+
     def depth(self, root_level=None):
         if root_level is None:
             root_level = self.level
@@ -80,49 +97,15 @@ class BlockClusterTree(object):
         else:
             return max([son.depth(root_level) for son in self.sons])
 
-    def _export(self):
-        return "[{0}|{1}]\n".format(self.left_clustertree._export(), self.right_clustertree._export())
+    def to_list(self):
+        return [self, [son.to_list() for son in self.sons]]
 
-    def export(self):
-        if self.sons:
-            out = [self._export()]
-            out.append([son.export() for son in self.sons])
-        else:
-            out = self._export()
-        return out
-
-
-class ClusterTree(object):
-    """
-    """
-    level = 0
-    splitable = None
-    sons = []
-
-    def __init__(self, splitable, max_leaf_size=0, level=0):
-        """"""
-        self.level = level
-        self.splitable = splitable
-        self.sons = []
-        if len(splitable) > max_leaf_size:
-            splits = splitable.split()
-            for split in splits:
-                self.sons.append(ClusterTree(split, max_leaf_size, self.level + 1))
-
-    def __repr__(self):
-        optional_string = " with children {0}".format(self.sons) if self.sons else ""
-        return "<ClusterTree at level {0}{1}>".format(str(self.level), optional_string)
-
-    def __str__(self):
-        """give str representation of self."""
-        return ",".join([str(p) for p in self.splitable])
-
-    def export(self, form='xml', out_file='./out'):
+    def export(self, form='xml', out_file='bct_out'):
         """Export obj in specified format.
 
-        implemented: xml, dot, bin
-        """
-        # @TODO: Fix this!
+                implemented: xml, dot, bin
+                """
+
         def _to_xml(lst, out_string=''):
             if len(lst[1]):
                 value_string = str(lst[0])
@@ -143,7 +126,114 @@ class ClusterTree(object):
                     if type(item) is list:
                         value_string = str(lst[0])
                         item_string = str(item[0])
+                        label_string = len(lst[0])
+                        out_string += '''"{0}" -- "{1}";
+                                "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
+                            value_string, item_string, label_string)
+                        out_string = _to_dot(item, out_string)
+                    else:
+                        value_string = str(lst[0])
+                        item_string = item
                         label_string = len(eval(value_string.replace('|', ',')))
+                        out_string += '''"{0}" -- "{1}";
+                                "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
+                                "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string,
+                                                                                               item_string,
+                                                                                               label_string)
+            return out_string
+
+        if form == 'xml':
+            openstring = 'w'
+            export_list = self.to_list()
+            head = '<?xml version="1.0" encoding="utf-8"?>\n'
+            output = _to_xml(export_list)
+            output = head + output
+            with open(out_file, "w") as out:
+                out.write(output)
+        elif form == 'dot':
+            openstring = 'w'
+            export_list = self.to_list()
+            head = 'graph {\n'
+            output = _to_dot(export_list)
+            tail = '}'
+            output = head + output + tail
+            with open(out_file, "w") as out:
+                out.write(output)
+        elif form == 'bin':
+            import pickle
+            openstring = 'wb'
+            file_handle = open(out_file, openstring)
+            pickle.dump(self, file_handle, protocol=-1)
+            file_handle.close()
+        else:
+            raise NotImplementedError()
+
+
+class ClusterTree(object):
+    """
+    """
+    level = 0
+    splitable = None
+    sons = []
+
+    def __init__(self, splitable, max_leaf_size=1, level=0):
+        """"""
+        self.level = level
+        self.splitable = splitable
+        self.sons = []
+        if len(splitable) > max_leaf_size:
+            splits = splitable.split()
+            for split in splits:
+                self.sons.append(ClusterTree(split, max_leaf_size, self.level + 1))
+
+    def __repr__(self):
+        optional_string = " with children {0}".format(self.sons) if self.sons else ""
+        return "<ClusterTree at level {0}{1}>".format(str(self.level), optional_string)
+
+    def __len__(self):
+        return len(self.splitable)
+
+    def __str__(self):
+        """give str representation of self."""
+        return ",".join([str(p) for p in self.splitable])
+
+    def __eq__(self, other):
+        """Test for equality"""
+        return self.level == other.level and self.splitable == other.splitable and self.sons == other.sons
+
+    def to_list(self):
+        """Give list representation for export"""
+        if self.sons:
+            return [self, [son.to_list() for son in self.sons]]
+        else:
+            return [self, []]
+
+    def export(self, form='xml', out_file='out'):
+        """Export obj in specified format.
+
+        implemented: xml, dot, bin
+        """
+        def _to_xml(lst, out_string=''):
+            if len(lst[1]):
+                value_string = str(lst[0])
+                display_string = str(len(lst[1]))
+            else:
+                value_string = str(lst[0])
+                display_string = str(lst[0])
+            out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
+            if len(lst) > 1 and type(lst[1]) is list:
+                for item in lst[1]:
+                    out_string = _to_xml(item, out_string)
+            out_string += "</node>\n"
+            return out_string
+
+        def _to_dot(lst, out_string=''):
+            if len(lst) > 1 and type(lst[1]) is list:
+                for item in lst[1]:
+                    if type(item) is list:
+                        value_string = str(lst[0])
+                        item_string = str(item[0])
+                        label_string = len(lst[0])
                         out_string += '''"{0}" -- "{1}";
                         "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
                             value_string, item_string, label_string)
@@ -160,7 +250,7 @@ class ClusterTree(object):
 
         if form == 'xml':
             openstring = 'w'
-            export_list = obj.export()
+            export_list = self.to_list()
             head = '<?xml version="1.0" encoding="utf-8"?>\n'
             output = _to_xml(export_list)
             output = head + output
@@ -168,7 +258,7 @@ class ClusterTree(object):
                 out.write(output)
         elif form == 'dot':
             openstring = 'w'
-            export_list = obj.export()
+            export_list = self.to_list()
             head = 'graph {\n'
             output = _to_dot(export_list)
             tail = '}'
@@ -179,7 +269,7 @@ class ClusterTree(object):
             import pickle
             openstring = 'wb'
             file_handle = open(out_file, openstring)
-            pickle.dump(obj, file_handle, protocol=-1)
+            pickle.dump(self, file_handle, protocol=-1)
             file_handle.close()
         else:
             raise NotImplementedError()
@@ -320,10 +410,19 @@ class MinimalCuboid(Splitable):
     def __init__(self):
         pass
 
-    def split(self):
+    def __eq__(self, other):
         pass
 
     def __len__(self):
+        pass
+
+    def __getitem__(self, item):
+        pass
+
+    def __iter__(self):
+        return SplitableIterator(self)
+
+    def split(self):
         pass
 
     def diameter(self):
@@ -339,10 +438,19 @@ class Balanced(Splitable):
     def __init__(self):
         pass
 
-    def split(self):
+    def __eq__(self, other):
         pass
 
     def __len__(self):
+        pass
+
+    def __getitem__(self, item):
+        pass
+
+    def __iter__(self):
+        return SplitableIterator(self)
+
+    def split(self):
         pass
 
     def diameter(self):
@@ -376,13 +484,7 @@ class Cuboid(object):
         self.high_corner = array(high_corner, float)
 
     def __eq__(self, other):
-        """Check if self is equal to other.
-
-        Checks for equality in both low_corners and high_corners.
-
-        Args:
-            other: another instance of Cuboid.
-        """
+        """Test for equality"""
         low_eq = self.low_corner == other.low_corner
         high_eq = self.high_corner == other.high_corner
         return low_eq.all() and high_eq.all()
@@ -409,7 +511,7 @@ class Cuboid(object):
     def __str__(self):
         """Return string representation"""
         return "Cuboid with:\n\tlow corner: {0},\n\thigh corner{1}.".format(str(self.low_corner),
-                                                                               str(self.high_corner))
+                                                                            str(self.high_corner))
 
     def split(self, axis=None):
         """Split the cuboid in split
@@ -508,7 +610,7 @@ class Cluster(object):
         return len(self.indices)
 
     def __eq__(self, other):
-        """Check for equality"""
+        """Test for equality"""
         return self.grid == other.grid and self.indices == other.indices
 
     def dim(self):
@@ -527,7 +629,8 @@ class Cluster(object):
         # get all points from grid in indices
         points = [self.grid.points[i] for i in self.indices]
         # add relevant links
-        points += [p for p in self.grid.links[i] for i in self.indices]
+        for i in self.indices:
+            points.extend([p for p in self.grid.links[i]])
         # compute distance matrix
         dist_mat = [numpy.linalg.norm(x - y) for x in points for y in points]
         return max(dist_mat)
@@ -603,6 +706,10 @@ class Grid(object):
     def __iter__(self):
         """Iterate trough Grid"""
         return GridIterator(self)
+
+    def __eq__(self, other):
+        """Test for equality"""
+        return self.points == other.points and self.links == other.links
 
     def dim(self):
         """Dimension of the Grid"""
