@@ -270,3 +270,23 @@ class TestUtils(TestCase):
         self.ct1.export('bin', out_file1_bin)
         test_ct1 = load(out_file1_bin)
         self.assertEqual(self.ct1, test_ct1)
+
+    def test_export_import2(self):
+        out_file2_xml = 'test_EI_2.xml'
+        out_file2_dot = 'test_EI_2.dot'
+        out_file2_bin = 'test_EI_2.bin'
+        self.ct2.export('xml', out_file2_xml)
+        self.ct2.export('dot', out_file2_dot)
+        self.ct2.export('bin', out_file2_bin)
+        test_ct2 = load(out_file2_bin)
+        self.assertEqual(self.ct2, test_ct2)
+
+    def test_export_import3(self):
+        out_file3_xml = 'test_EI_3.xml'
+        out_file3_dot = 'test_EI_3.dot'
+        out_file3_bin = 'test_EI_3.bin'
+        self.ct3.export('xml', out_file3_xml)
+        self.ct3.export('dot', out_file3_dot)
+        self.ct3.export('bin', out_file3_bin)
+        test_ct3 = load(out_file3_bin)
+        self.assertEqual(self.ct3, test_ct3)

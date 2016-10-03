@@ -709,7 +709,9 @@ class Grid(object):
 
     def __eq__(self, other):
         """Test for equality"""
-        return self.points == other.points and self.links == other.links
+        points_eq = numpy.array_equal(self.points, other.points)
+        links_eq = numpy.array_equal(self.links, other.links)
+        return points_eq and links_eq
 
     def dim(self):
         """Dimension of the Grid"""
