@@ -10,5 +10,3 @@ class Hmat(object):
         self.br = None
 
 
-class RMat(object):
-    """Rank-k matrix"""
