@@ -51,7 +51,7 @@ class RMat(object):
         return RMat(new_left, new_right, new_k)
 
     def __abs__(self):
-        """M2-norm"""
+        """Frobenius-norm"""
         return numpy.linalg.norm(self.left_mat * self.right_mat.transpose())
 
     def to_matrix(self):

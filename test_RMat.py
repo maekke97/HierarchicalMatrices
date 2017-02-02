@@ -30,6 +30,34 @@ class TestRMat(TestCase):
         addmat = RMat(add_left, add_right, 2)
         self.assertEqual(rmat1 + rmat2, addmat)
 
+    def test_neg(self):
+        left1 = numpy.matrix([[1], [2], [3]])
+        right1 = numpy.matrix([[2], [3], [4]])
+        rmat_pos = RMat(left1, right1, 1)
+        rmat_neg = RMat(-left1, right1, 1)
+        self.assertEqual(-rmat_pos, rmat_neg)
+
+    def test_minus(self):
+        left1 = numpy.matrix([[1], [2], [3]])
+        left2 = numpy.matrix([[2], [3], [4]])
+        sub_left = numpy.matrix([[1, -2], [2, -3], [3, -4]])
+        right1 = numpy.matrix([[5], [6], [7]])
+        right2 = numpy.matrix([[4], [5], [6]])
+        sub_right = numpy.matrix([[5, 4], [6, 5], [7, 6]])
+        rmat1 = RMat(left1, right1, 1)
+        rmat2 = RMat(left2, right2, 1)
+        sub_mat = RMat(sub_left, sub_right, 2)
+        minus = rmat1 - rmat2
+        res = numpy.matrix([[-3, -4, -5], [-2, -3, -4], [-1, -2, -3]])
+        self.assertEqual(minus, sub_mat)
+        self.assertTrue(numpy.array_equal(minus.to_matrix(), res))
+
+    def test_abs(self):
+        left = numpy.matrix([[1], [2], [3]])
+        right = numpy.matrix([[4], [5], [6]])
+        rmat = RMat(left, right, 1)
+        self.assertAlmostEqual(abs(rmat), 32.832910319, places=8)
+
     def test_toMatrix(self):
         left = numpy.matrix([[1], [2], [3]])
         right = numpy.matrix([[2], [3], [4]])
@@ -51,4 +79,4 @@ class TestRMat(TestCase):
                               [0.488235, 0.01845182]
                               ])
         res = RMat(res_a, res_b, 2)
-        self.assertAlmostEqual(red_rmat, res)
+        self.assertAlmostEqual(red_rmat, res, places=6)
