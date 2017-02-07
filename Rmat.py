@@ -24,6 +24,14 @@ class RMat(object):
         self.right_mat = right_mat
 
     def __repr__(self):
+        left_str = self.left_mat.__repr__().replace('\n', '').replace(' ', '')
+        right_str = self.right_mat.__repr__().replace('\n', '').replace(' ', '')
+        out_str = '<RMat with left_mat: {0}, right_mat: {1} and max_rank: {2}>'.format(left_str,
+                                                                                       right_str,
+                                                                                       self.k_max)
+        return out_str
+
+    def __str__(self):
         left_str = str(self.left_mat)
         right_str = str(self.right_mat)
         out_str = 'Rank-k matrix with left block:\n{0}\nand right block:\n{1}'.format(left_str, right_str)

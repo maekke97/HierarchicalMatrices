@@ -18,7 +18,7 @@ class TestRMat(TestCase):
         self.assertRaises(ValueError, RMat, left_block, right_block, 2)
         self.assertRaises(ValueError, RMat, left_block, left_block, 1)
 
-    def __repr__(self):
+    def test_str(self):
         check = '''Rank-k matrix with left block:
 [[1]
  [2]
@@ -26,10 +26,14 @@ class TestRMat(TestCase):
 and right block:
 [[4]
  [5]
- [6]]
-'''
+ [6]]'''
         rmat = RMat(numpy.matrix([[1], [2], [3]]), numpy.matrix([[4], [5], [6]]), 1)
         self.assertEqual(str(rmat), check)
+
+    def test_repr(self):
+        check = '<RMat with left_mat: matrix([[1],[2],[3]]), right_mat: matrix([[4],[5],[6]]) and max_rank: 1>'
+        rmat = RMat(numpy.matrix([[1], [2], [3]]), numpy.matrix([[4], [5], [6]]), 1)
+        self.assertEqual(rmat.__repr__(), check)
 
     def test_add(self):
         left1 = numpy.matrix([[1], [2], [3]])
