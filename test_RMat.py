@@ -42,6 +42,7 @@ and right block:
         rmat2 = RMat(left2, right2, 1)
         add_mat = RMat(add_left, add_right, 2)
         self.assertEqual(rmat1 + rmat2, add_mat)
+        self.assertAlmostEqual(abs(rmat1 + rmat2), abs(rmat2 + rmat1))
 
     def test_neg(self):
         left1 = numpy.matrix([[1], [2], [3]])
@@ -78,7 +79,7 @@ and right block:
         check_mat = numpy.matrix([[2, 3, 4], [4, 6, 8], [6, 9, 12]])
         self.assertTrue(numpy.array_equal(rmat.to_matrix(), check_mat))
 
-    def test_reduced_qr_decomp(self):
+    def test_reduce(self):
         left_block = numpy.matrix([[1, 2, 3], [3, 2, 1], [2, 3, 1]])
         right_block = numpy.matrix([[2, 3, 4], [4, 3, 2], [3, 4, 2]])
         rmat = RMat(left_block, right_block, 3)
@@ -93,3 +94,17 @@ and right block:
                               ])
         res = RMat(res_a, res_b, 2)
         self.assertAlmostEqual(red_rmat, res, places=6)
+
+    def test_form_add(self):
+        left1 = numpy.matrix([[1, 2], [2, 2], [4, 3]])
+        right1 = numpy.matrix([[2, 3], [1, 5], [5, 1]])
+        left2 = numpy.matrix([[4, 1, 3], [5, 1, 1], [1, 3, 1]])
+        right2 = numpy.matrix([[1, 1, 1], [2, 1, 3], [5, 1, 5]])
+        rmat1 = RMat(left1, right1, 2)
+        rmat2 = RMat(left2, right2, 3)
+        added = rmat1 + rmat2
+        added2 = rmat2 + rmat1
+        self.assertEqual(added.reduce(2), rmat1.form_add(rmat2))
+        self.assertEqual(added.reduce(1), rmat1.form_add(rmat2, 1))
+        self.assertEqual(added2.reduce(2), rmat2.form_add(rmat1))
+        self.assertEqual(added2.reduce(1), rmat2.form_add(rmat1, 1))

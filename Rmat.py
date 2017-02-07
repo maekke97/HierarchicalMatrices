@@ -60,16 +60,27 @@ class RMat(object):
         """Frobenius-norm"""
         return numpy.linalg.norm(self.left_mat * self.right_mat.T)
 
+    def form_add(self, other, rank=None):
+        """Formatted addition of self and other, i.e. addition and reduction to rank.
+
+        If rank is omitted, reduction to min(rank(self), rank(other))
+        """
+        if not rank:
+            rank = min((self.k_max, other.k_max))
+        res = self + other
+        return res.reduce(rank)
+
     def to_matrix(self):
         """Return full matrix"""
-        return self.left_mat * self.right_mat.transpose()
+        return self.left_mat * self.right_mat.T
 
     def reduce(self, new_k):
         """Perform a reduced QR decomposition to rank new_k"""
         q_left, r_left = numpy.linalg.qr(self.left_mat)
         q_right, r_right = numpy.linalg.qr(self.right_mat)
-        temp = r_left * r_right.transpose()
+        temp = r_left * r_right.T
         u, s, v = numpy.linalg.svd(temp)
         new_left = q_left * u[:, 0:new_k] * numpy.diag(s[0:new_k])
         new_right = q_right * v[:, 0:new_k]
+        # noinspection PyTypeChecker
         return RMat(new_left, new_right, new_k)
