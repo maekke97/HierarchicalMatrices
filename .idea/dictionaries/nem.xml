@@ -2,8 +2,11 @@
   <dictionary name="nem">
     <words>
       <w>clustertree</w>
+      <w>decomp</w>
       <w>discretized</w>
+      <w>frobenius</w>
       <w>hmat</w>
+      <w>rmat</w>
       <w>splitable</w>
       <w>splitables</w>
     </words>

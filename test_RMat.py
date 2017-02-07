@@ -18,6 +18,19 @@ class TestRMat(TestCase):
         self.assertRaises(ValueError, RMat, left_block, right_block, 2)
         self.assertRaises(ValueError, RMat, left_block, left_block, 1)
 
+    def __repr__(self):
+        check = '''Rank-k matrix with left block:
+[[1]
+ [2]
+ [3]]
+and right block:
+[[4]
+ [5]
+ [6]]
+'''
+        rmat = RMat(numpy.matrix([[1], [2], [3]]), numpy.matrix([[4], [5], [6]]), 1)
+        self.assertEqual(str(rmat), check)
+
     def test_add(self):
         left1 = numpy.matrix([[1], [2], [3]])
         left2 = numpy.matrix([[2], [3], [4]])
@@ -27,8 +40,8 @@ class TestRMat(TestCase):
         add_right = numpy.matrix([[5, 4], [6, 5], [7, 6]])
         rmat1 = RMat(left1, right1, 1)
         rmat2 = RMat(left2, right2, 1)
-        addmat = RMat(add_left, add_right, 2)
-        self.assertEqual(rmat1 + rmat2, addmat)
+        add_mat = RMat(add_left, add_right, 2)
+        self.assertEqual(rmat1 + rmat2, add_mat)
 
     def test_neg(self):
         left1 = numpy.matrix([[1], [2], [3]])

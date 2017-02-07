@@ -23,6 +23,12 @@ class RMat(object):
         self.left_mat = left_mat
         self.right_mat = right_mat
 
+    def __repr__(self):
+        left_str = str(self.left_mat)
+        right_str = str(self.right_mat)
+        out_str = 'Rank-k matrix with left block:\n{0}\nand right block:\n{1}'.format(left_str, right_str)
+        return out_str
+
     def __eq__(self, other):
         """Check for equality"""
         left_eq = numpy.array_equal(self.left_mat, other.left_mat)
@@ -52,7 +58,7 @@ class RMat(object):
 
     def __abs__(self):
         """Frobenius-norm"""
-        return numpy.linalg.norm(self.left_mat * self.right_mat.transpose())
+        return numpy.linalg.norm(self.left_mat * self.right_mat.T)
 
     def to_matrix(self):
         """Return full matrix"""
