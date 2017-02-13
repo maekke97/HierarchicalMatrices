@@ -68,10 +68,12 @@ class RMat(object):
         """Frobenius-norm"""
         return numpy.linalg.norm(self.left_mat * self.right_mat.T)
 
-    def norm(self, type):
-        pass
+    def norm(self, order=None):
+        """Norm, order as in numpy.linalg.norm"""
+        return numpy.linalg.norm(self.left_mat * self.right_mat.T, ord=order)
 
     def __mul__(self, other):
+        """Multiplication of self and other"""
         i, r1 = self.left_mat.shape
         j, r1 = self.right_mat.shape
         j2, r2 = other.left_mat.shape
@@ -81,9 +83,9 @@ class RMat(object):
         cost1 = 2 * r1 * r2 * (i + j) - r2 * (i + r1)
         cost2 = 2 * r1 * r2 * (j + k) - r1 * (k + r2)
         if cost2 >= cost1:
-            return RMat(self.left_mat * (self.right_mat.T * other.left_mat), other.right_mat, r1 * r2)
+            return RMat(self.left_mat * (self.right_mat.T * other.left_mat), other.right_mat, r2)
         else:
-            return RMat(self.left_mat, other.right_mat * (other.left_mat.T * self.right_mat), r1 * r2)
+            return RMat(self.left_mat, other.right_mat * (other.left_mat.T * self.right_mat), r1)
 
     def form_add(self, other, rank=None):
         """Formatted addition of self and other, i.e. addition and reduction to rank.

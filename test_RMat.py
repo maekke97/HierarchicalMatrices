@@ -90,11 +90,17 @@ and right block:
         right4 = numpy.matrix([[4], [5], [6]])
         rmat4 = RMat(left4, right4, 1)
         res1 = rmat1 * rmat2
-        res2 = rmat2 * rmat4
-        self.assertEqual(res1.k_max, 6)
+        res2 = rmat4 * rmat2
+        self.assertEqual(res1.k_max, 3)
         self.assertEqual(res2.k_max, 2)
         self.assertRaises(ValueError, rmat2.__mul__, rmat3)
         self.assertRaises(ValueError, rmat1.__mul__, rmat3)
+
+    def test_norm(self):
+        left = numpy.matrix([[1], [2], [3]])
+        right = numpy.matrix([[2], [3], [4]])
+        rmat = RMat(left, right, 1)
+        self.assertEqual(rmat.norm(), abs(rmat))
 
     def test_toMatrix(self):
         left = numpy.matrix([[1], [2], [3]])
