@@ -138,3 +138,9 @@ and right block:
         self.assertEqual(added.reduce(1), rmat1.form_add(rmat2, 1))
         self.assertEqual(added2.reduce(2), rmat2.form_add(rmat1))
         self.assertEqual(added2.reduce(1), rmat2.form_add(rmat1, 1))
+
+    def test_type(self):
+        left1 = numpy.matrix([[1, 2], [2, 2], [4, 3]])
+        right1 = numpy.matrix([[2, 3], [1, 5], [5, 1]])
+        rmat1 = RMat(left1, right1, 2)
+        self.assertEqual(type(rmat1), RMat)
