@@ -1,9 +1,14 @@
-from utils import ClusterTree, RegularCuboid, BlockClusterTree, export, Grid, Cluster
-from cluster import Cluster, Grid
-import numpy as np
-import random
 import argparse
+import random
 from timeit import default_timer as timer
+
+import numpy as np
+from profilehooks import profile
+
+from cluster import Cluster
+from grid import Grid
+from splitable import RegularCuboid
+from utils import ClusterTree, BlockClusterTree
 
 
 @profile

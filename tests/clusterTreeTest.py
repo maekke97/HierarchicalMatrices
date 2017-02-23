@@ -2,6 +2,9 @@ import random
 
 import numpy as np
 
+from cluster import Cluster
+from grid import Grid
+from splitable import RegularCuboid
 from utils import *
 
 lim1 = 2 ** 4

@@ -1,4 +1,4 @@
-"""HMat.py"""
+"""Hmat.py"""
 
 import numpy
 
@@ -8,19 +8,29 @@ from Rmat import RMat
 class HMat(object):
     """Implement a hierarchical Matrix"""
 
-    def __init__(self, blocks=[], content=None, shape=(), parent_index=()):
+    def __init__(self, blocks=(), content=None, shape=(), parent_index=()):
         self.blocks = blocks  # This list contains the lower level HMat
         self.content = content  # If not empty, this is either a full matrix or a RMat
         self.shape = shape  # Tuple of dimensions, i.e. size of index sets
         self.parent_index = parent_index  # Tuple of coordinates for the top-left corner in the parent matrix
 
+    def __repr__(self):
+        pass
+
+    def __mul__(self, other):
+        if type(other) == numpy.ndarray and other.shape[0] == self.shape[1]:  # Matrix-vector or matrix-matrix product
+            try:
+                columns = other.shape[1]
+            except IndexError:
+                columns = 1
+            out = numpy.zeros((self.shape[0], columns))  # initialize
+
+    def content_mul(self, other):
+        return self.content * other
+
     def to_matrix(self):
         """Return full matrix"""
-        if type(self.content) == RMat:  # We have an RMat in content, so return its full representation
-            return self.content.to_matrix()
-        elif type(self.content) == numpy.ndarray:  # We have a numpy matrix, so we return it
-            return self.content
-        else:  # Recursion through all blocks
+        if self.blocks:  # The matrix has children so fill recursive
             out_mat = numpy.empty(self.shape)
             for block in self.blocks:
                 # determine the position of the current block
@@ -32,3 +42,7 @@ class HMat(object):
                 # fill the block with recursive call
                 out_mat[vertical_start:vertical_end, horizontal_start:horizontal_end] = block.to_matrix()
             return out_mat
+        elif type(self.content) == RMat:  # We have an RMat in content, so return its full representation
+            return self.content.to_matrix()
+        else:  # We have regular content, so we return it
+            return self.content

@@ -3,7 +3,11 @@ from unittest import TestCase
 
 import numpy
 
-from utils import BlockClusterTree, ClusterTree, RegularCuboid, Cuboid, Cluster, Grid, admissible, load
+from cluster import Cluster
+from cuboid import Cuboid
+from grid import Grid
+from splitable import RegularCuboid
+from utils import BlockClusterTree, ClusterTree, admissible, load
 
 
 class TestUtils(TestCase):
