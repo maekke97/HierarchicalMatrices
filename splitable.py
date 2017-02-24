@@ -11,7 +11,6 @@ class Splitable(object):
         diameter: return the diameter of the object
         distance: return the distance to other object
     """
-
     def __len__(self):
         # type: () -> float
         raise NotImplementedError()
