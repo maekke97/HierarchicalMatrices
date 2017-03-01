@@ -3,12 +3,13 @@ from unittest import TestCase
 
 import numpy
 
+from block_cluster_tree import BlockClusterTree
 from cluster import Cluster
 from cluster_tree import ClusterTree
 from cuboid import Cuboid
 from grid import Grid
 from splitable import RegularCuboid
-from utils import BlockClusterTree, admissible, load
+from utils import admissible, load
 
 
 class TestUtils(TestCase):

@@ -2,11 +2,11 @@ import random
 
 import numpy as np
 
+from block_cluster_tree import BlockClusterTree
 from cluster import Cluster
 from cluster_tree import ClusterTree
 from grid import Grid
 from splitable import RegularCuboid
-from utils import *
 
 lim1 = 2 ** 4
 lim2 = 2 ** 2

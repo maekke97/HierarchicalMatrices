@@ -5,11 +5,11 @@ from timeit import default_timer as timer
 import numpy as np
 from profilehooks import profile
 
+from block_cluster_tree import BlockClusterTree
 from cluster import Cluster
 from cluster_tree import ClusterTree
 from grid import Grid
 from splitable import RegularCuboid
-from utils import BlockClusterTree
 
 
 @profile

@@ -2,7 +2,7 @@
 
 import numpy
 
-from Rmat import RMat
+from rmat import RMat
 
 
 class HMat(object):

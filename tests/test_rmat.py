@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy
 
-from Rmat import RMat
+from rmat import RMat
 
 
 class TestRMat(TestCase):
