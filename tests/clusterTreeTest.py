@@ -3,6 +3,7 @@ import random
 import numpy as np
 
 from cluster import Cluster
+from cluster_tree import ClusterTree
 from grid import Grid
 from splitable import RegularCuboid
 from utils import *

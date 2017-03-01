@@ -6,9 +6,10 @@ import numpy as np
 from profilehooks import profile
 
 from cluster import Cluster
+from cluster_tree import ClusterTree
 from grid import Grid
 from splitable import RegularCuboid
-from utils import ClusterTree, BlockClusterTree
+from utils import BlockClusterTree
 
 
 @profile
