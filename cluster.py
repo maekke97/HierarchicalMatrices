@@ -46,6 +46,14 @@ class Cluster(object):
         """Test for equality"""
         return self.grid == other.grid and self.indices == other.indices
 
+    def get_grid_item(self, item):
+        """Return grid_item item"""
+        return self.grid[item]
+
+    def get_index(self, item):
+        """Return index at item"""
+        return self.indices[item]
+
     def dim(self):
         """Compute dimension"""
         return self.grid.dim()

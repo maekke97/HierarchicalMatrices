@@ -37,6 +37,30 @@ class BlockClusterTree(object):
     def to_list(self):
         return [self, [son.to_list() for son in self.sons]]
 
+    def draw(self):
+        import matplotlib.pyplot as plt
+        # set x coordinates for patch
+        x = [self.left_clustertree.get_index(0), self.left_clustertree.get_index(0),
+             self.left_clustertree.get_index(-1) + 1, self.left_clustertree.get_index(-1) + 1]
+        # set y coordinates for patch
+        y = [self.right_clustertree.get_index(0), self.right_clustertree.get_index(-1) + 1,
+             self.right_clustertree.get_index(-1) + 1, self.right_clustertree.get_index(0)]
+        color = 'g' if self.admissible(self.left_clustertree, self.right_clustertree) else 'r'
+        plt.fill(x, y, color)
+
+    def plot(self):
+        import matplotlib.pyplot as plt
+        fig = plt.figure()
+        self._plot()
+        plt.show()
+
+    def _plot(self):
+        if self.sons:
+            for son in self.sons:
+                son._plot()
+        else:
+            self.draw()
+
     def export(self, form='xml', out_file='bct_out'):
         """Export obj in specified format.
 
@@ -80,7 +104,6 @@ class BlockClusterTree(object):
             return out_string
 
         if form == 'xml':
-            openstring = 'w'
             export_list = self.to_list()
             head = '<?xml version="1.0" encoding="utf-8"?>\n'
             output = _to_xml(export_list)
@@ -88,7 +111,6 @@ class BlockClusterTree(object):
             with open(out_file, "w") as out:
                 out.write(output)
         elif form == 'dot':
-            openstring = 'w'
             export_list = self.to_list()
             head = 'graph {\n'
             output = _to_dot(export_list)
@@ -98,8 +120,7 @@ class BlockClusterTree(object):
                 out.write(output)
         elif form == 'bin':
             import pickle
-            openstring = 'wb'
-            file_handle = open(out_file, openstring)
+            file_handle = open(out_file, "wb")
             pickle.dump(self, file_handle, protocol=-1)
             file_handle.close()
         else:

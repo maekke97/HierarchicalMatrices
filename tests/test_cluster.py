@@ -43,6 +43,22 @@ class TestCluster(TestCase):
         check = random.randint(0, self.lim3 ** 3)
         self.assertTrue(numpy.array_equal(self.cluster3[check], self.points3[check]))
 
+    def test_get_index(self):
+        self.assertEqual(self.cluster1.get_index(0), self.cluster1.indices[0])
+        self.assertEqual(self.cluster1.get_index(-1), self.cluster1.indices[-1])
+        self.assertEqual(self.cluster2.get_index(0), self.cluster2.indices[0])
+        self.assertEqual(self.cluster2.get_index(-1), self.cluster2.indices[-1])
+        self.assertEqual(self.cluster3.get_index(0), self.cluster3.indices[0])
+        self.assertEqual(self.cluster3.get_index(-1), self.cluster3.indices[-1])
+
+    def test_get_grid_item(self):
+        self.assertEqual(self.cluster1.get_grid_item(0), self.grid1[0])
+        self.assertEqual(self.cluster1.get_grid_item(-1), self.grid1[-1])
+        self.assertTrue(numpy.array_equal(self.cluster2.get_grid_item(0), self.grid2[0]))
+        self.assertTrue(numpy.array_equal(self.cluster2.get_grid_item(-1), self.grid2[-1]))
+        self.assertTrue(numpy.array_equal(self.cluster3.get_grid_item(0), self.grid3[0]))
+        self.assertTrue(numpy.array_equal(self.cluster3.get_grid_item(-1), self.grid3[-1]))
+
     def test_repr(self):
         check = "<Cluster object with grid {0} and indices {1}>".format(self.grid1, range(len(self.grid1)))
         self.assertEqual(self.cluster1.__repr__(), check)
@@ -52,6 +68,15 @@ class TestCluster(TestCase):
         self.assertEqual(self.cluster3.__repr__(), check)
 
     def test_iterator(self):
+        iterator = self.cluster1.__iter__()
+        iteriter = iterator.__iter__()
+        self.assertEqual(iterator, iteriter)
+        iterator = self.cluster2.__iter__()
+        iteriter = iterator.__iter__()
+        self.assertEqual(iterator, iteriter)
+        iterator = self.cluster3.__iter__()
+        iteriter = iterator.__iter__()
+        self.assertEqual(iterator, iteriter)
         grid_check = [p for p in self.cluster1]
         self.assertEqual(self.cluster1.grid.points, grid_check)
         grid_check = [p for p in self.cluster2]

@@ -18,10 +18,19 @@ class Splitable(object):
     def __iter__(self):
         return SplitableIterator(self)
 
+    def __repr__(self):
+        raise NotImplementedError()
+
     def __getitem__(self, item):
         raise NotImplementedError()
 
     def __eq__(self, other):
+        raise NotImplementedError()
+
+    def get_index(self, item):
+        raise NotImplementedError()
+
+    def get_grid_item(self, item):
         raise NotImplementedError()
 
     def split(self):
@@ -91,6 +100,12 @@ class RegularCuboid(Splitable):
     def __eq__(self, other):
         """Check for equality"""
         return self.cluster == other.cluster and self.cuboid == other.cuboid
+
+    def get_index(self, item):
+        return self.cluster.get_index(item)
+
+    def get_grid_item(self, item):
+        return self.cluster.get_grid_item(item)
 
     def split(self):
         """Split the cuboid and distribute items in cluster according to the cuboid they belong to

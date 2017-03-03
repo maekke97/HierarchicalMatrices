@@ -48,6 +48,14 @@ class Grid(object):
         links_eq = numpy.array_equal(self.links, other.links)
         return points_eq and links_eq
 
+    def get_point(self, item):
+        """return point at position item"""
+        return self.points[item]
+
+    def get_link(self, item):
+        """return link at position item"""
+        return self.links[item]
+
     def dim(self):
         """Dimension of the Grid"""
         return len(self[0])

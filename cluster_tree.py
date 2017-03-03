@@ -7,6 +7,7 @@ class ClusterTree(object):
         self.level = level
         self.splitable = splitable
         self.sons = []
+        self.max_leaf_size = max_leaf_size
         if len(splitable) > max_leaf_size:
             splits = splitable.split()
             for split in splits:
@@ -26,6 +27,15 @@ class ClusterTree(object):
     def __eq__(self, other):
         """Test for equality"""
         return self.level == other.level and self.splitable == other.splitable and self.sons == other.sons
+
+    def __getitem__(self, item):
+        return self.splitable[item]
+
+    def get_index(self, item):
+        return self.splitable.get_index(item)
+
+    def get_grid_item(self, item):
+        return self.get_grid_item(item)
 
     def to_list(self):
         """Give list representation for export"""
@@ -76,7 +86,6 @@ class ClusterTree(object):
             return out_string
 
         if form == 'xml':
-            openstring = 'w'
             export_list = self.to_list()
             head = '<?xml version="1.0" encoding="utf-8"?>\n'
             output = _to_xml(export_list)
@@ -84,7 +93,6 @@ class ClusterTree(object):
             with open(out_file, "w") as out:
                 out.write(output)
         elif form == 'dot':
-            openstring = 'w'
             export_list = self.to_list()
             head = 'graph {\n'
             output = _to_dot(export_list)
@@ -94,8 +102,7 @@ class ClusterTree(object):
                 out.write(output)
         elif form == 'bin':
             import pickle
-            openstring = 'wb'
-            file_handle = open(out_file, openstring)
+            file_handle = open(out_file, "wb")
             pickle.dump(self, file_handle, protocol=-1)
             file_handle.close()
         else:
