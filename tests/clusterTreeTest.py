@@ -2,9 +2,9 @@ import random
 
 import numpy as np
 
-from block_cluster_tree import BlockClusterTree
+from block_cluster_tree import build_block_cluster_tree
 from cluster import Cluster
-from cluster_tree import ClusterTree
+from cluster_tree import build_cluster_tree
 from grid import Grid
 from splitable import RegularCuboid
 
@@ -42,7 +42,7 @@ cluster3 = Cluster(grid3)
 rc3 = RegularCuboid(cluster3)
 # ct1 = ClusterTree(rc1, 1)
 # ct2 = ClusterTree(rc2, 1)
-ct3 = ClusterTree(rc3, 1)
+ct3 = build_cluster_tree(rc3, 1, 0)
 # icluster1 = Cluster(ipoints1, ilinks1)
 # icluster2 = Cluster(ipoints2, ilinks2)
 # icluster3 = Cluster(ipoints3, ilinks3)
@@ -56,6 +56,6 @@ ct3 = ClusterTree(rc3, 1)
 # ibct1 = BlockClusterTree(ict1, ict1)
 # bct2 = BlockClusterTree(ct2, ct2)
 # ibct2 = BlockClusterTree(ict2, ict2)
-bct3 = BlockClusterTree(ct3, ct3)
+bct3 = build_block_cluster_tree(ct3)
 bct3.plot()
 # ibct3 = BlockClusterTree(ict3, ict3)

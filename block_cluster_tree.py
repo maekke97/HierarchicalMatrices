@@ -2,16 +2,12 @@ from utils import admissible
 
 
 class BlockClusterTree(object):
-    def __init__(self, left_clustertree, right_clustertree, admissible_function=admissible, level=0):
-        self.sons = []
+    def __init__(self, left_clustertree, right_clustertree, sons=None, level=0, is_admissible=False):
+        self.sons = sons if sons else []
         self.left_clustertree = left_clustertree
         self.right_clustertree = right_clustertree
-        self.admissible = admissible_function
+        self.admissible = is_admissible
         self.level = level
-        for left_son in self.left_clustertree.sons:
-            for right_son in self.right_clustertree.sons:
-                if not self.admissible(left_son, right_son):
-                    self.sons.append(BlockClusterTree(left_son, right_son, self.admissible, self.level + 1))
 
     def __repr__(self):
         optional_string = " with children {0!s}".format(self.sons) if self.sons else ""
@@ -22,7 +18,7 @@ class BlockClusterTree(object):
         return (self.left_clustertree == other.left_clustertree
                 and self.right_clustertree == other.right_clustertree
                 and self.sons == other.sons
-                and self.admissible == other.admissible
+                # and self.admissible == other.admissible
                 and self.level == other.level
                 )
 
@@ -45,7 +41,7 @@ class BlockClusterTree(object):
         # set y coordinates for patch
         y = [self.right_clustertree.get_index(0), self.right_clustertree.get_index(-1) + 1,
              self.right_clustertree.get_index(-1) + 1, self.right_clustertree.get_index(0)]
-        color = 'g' if self.admissible(self.left_clustertree, self.right_clustertree) else 'r'
+        color = 'g' if self.admissible else 'r'
         plt.fill(x, y, color)
 
     def plot(self):
@@ -125,3 +121,23 @@ class BlockClusterTree(object):
             file_handle.close()
         else:
             raise NotImplementedError()
+
+
+def build_block_cluster_tree(left_cluster_tree, right_cluster_tree=None, start_level=0, admissible_function=admissible):
+    if not right_cluster_tree:
+        right_cluster_tree = left_cluster_tree
+    is_admissible = admissible_function(left_cluster_tree, right_cluster_tree)
+    root = BlockClusterTree(left_cluster_tree, right_cluster_tree, level=start_level, is_admissible=is_admissible)
+    recursion_build_block_cluster_tree(root, admissible_function)
+    return root
+
+
+def recursion_build_block_cluster_tree(current_tree, admissible_function):
+    if not admissible_function(current_tree.left_clustertree, current_tree.right_clustertree):
+        for left_son in current_tree.left_clustertree.sons:
+            for right_son in current_tree.right_clustertree.sons:
+                new_tree = BlockClusterTree(left_son, right_son, level=current_tree.level + 1, is_admissible=False)
+                current_tree.sons.append(new_tree)
+                recursion_build_block_cluster_tree(new_tree, admissible_function)
+    else:
+        current_tree.admissible = True

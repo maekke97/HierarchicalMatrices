@@ -2,40 +2,38 @@ class ClusterTree(object):
     """
     """
 
-    def __init__(self, splitable, max_leaf_size=1, level=0):
+    def __init__(self, content, sons=None, max_leaf_size=1, level=0):
         """"""
         self.level = level
-        self.splitable = splitable
-        self.sons = []
+        self.content = content
+        self.sons = sons if sons else []
         self.max_leaf_size = max_leaf_size
-        if len(splitable) > max_leaf_size:
-            splits = splitable.split()
-            for split in splits:
-                self.sons.append(ClusterTree(split, max_leaf_size, self.level + 1))
 
     def __repr__(self):
-        optional_string = " with children {0}".format(self.sons) if self.sons else ""
+        optional_string = " with children {0}".format(self.sons) if self.sons else " without children"
         return "<ClusterTree at level {0}{1}>".format(str(self.level), optional_string)
 
     def __len__(self):
-        return len(self.splitable)
+        return len(self.content)
 
     def __str__(self):
         """give str representation of self."""
-        return ",".join([str(p) for p in self.splitable])
+        cont_str = ",".join([str(p) for p in self.content])
+        out_str = "ClusterTree at level {0} with content:\n{1}".format(self.level, cont_str)
+        return out_str
 
     def __eq__(self, other):
         """Test for equality"""
-        return self.level == other.level and self.splitable == other.splitable and self.sons == other.sons
+        return self.level == other.level and self.content == other.content and self.sons == other.sons
 
     def __getitem__(self, item):
-        return self.splitable[item]
+        return self.content[item]
 
     def get_index(self, item):
-        return self.splitable.get_index(item)
+        return self.content.get_index(item)
 
     def get_grid_item(self, item):
-        return self.get_grid_item(item)
+        return self.content.get_grid_item(item)
 
     def to_list(self):
         """Give list representation for export"""
@@ -67,22 +65,13 @@ class ClusterTree(object):
         def _to_dot(lst, out_string=''):
             if len(lst) > 1 and type(lst[1]) is list:
                 for item in lst[1]:
-                    if type(item) is list:
-                        value_string = str(lst[0])
-                        item_string = str(item[0])
-                        label_string = len(lst[0])
-                        out_string += '''"{0}" -- "{1}";
-                        "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
-                            value_string, item_string, label_string)
-                        out_string = _to_dot(item, out_string)
-                    else:
-                        value_string = str(lst[0])
-                        item_string = item
-                        label_string = len(eval(value_string.replace('|', ',')))
-                        out_string += '''"{0}" -- "{1}";
-                        "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
-                        "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string, item_string,
-                                                                                       label_string)
+                    value_string = str(lst[0])
+                    item_string = str(item[0])
+                    label_string = len(lst[0])
+                    out_string += '''"{0}" -- "{1}";
+                    "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
+                        value_string, item_string, label_string)
+                    out_string = _to_dot(item, out_string)
             return out_string
 
         if form == 'xml':
@@ -117,7 +106,24 @@ class ClusterTree(object):
             return max([son.depth(root_level) for son in self.sons])
 
     def diameter(self):
-        return self.splitable.diameter()
+        return self.content.diameter()
 
     def distance(self, other):
-        return self.splitable.distance(other.splitable)
+        return self.content.distance(other.content)
+
+
+def build_cluster_tree(splitable, max_leaf_size=1, start_level=0):
+    root = ClusterTree(splitable, max_leaf_size=max_leaf_size, level=start_level)
+    recursion_build_cluster_tree(root)
+    return root
+
+
+def recursion_build_cluster_tree(current_tree):
+    if len(current_tree.content) > current_tree.max_leaf_size:
+        splits = current_tree.content.split()
+        for split in splits:
+            new_tree = ClusterTree(content=split,
+                                   max_leaf_size=current_tree.max_leaf_size,
+                                   level=current_tree.level + 1)
+            current_tree.sons.append(new_tree)
+            recursion_build_cluster_tree(new_tree)

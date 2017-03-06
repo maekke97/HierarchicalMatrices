@@ -5,10 +5,11 @@ from unittest import TestCase
 import numpy
 
 from cluster import Cluster
-from cluster_tree import ClusterTree
+from cluster_tree import ClusterTree, build_cluster_tree
 from cuboid import Cuboid
 from grid import Grid
 from splitable import RegularCuboid
+from utils import load
 
 
 class TestClusterTree(TestCase):
@@ -41,17 +42,24 @@ class TestClusterTree(TestCase):
         cls.rc1 = RegularCuboid(cls.cluster1)
         cls.rc2 = RegularCuboid(cls.cluster2)
         cls.rc3 = RegularCuboid(cls.cluster3)
-        cls.ct1 = ClusterTree(cls.rc1, 1)
-        cls.ct2 = ClusterTree(cls.rc2, 1)
-        cls.ct3 = ClusterTree(cls.rc3, 1)
+        cls.ct1 = build_cluster_tree(cls.rc1)
+        cls.ct2 = build_cluster_tree(cls.rc2)
+        cls.ct3 = build_cluster_tree(cls.rc3)
 
     def test_init(self):
+        test = ClusterTree(self.rc1)
+        self.assertIsInstance(test, ClusterTree)
         self.assertIsInstance(self.ct1, ClusterTree)
         self.assertIsInstance(self.ct2, ClusterTree)
         self.assertIsInstance(self.ct3, ClusterTree)
 
     def test_repr(self):
-        self.fail()
+        test = ClusterTree(self.rc1)
+        test_str = "<ClusterTree at level 0 without children>"
+        self.assertEqual(test.__repr__(), test_str)
+        test.sons.append(ClusterTree(self.rc1, level=1))
+        test_str = "<ClusterTree at level 0 with children [<ClusterTree at level 1 without children>]>"
+        self.assertEqual(test.__repr__(), test_str)
 
     def test_len(self):
         self.assertEqual(len(self.ct1), self.lim1)
@@ -59,7 +67,30 @@ class TestClusterTree(TestCase):
         self.assertEqual(len(self.ct3), self.lim3 ** 3)
 
     def test_str(self):
-        self.fail()
+        test_fill = ",".join([str(p) for p in self.points1])
+        test = "ClusterTree at level 0 with content:\n{0}".format(test_fill)
+        self.assertEqual(str(self.ct1), test)
+
+    def test_getitem(self):
+        self.assertTrue(numpy.array_equal(self.ct1[0], self.rc1[0]))
+        self.assertTrue(numpy.array_equal(self.ct2[-1], self.rc2[-1]))
+        self.assertTrue(numpy.array_equal(self.ct3[0], self.rc3[0]))
+
+    def test_get_index(self):
+        self.assertEqual(self.ct1.get_index(0), self.cluster1.get_index(0))
+        self.assertEqual(self.ct1.get_index(-1), self.cluster1.get_index(-1))
+        self.assertEqual(self.ct2.get_index(0), self.cluster2.get_index(0))
+        self.assertEqual(self.ct2.get_index(-1), self.cluster2.get_index(-1))
+        self.assertEqual(self.ct3.get_index(0), self.cluster3.get_index(0))
+        self.assertEqual(self.ct3.get_index(-1), self.cluster3.get_index(-1))
+
+    def test_get_grid_item(self):
+        self.assertEqual(self.ct1.get_grid_item(0), self.grid1[0])
+        self.assertEqual(self.ct1.get_grid_item(-1), self.grid1[-1])
+        self.assertTrue(numpy.array_equal(self.ct2.get_grid_item(0), self.grid2[0]))
+        self.assertTrue(numpy.array_equal(self.ct2.get_grid_item(-1), self.grid2[-1]))
+        self.assertTrue(numpy.array_equal(self.ct3.get_grid_item(0), self.grid3[0]))
+        self.assertTrue(numpy.array_equal(self.ct3.get_grid_item(-1), self.grid3[-1]))
 
     def test_eq(self):
         self.assertEqual(self.ct1, self.ct1)
@@ -75,7 +106,31 @@ class TestClusterTree(TestCase):
         self.assertEqual(len(self.ct3.to_list()), 2)
 
     def test_export(self):
-        self.fail()
+        out_file_xml = 'test_EI_1.xml'
+        out_file_dot = 'test_EI_1.dot'
+        out_file_bin = 'test_EI_1.bin'
+        self.ct1.export('xml', out_file_xml)
+        self.ct1.export('dot', out_file_dot)
+        self.ct1.export('bin', out_file_bin)
+        test_ct = load(out_file_bin)
+        self.assertEqual(self.ct1, test_ct)
+        out_file_xml = 'test_EI_2.xml'
+        out_file_dot = 'test_EI_2.dot'
+        out_file_bin = 'test_EI_2.bin'
+        self.ct2.export('xml', out_file_xml)
+        self.ct2.export('dot', out_file_dot)
+        self.ct2.export('bin', out_file_bin)
+        test_ct = load(out_file_bin)
+        self.assertEqual(self.ct2, test_ct)
+        out_file_xml = 'test_EI_3.xml'
+        out_file_dot = 'test_EI_3.dot'
+        out_file_bin = 'test_EI_3.bin'
+        self.ct3.export('xml', out_file_xml)
+        self.ct3.export('dot', out_file_dot)
+        self.ct3.export('bin', out_file_bin)
+        test_ct = load(out_file_bin)
+        self.assertEqual(self.ct3, test_ct)
+        self.assertRaises(NotImplementedError, self.ct1.export, 'test', out_file_bin)
 
     def test_depth(self):
         self.assertEqual(self.ct1.depth(), math.log(self.lim1, 2))
