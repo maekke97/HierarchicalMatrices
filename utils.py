@@ -18,6 +18,8 @@
         export: Export BlockClusterTree and ClusterTree to various formats
         minimal_cuboid: Build a minimal Cuboid around a Cluster
 """
+import math
+
 import numpy
 
 from cuboid import Cuboid
@@ -62,6 +64,20 @@ def minimal_cuboid(cluster):
 
 def admissible(left_clustertree, right_clustertree):
     """Default admissible condition for BlockClusterTree."""
-    return max(left_clustertree.diameter(), right_clustertree.diameter()) < left_clustertree.distance(right_clustertree)
+    diam_min = min(left_clustertree.diameter(), right_clustertree.diameter())
+    distance = left_clustertree.distance(right_clustertree)
+    return diam_min <= distance
 
 
+def divisor_generator(n):
+    """"""
+    # found at http://stackoverflow.com/questions/171765/what-is-the-best-way-to-get-all-the-divisors-of-a-number
+    # on 2017 03 08
+    large_divisors = []
+    for i in xrange(1, int(math.sqrt(n) + 1)):
+        if n % i == 0:
+            yield i
+            if i * i != n:
+                large_divisors.append(n / i)
+    for divisor in reversed(large_divisors):
+        yield divisor

@@ -59,6 +59,17 @@ class TestCluster(TestCase):
         self.assertTrue(numpy.array_equal(self.cluster3.get_grid_item(0), self.grid3[0]))
         self.assertTrue(numpy.array_equal(self.cluster3.get_grid_item(-1), self.grid3[-1]))
 
+    def test_get_patch_coordinates(self):
+        coordinates = self.cluster1.get_patch_coordinates()
+        self.assertEqual(coordinates[0], 0)
+        self.assertEqual(coordinates[1], self.lim1 - 1)
+        coordinates = self.cluster2.get_patch_coordinates()
+        self.assertEqual(coordinates[0], 0)
+        self.assertEqual(coordinates[1], self.lim2 ** 2 - 1)
+        coordinates = self.cluster3.get_patch_coordinates()
+        self.assertEqual(coordinates[0], 0)
+        self.assertEqual(coordinates[1], self.lim3 ** 3 - 1)
+
     def test_repr(self):
         check = "<Cluster object with grid {0} and indices {1}>".format(self.grid1, range(len(self.grid1)))
         self.assertEqual(self.cluster1.__repr__(), check)

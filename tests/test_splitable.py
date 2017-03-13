@@ -104,6 +104,18 @@ class TestSplitable(TestCase):
         self.assertTrue(numpy.array_equal(self.rc3.get_grid_item(0), self.grid3[0]))
         self.assertTrue(numpy.array_equal(self.rc3.get_grid_item(-1), self.grid3[-1]))
 
+    def test_get_patch_coordinates(self):
+        self.assertRaises(NotImplementedError, self.dummy.get_patch_coordinates)
+        coordinates = self.rc1.get_patch_coordinates()
+        self.assertEqual(coordinates[0], 0)
+        self.assertEqual(coordinates[1], self.lim1 - 1)
+        coordinates = self.rc2.get_patch_coordinates()
+        self.assertEqual(coordinates[0], 0)
+        self.assertEqual(coordinates[1], self.lim2 ** 2 - 1)
+        coordinates = self.rc3.get_patch_coordinates()
+        self.assertEqual(coordinates[0], 0)
+        self.assertEqual(coordinates[1], self.lim3 ** 3 - 1)
+
     def test_eq(self):
         self.assertRaises(NotImplementedError, self.dummy.__eq__, self.dummy)
         self.assertEqual(self.rc1, self.rc1)

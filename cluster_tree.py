@@ -20,7 +20,8 @@ class ClusterTree(object):
         """give str representation of self."""
         cont_str = ",".join([str(p) for p in self.content])
         out_str = "ClusterTree at level {0} with content:\n{1}".format(self.level, cont_str)
-        return out_str
+        return ",".join([str(p) for p in self.content])
+        # return out_str
 
     def __eq__(self, other):
         """Test for equality"""
@@ -34,6 +35,9 @@ class ClusterTree(object):
 
     def get_grid_item(self, item):
         return self.content.get_grid_item(item)
+
+    def get_patch_coordinates(self):
+        return self.content.get_patch_coordinates()
 
     def to_list(self):
         """Give list representation for export"""

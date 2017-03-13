@@ -33,8 +33,10 @@ class Splitable(object):
     def get_grid_item(self, item):
         raise NotImplementedError()
 
+    def get_patch_coordinates(self):
+        raise NotImplementedError()
+
     def split(self):
-        # type: () -> (Splitables)
         raise NotImplementedError()
 
     def diameter(self):
@@ -107,6 +109,9 @@ class RegularCuboid(Splitable):
     def get_grid_item(self, item):
         return self.cluster.get_grid_item(item)
 
+    def get_patch_coordinates(self):
+        return self.cluster.get_patch_coordinates()
+
     def split(self):
         """Split the cuboid and distribute items in cluster according to the cuboid they belong to
 
@@ -114,16 +119,29 @@ class RegularCuboid(Splitable):
             left_RegularCuboid, right_RegularCuboid
         """
         left_cuboid, right_cuboid = self.cuboid.split()
-        left_points = []
-        right_points = []
+        left_indices = []
+        right_indices = []
         for index in self.cluster.indices:
             if self.cluster.grid.points[index] in left_cuboid:
-                left_points.append(index)
+                left_indices.append(index)
             else:
-                right_points.append(index)
-        left_cluster = Cluster(self.cluster.grid, left_points)
-        right_cluster = Cluster(self.cluster.grid, right_points)
-        return RegularCuboid(left_cluster, left_cuboid), RegularCuboid(right_cluster, right_cuboid)
+                right_indices.append(index)
+        if len(left_indices) > 0:
+            left_cluster = Cluster(self.cluster.grid, left_indices)
+            left_rc = RegularCuboid(left_cluster, left_cuboid)
+        else:
+            left_rc = None
+        if len(right_indices) > 0:
+            right_cluster = Cluster(self.cluster.grid, right_indices)
+            right_rc = RegularCuboid(right_cluster, right_cuboid)
+        else:
+            right_rc = None
+        if not left_rc and right_rc:
+            return [right_rc]
+        elif not right_rc and left_rc:
+            return [left_rc]
+        else:
+            return [left_rc, right_rc]
 
     def diameter(self):
         """Return the diameter of the cuboid"""

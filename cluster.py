@@ -54,6 +54,10 @@ class Cluster(object):
         """Return index at item"""
         return self.indices[item]
 
+    def get_patch_coordinates(self):
+        """Return min and max out of indices"""
+        return min(self.indices), max(self.indices)
+
     def dim(self):
         """Compute dimension"""
         return self.grid.dim()
