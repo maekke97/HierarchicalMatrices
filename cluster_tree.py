@@ -18,10 +18,17 @@ class ClusterTree(object):
 
     def __str__(self):
         """give str representation of self."""
-        cont_str = ",".join([str(p) for p in self.content])
-        out_str = "ClusterTree at level {0} with content:\n{1}".format(self.level, cont_str)
-        return ",".join([str(p) for p in self.content])
+        cont_str = ''
+        for p in self.content:
+            cont_str += '['
+            cont_str += ",".join(["{0:.2f}".format(i) for i in p])
+            cont_str += "] "
+        # cont_str = ",".join([str(p) for p in self.content])
+        # out_str = "ClusterTree at level {0} with content:\n{1}".format(self.level, cont_str)
+        # return ",".join([str(p) for p in self.content])
         # return out_str
+        cont_str.rstrip()
+        return cont_str
 
     def __eq__(self, other):
         """Test for equality"""
