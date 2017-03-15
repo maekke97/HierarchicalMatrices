@@ -112,3 +112,33 @@ class Cuboid(object):
         distance_vector = array(checks, dtype=float)
         min_vector = numpy.amin(abs(distance_matrix), axis=0)
         return numpy.linalg.norm(min_vector * distance_vector)
+
+
+def minimal_cuboid(cluster):
+    """
+    Build minimal cuboid
+
+    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
+
+    Args:
+        cluster: Cluster instance
+
+    Returns:
+        Minimal Cuboid
+    """
+    points = cluster.grid.points
+    low_corner = numpy.array(points[0], float, ndmin=1)
+    high_corner = numpy.array(points[0], float, ndmin=1)
+    for p in points:
+        p = numpy.array(p, float, ndmin=1)
+        lower = p >= low_corner
+        if not lower.all():
+            for i in xrange(len(low_corner)):
+                if not lower[i]:
+                    low_corner[i] = p[i]
+        higher = p <= high_corner
+        if not higher.all():
+            for i in xrange(len(high_corner)):
+                if not higher[i]:
+                    high_corner[i] = p[i]
+    return Cuboid(low_corner, high_corner)

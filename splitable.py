@@ -1,5 +1,5 @@
 from cluster import Cluster
-from utils import minimal_cuboid
+from cuboid import minimal_cuboid
 
 
 class Splitable(object):

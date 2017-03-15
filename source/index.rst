@@ -10,15 +10,7 @@ Welcome to HMatrix's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-.. automodule:: utils
-   :members:
-
-.. automodule:: block_cluster_tree
-
-.. autoclass:: BlockClusterTree
-   :members:
-
-
+   modules.rst
 
 Indices and tables
 ==================

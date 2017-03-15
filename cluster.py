@@ -2,7 +2,8 @@ import numpy
 
 
 class Cluster(object):
-    """Handles operations on a Grid object by manipulating an index list
+    """
+    Handles operations on a Grid object by manipulating an index list
 
     Attributes:
         indices: list of indices
@@ -15,7 +16,8 @@ class Cluster(object):
     """
 
     def __init__(self, grid, indices=None):
-        """Create a cluster
+        """
+        Create a cluster
 
         Argument:
             grid: Grid object
@@ -28,14 +30,22 @@ class Cluster(object):
         self._current = 0
 
     def __getitem__(self, item):
-        """Return the item from grid"""
+        """
+        Return the item from grid
+        """
         return self.grid[self.indices[item]]
 
     def __repr__(self):
+        """
+        String representation
+        :return:
+        """
         return "<Cluster object with grid {0} and indices {1}>".format(self.grid, self.indices)
 
     def __iter__(self):
-        """Iterate through Cluster"""
+        """
+        Iterate through Cluster
+        """
         return ClusterIterator(self)
 
     def __len__(self):

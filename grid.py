@@ -5,9 +5,9 @@ class Grid(object):
     """Discretized grid characterized by points and links
 
     Attributes:
-        points: list of coordinates
-        links: list of lists of points
-            For every point in points a list of points that it is linked with
+       points: list of coordinates
+       links: list of lists of points
+          For every point in points a list of points that it is linked with
 
     Methods:
         len(): number of points
