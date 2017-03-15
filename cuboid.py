@@ -1,3 +1,5 @@
+"""cuboid.py: :class:`Cuboid` and :func:`minimal_cuboid`
+"""
 import numpy
 from numpy.core.multiarray import array
 
@@ -7,26 +9,31 @@ class Cuboid(object):
 
     Characterized by two diagonal corners.
 
-    Attributes:
+    - **Attributes**:
+
         low_corner: numpy.array with minimal values in each dimension
+
         high_corner: numpy.array with maximal values in each dimension
-
-    Part of master thesis "Hierarchical Matrices".
     """
-    low_corner = None
-    high_corner = None
-
     def __init__(self, low_corner, high_corner):
         """Build a cuboid.
 
-        Args:
-            low_corner, high_corner: numpy.array of same length.
+        :param low_corner: low corner
+        :type low_corner: numpy.array
+        :param high_corner: high corner
+        :type high_corner: numpy.array
         """
         self.low_corner = array(low_corner, float)
         self.high_corner = array(high_corner, float)
 
     def __eq__(self, other):
-        """Test for equality"""
+        """Test for equality
+
+        :param other: other cuboid
+        :type other: Cuboid
+        :return: equal
+        :rtype: bool
+        """
         low_eq = self.low_corner == other.low_corner
         high_eq = self.high_corner == other.high_corner
         return low_eq.all() and high_eq.all()
@@ -36,11 +43,11 @@ class Cuboid(object):
 
         True if point is between low_corner and high_corner
 
-        Args:
-            point: numpy.array of correct dimension
+        :param point: point of correct dimension
+        :type point: numpy.array
 
-        Returns:
-            contained: boolean
+        :return: contained
+        :rtype: bool
         """
         lower = self.low_corner <= point
         higher = point <= self.high_corner
@@ -56,15 +63,14 @@ class Cuboid(object):
                                                                             str(self.high_corner))
 
     def split(self, axis=None):
-        """Split the cuboid in split
+        """Split the cuboid in half
 
         If axis is specified, the cuboid is split along the given axis, else the maximal axis is chosen.
 
-        Optional args:
-            axis: integer specifying the axis to choose.
-
-        Returns:
-            cuboid1, cuboid2: Cuboids
+        :param axis: axis along which to split (optional)
+        :type axis: int
+        :return: cuboid1, cuboid2
+        :rtype: tuple(Cuboid, Cuboid)
         """
         if axis:
             index = axis
@@ -86,8 +92,8 @@ class Cuboid(object):
 
         Diameter is the Euclidean distance between low_corner and high_corner.
 
-        Returns:
-            diameter: float
+        :return: diameter
+        :rtype: float
         """
         return numpy.linalg.norm(self.high_corner - self.low_corner)
 
@@ -96,11 +102,11 @@ class Cuboid(object):
 
         Distance is the minimal Euclidean distance between points in self and points in other.
 
-        Args:
-            other: another instance of Cuboid.
+        :param other: other cuboid
+        :type other: Cuboid
 
-        Returns:
-            distance: float.
+        :return: distance
+        :rtype: float
         """
         dimension = len(self.low_corner)
         distance1 = self.low_corner - other.low_corner
@@ -115,16 +121,14 @@ class Cuboid(object):
 
 
 def minimal_cuboid(cluster):
-    """
-    Build minimal cuboid
+    """Build minimal cuboid
 
     Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
 
-    Args:
-        cluster: Cluster instance
-
-    Returns:
-        Minimal Cuboid
+    :param cluster: cluster to build cuboid around
+    :type cluster: Cluster
+    :return: minimal cuboid
+    :rtype: Cuboid
     """
     points = cluster.grid.points
     low_corner = numpy.array(points[0], float, ndmin=1)
