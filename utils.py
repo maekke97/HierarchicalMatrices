@@ -26,7 +26,9 @@ from cuboid import Cuboid
 
 
 def load(filename):
-    """Load a ClusterTree or BlockClusterTree from file."""
+    """
+    Load a ClusterTree or BlockClusterTree from file
+    """
     import pickle
     with open(filename, 'rb') as infile:
         obj = pickle.load(infile)
@@ -34,7 +36,8 @@ def load(filename):
 
 
 def minimal_cuboid(cluster):
-    """Build minimal cuboid
+    """
+    Build minimal cuboid
 
     Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
 
@@ -63,14 +66,18 @@ def minimal_cuboid(cluster):
 
 
 def admissible(left_clustertree, right_clustertree):
-    """Default admissible condition for BlockClusterTree."""
+    """
+    Default admissible condition for BlockClusterTree
+    """
     diam_min = min(left_clustertree.diameter(), right_clustertree.diameter())
     distance = left_clustertree.distance(right_clustertree)
     return diam_min <= distance
 
 
 def divisor_generator(n):
-    """"""
+    """
+    Return divisors of n
+    """
     # found at http://stackoverflow.com/questions/171765/what-is-the-best-way-to-get-all-the-divisors-of-a-number
     # on 2017 03 08
     large_divisors = []
