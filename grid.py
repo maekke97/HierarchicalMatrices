@@ -5,6 +5,12 @@ import numpy
 
 class Grid(object):
     """Discretized grid characterized by points and links
+
+    - **Attributes**:
+
+        points: list of coordinates
+
+        links: list of links for each point
     """
 
     def __init__(self, points, links):

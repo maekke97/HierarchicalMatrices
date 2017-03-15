@@ -1,18 +1,16 @@
+"""cluster.py: :class:`Cluster` object and iterator
+"""
 import numpy
 
 
 class Cluster(object):
-    """
-    Handles operations on a Grid object by manipulating an index list
+    """Handles operations on a :class:`Grid` object by manipulating an index list
 
-    Attributes:
-        indices: list of indices
+    - **Attributes**:
+
         grid: Grid object
 
-    Methods:
-        dim: dimension
-        diameter: diameter
-        distance(other): distance to other Cluster
+        indices: list of indices
     """
 
     def __init__(self, grid, indices=None):
