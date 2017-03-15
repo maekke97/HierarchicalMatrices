@@ -1,69 +1,87 @@
+"""grid.py: :class:`Grid` object and iterator
+"""
 import numpy
 
 
 class Grid(object):
     """Discretized grid characterized by points and links
-
-    Attributes:
-       points: list of coordinates
-       links: list of lists of points
-          For every point in points a list of points that it is linked with
-
-    Methods:
-        len(): number of points
-        dim(): dimension
-
     """
 
     def __init__(self, points, links):
         """Create a Grid
 
-        Args:
-            points: list of points
-            links: list of links for each point. Must have same length as points
-
-        Raises:
-            ValueError if points and links are not of same length
+        :param points: list of coordinates
+        :type points: list[numpy.array or list[float]]
+        :param links: list of links for every point
+        :type links: list[list[numpy.array or list[float]]]
+        :raise ValueError: if points and links have different length
         """
         self.points = points
         self.links = links
         if len(self.points) != len(self.links):
             raise ValueError("Points and links must be of same length.")
-        self._current = 0
 
     def __len__(self):
+        """Return length of points
+
+        :return: length of points
+        :rtype: int
+        """
         return len(self.points)
 
     def __getitem__(self, item):
-        """Return point "item" and its links"""
+        """Return point at item
+
+        :param item: index to return
+        :type item: int
+        """
         return self.points[item]
 
     def __iter__(self):
-        """Iterate trough Grid"""
+        """Iterate trough Grid
+        """
         return GridIterator(self)
 
     def __eq__(self, other):
-        """Test for equality"""
+        """Test for equality
+
+        :param other: other grid
+        :type other: Grid
+        """
         points_eq = numpy.array_equal(self.points, other.points)
         links_eq = numpy.array_equal(self.links, other.links)
         return points_eq and links_eq
 
     def get_point(self, item):
-        """return point at position item"""
+        """Return point at position item
+
+        :param item: index
+        :type item: int
+        :return: point
+        """
         return self.points[item]
 
     def get_link(self, item):
-        """return link at position item"""
+        """Return link at position item
+
+        :param item: index
+        :type item: int
+        :return: links
+        """
         return self.links[item]
 
     def dim(self):
-        """Dimension of the Grid"""
+        """Dimension of the Grid
+
+        :return: dimension
+        :rtype: int
+        """
         return len(self[0])
 
 
 class GridIterator(object):
-    """Iterator to Grid object"""
-
+    """Iterator to Grid object
+    """
     def __init__(self, grid):
         self.grid = grid
         self._counter = 0
