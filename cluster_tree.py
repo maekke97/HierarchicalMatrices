@@ -1,7 +1,12 @@
-class ClusterTree(object):
-    """
-    """
+"""cluster_tree.py: :class:`ClusterTree`, :func:`build_cluster_tree`, :func:`recursion_build_cluster_tree`
+"""
 
+
+class ClusterTree(object):
+    """Tree structure built according to the :class:`Splitable` in use
+
+    Splits are done until max_leaf_size is reached
+    """
     def __init__(self, content, sons=None, max_leaf_size=1, level=0):
         """"""
         self.level = level
@@ -38,16 +43,40 @@ class ClusterTree(object):
         return self.content[item]
 
     def get_index(self, item):
+        """Get index from content
+
+        :param item: index to get
+        :type item: int
+        :return: index
+        :rtype: int
+        """
         return self.content.get_index(item)
 
     def get_grid_item(self, item):
+        """Get grid item from content
+
+        :param item: index of item to get
+        :type item: int
+        """
         return self.content.get_grid_item(item)
 
     def get_patch_coordinates(self):
+        """Return min and max out of indices
+
+        :return: min and max
+        :rtype: tuple(int, int)
+        """
         return self.content.get_patch_coordinates()
 
     def to_list(self):
-        """Give list representation for export"""
+        """Give list representation for export
+
+        Return a list containing the object and a list with its sons
+
+        .. warning::
+
+            **recursive function**
+        """
         if self.sons:
             return [self, [son.to_list() for son in self.sons]]
         else:
@@ -56,7 +85,19 @@ class ClusterTree(object):
     def export(self, form='xml', out_file='out'):
         """Export obj in specified format.
 
-        implemented: xml, dot, bin
+        :param form: format specifier
+        :type form: str
+        :param out_file: path to output file
+        :type out_file: str
+        :raises NotImplementedError: if form is not supported
+
+        .. note::
+
+            implemented so far:
+
+            - xml
+            - dot
+            - bin
         """
 
         def _to_xml(lst, out_string=''):
@@ -109,6 +150,17 @@ class ClusterTree(object):
             raise NotImplementedError()
 
     def depth(self, root_level=None):
+        """Get depth of the tree
+
+        :param root_level: internal use.
+        :type root_level: int
+        :return: depth
+        :rtype: int
+
+        .. warning::
+
+            **recursive function**
+        """
         if root_level is None:
             root_level = self.level
         if not self.sons:
@@ -117,19 +169,44 @@ class ClusterTree(object):
             return max([son.depth(root_level) for son in self.sons])
 
     def diameter(self):
+        """Return the diameter of content
+
+        :return: diameter
+        :rtype: float
+        """
         return self.content.diameter()
 
     def distance(self, other):
+        """Return distance to other
+
+        :param other: other cluster tree
+        :type other: ClusterTree
+        :return: distance
+        :rtype: float
+        """
         return self.content.distance(other.content)
 
 
 def build_cluster_tree(splitable, max_leaf_size=1, start_level=0):
+    """Factory for building a cluster tree
+
+    :param splitable: strategy that decides the structure
+    :type splitable: Splitable
+    :param max_leaf_size: cluster size at which recursion stops
+    :type max_leaf_size: int
+    :param start_level: counter to identify levels
+    :type start_level: int
+    :return: cluster tree
+    :rtype: ClusterTree
+    """
     root = ClusterTree(splitable, max_leaf_size=max_leaf_size, level=start_level)
     recursion_build_cluster_tree(root)
     return root
 
 
 def recursion_build_cluster_tree(current_tree):
+    """Recursion to :func:`build_cluster_tree`
+    """
     if len(current_tree.content) > current_tree.max_leaf_size:
         splits = current_tree.content.split()
         for split in splits:

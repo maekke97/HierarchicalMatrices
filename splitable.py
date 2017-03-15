@@ -1,3 +1,18 @@
+"""splitable.py: :class:`Splitable` (Interface) and iterator and different strategies
+
+- :class:`RegularCuboid`
+
+    Starting from a minimal cuboid that get's split in half on every level, points are distributed according to
+    their geometric location
+
+- :class:`MinimalCuboid`
+
+    Same as RegularCuboid, but after every split, the cuboids are reduced to minimal size
+
+- :class:`Balanced`
+
+    Distributes the points evenly on every level, depends solely on the order of the initial list
+"""
 from cluster import Cluster
 from cuboid import minimal_cuboid
 
@@ -5,14 +20,24 @@ from cuboid import minimal_cuboid
 class Splitable(object):
     """Interface to the different strategies that can be used to split a cluster in two.
 
-    Methods that need to be implemented by subclasses:
-        __len__: return the length of the cluster
-        split: split the object in two or more, return new instances
-        diameter: return the diameter of the object
-        distance: return the distance to other object
+    .. note::
+
+        Methods that need to be implemented by subclasses:
+
+        - __len__: return the length of the cluster
+        - __iter__: return SplitableIterator(self)
+        - __repr__: give a meaningful string representation
+        - __getitem__: return item from inner cluster
+        - __eq__: check for equality against other Splitable
+        - get_index: return index from inner cluster
+        - get_grid_item: return grid item from inner cluster
+        - get_patch_coordinates: return min and max of index list of cluster
+        - split: split the object in two or more, return new instances
+        - diameter: return the diameter of the object
+        - distance: return the distance to other object
+
     """
     def __len__(self):
-        # type: () -> float
         raise NotImplementedError()
 
     def __iter__(self):
@@ -40,7 +65,6 @@ class Splitable(object):
         raise NotImplementedError()
 
     def diameter(self):
-        # type: () -> float
         raise NotImplementedError()
 
     def distance(self, other):
@@ -67,13 +91,13 @@ class SplitableIterator(object):
 
 
 class RegularCuboid(Splitable):
-    """Method of regular cuboids.
+    """Method of regular cuboids
 
-    Minimal cuboid is built around initial list of indices. Split is then
-    implemented by splitting the surrounding cuboid in split and distributing indices according to the cuboid they
-    belong to.
+    If no cuboid is given, a minimal cuboid is built around initial list of indices. Split is then
+    implemented by splitting the surrounding cuboid in half along longest axis and distributing indices according to the
+    cuboid they belong to.
 
-    Gives a binary tree.
+    Gives a binary tree
     """
 
     def __init__(self, cluster, cuboid=None):
@@ -104,19 +128,36 @@ class RegularCuboid(Splitable):
         return self.cluster == other.cluster and self.cuboid == other.cuboid
 
     def get_index(self, item):
+        """Get index from cluster
+
+        :param item: index to get
+        :type item: int
+        :return: index
+        :rtype: int
+        """
         return self.cluster.get_index(item)
 
     def get_grid_item(self, item):
+        """Get grid item from cluster
+
+        :param item: index of item to get
+        :type item: int
+        """
         return self.cluster.get_grid_item(item)
 
     def get_patch_coordinates(self):
+        """Return min and max out of indices
+
+        :return: min and max
+        :rtype: tuple(int, int)
+        """
         return self.cluster.get_patch_coordinates()
 
     def split(self):
         """Split the cuboid and distribute items in cluster according to the cuboid they belong to
 
-        Returns:
-            left_RegularCuboid, right_RegularCuboid
+        :return: left_RegularCuboid, right_RegularCuboid
+        :rtype: RegularCuboid, RegularCuboid
         """
         left_cuboid, right_cuboid = self.cuboid.split()
         left_indices = []
@@ -144,11 +185,23 @@ class RegularCuboid(Splitable):
             return [left_rc, right_rc]
 
     def diameter(self):
-        """Return the diameter of the cuboid"""
+        """Return the diameter of the cuboid
+
+        Diameter of the surrounding cuboid
+
+        :return: diameter
+        :rtype: float
+        """
         return self.cuboid.diameter()
 
     def distance(self, other):
-        """Return the distance between own cuboid and other cuboid"""
+        """Return the distance between own cuboid and other cuboid
+
+        :param other: other splitable
+        :type other: Splitable
+        :return: distance
+        :rtype: float
+        """
         return self.cuboid.distance(other.cuboid)
 
 
