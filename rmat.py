@@ -122,7 +122,7 @@ class RMat(object):
             left_mat * right_mat.T
 
         :return: full matrix
-        :rtype: numpy.matrix
+        :rtype: :class:`numpy.matrix`
         """
         return self.left_mat * self.right_mat.T
 

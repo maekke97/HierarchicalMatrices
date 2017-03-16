@@ -97,7 +97,7 @@ class BlockClusterTree(object):
 
         .. note::
 
-            depends on `matplotlib.pyplot`_
+            depends on :mod:`matplotlib.pyplot`
 
         """
         import matplotlib.pyplot as plt

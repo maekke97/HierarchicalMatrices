@@ -33,7 +33,7 @@ class HMat(object):
         """Full matrix representation
 
         :return: full matrix
-        :rtype: numpy.matrix
+        :rtype: :class:`numpy.matrix`
         """
         if self.blocks:  # The matrix has children so fill recursive
             out_mat = numpy.empty(self.shape)
