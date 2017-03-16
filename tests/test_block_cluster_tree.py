@@ -85,5 +85,10 @@ class TestBlockClusterTree(TestCase):
         self.assertEqual(len(self.bct2.to_list()), 2)
         self.assertEqual(len(self.bct3.to_list()), 2)
 
+    def test_shape(self):
+        self.assertEqual(self.bct1.shape(), (self.lim1, self.lim1))
+        self.assertEqual(self.bct2.shape(), (self.lim2**2, self.lim2**2))
+        self.assertEqual(self.bct3.shape(), (self.lim3**3, self.lim3**3))
+
     def test_export(self):
         self.fail()

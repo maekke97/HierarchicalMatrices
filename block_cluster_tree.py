@@ -64,6 +64,14 @@ class BlockClusterTree(object):
         """
         return [self, [son.to_list() for son in self.sons]]
 
+    def shape(self):
+        """Return length of left and right cluster tree
+
+        :return: x and y dimension
+        :rtype: tuple(int, int)
+        """
+        return len(self.left_clustertree), len(self.right_clustertree)
+
     def draw(self, axes, admissible_color='#1e26bc', inadmissible_color='#bc1d38'):
         """Draw a patch into given axes
 
@@ -241,7 +249,7 @@ def build_block_cluster_tree(left_cluster_tree, right_cluster_tree=None, start_l
         right_cluster_tree = left_cluster_tree
     is_admissible = admissible_function(left_cluster_tree, right_cluster_tree)
     x_min, x_max = left_cluster_tree.get_patch_coordinates()
-    y_min, y_max = left_cluster_tree.get_patch_coordinates()
+    y_min, y_max = right_cluster_tree.get_patch_coordinates()
     plot_info = [x_min, y_min]
     root = BlockClusterTree(left_cluster_tree, right_cluster_tree,
                             level=start_level, is_admissible=is_admissible, plot_info=plot_info)
@@ -253,22 +261,6 @@ def recursion_build_block_cluster_tree(current_tree, admissible_function):
     """Recursion to :func:`build_block_cluster_tree`
     """
     if not admissible_function(current_tree.left_clustertree, current_tree.right_clustertree):
-        # check for sons on both sides
-        # if not current_tree.left_clustertree.sons and current_tree.right_clustertree.sons:
-        #     # only right cluster has sons
-        #     left_cluster_sons = [current_tree.left_clustertree]
-        #     right_cluster_sons = current_tree.right_clustertree.sons
-        # elif current_tree.left_clustertree.sons and not current_tree.right_clustertree.sons:
-        #     # only left cluster has sons
-        #     left_cluster_sons = current_tree.left_clustertree.sons
-        #     right_cluster_sons = [current_tree.right_clustertree]
-        # elif current_tree.left_clustertree.sons and current_tree.right_clustertree.sons:
-        #     # both have sons
-        #     left_cluster_sons = current_tree.left_clustertree.sons
-        #     right_cluster_sons = current_tree.right_clustertree.sons
-        # else:
-        #     # no sons on both sides, so stop recursion
-        #     return None
         # get top left corner of current block
         x_min, y_min = current_tree.plot_info
         x_current = x_min
@@ -282,8 +274,8 @@ def recursion_build_block_cluster_tree(current_tree, admissible_function):
                                             )
                 current_tree.sons.append(new_tree)
                 recursion_build_block_cluster_tree(new_tree, admissible_function)
-                x_current += len(right_son)
-            x_current = x_min
-            y_current += len(left_son)
+                y_current += len(right_son)
+            y_current = y_min
+            x_current += len(left_son)
     else:
         current_tree.admissible = True

@@ -18,14 +18,6 @@ class HMat(object):
     def __repr__(self):
         pass
 
-    def __mul__(self, other):
-        if type(other) == numpy.ndarray and other.shape[0] == self.shape[1]:  # Matrix-vector or matrix-matrix product
-            try:
-                columns = other.shape[1]
-            except IndexError:
-                columns = 1
-            out = numpy.zeros((self.shape[0], columns))  # initialize
-
     def content_mul(self, other):
         return self.content * other
 
@@ -51,3 +43,21 @@ class HMat(object):
             return self.content.to_matrix()
         else:  # We have regular content, so we return it
             return self.content
+
+
+def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate_full_matrix_function=None):
+    """Factory to build an HMat instance
+
+    :param block_cluster_tree: block cluster tree giving the structure
+    :type block_cluster_tree: BlockClusterTree
+    :param generate_rmat_function: function taking an admissible block cluster tree and returning a rank-k matrix
+    :param generate_full_matrix_function: function taking an inadmissible block cluster tree and returning
+        a numpy.matrix
+    :return: hmatrix
+    :rtype: RMat
+    :raises: ValueError if root of BlockClusterTree is admissible
+    """
+    if block_cluster_tree.admissible:
+        raise ValueError("Root of the block cluster tree is admissible, can't generate HMat from that.")
+    root = HMat(blocks=[], shape=block_cluster_tree.shape())
+    pass
