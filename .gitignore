@@ -4,7 +4,7 @@ out
 *.dot
 *.xml
 *.pyc
-.idea/HMatrix.iml
 build
-source/_static/
-source/_templates/
+source/thesis.bib
+.idea/
+!.idea/dictionaries/nem.xml
