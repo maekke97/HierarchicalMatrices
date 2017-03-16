@@ -1,8 +1,13 @@
+"""rmat.py: :class:`RMat`
+"""
 import numpy
 
 
 class RMat(object):
-    """Rank-k matrix"""
+    """Rank-k matrix
+
+    Implementation of the low rank matrix as described in [HB2015]
+    """
 
     def __init__(self, left_mat, right_mat, max_rank):
         """Build Rank-k matrix
@@ -69,7 +74,12 @@ class RMat(object):
         return numpy.linalg.norm(self.left_mat * self.right_mat.T)
 
     def norm(self, order=None):
-        """Norm, order as in numpy.linalg.norm"""
+        """Norm of the matrix
+
+        :param order: order of the norm (see in :func:`numpy.linalg.norm`)
+        :return: norm
+        :rtype: float
+        """
         return numpy.linalg.norm(self.left_mat * self.right_mat.T, ord=order)
 
     def __mul__(self, other):
@@ -88,9 +98,18 @@ class RMat(object):
             return RMat(self.left_mat, other.right_mat * (other.left_mat.T * self.right_mat), r1)
 
     def form_add(self, other, rank=None):
-        """Formatted addition of self and other, i.e. addition and reduction to rank.
+        """Formatted addition of self and other, i.e. addition and reduction to rank::
+
+            (self + other).reduce(rank)
 
         If rank is omitted, reduction to min(rank(self), rank(other))
+
+        :param other: other rank-k matrix
+        :type other: RMat
+        :param rank: rank after reduction
+        :type rank: int
+        :return: reduced result
+        :rtype: RMat
         """
         if not rank:
             rank = min((self.k_max, other.k_max))
@@ -98,11 +117,23 @@ class RMat(object):
         return res.reduce(rank)
 
     def to_matrix(self):
-        """Return full matrix"""
+        """Full matrix representation::
+
+            left_mat * right_mat.T
+
+        :return: full matrix
+        :rtype: numpy.matrix
+        """
         return self.left_mat * self.right_mat.T
 
     def reduce(self, new_k):
-        """Perform a reduced QR decomposition to rank new_k"""
+        """Perform a reduced QR decomposition to rank new_k
+
+        :param new_k: rank to reduce to
+        :type new_k: int
+        :return: reduced matrix
+        :rtype: RMat
+        """
         q_left, r_left = numpy.linalg.qr(self.left_mat)
         q_right, r_right = numpy.linalg.qr(self.right_mat)
         temp = r_left * r_right.T
