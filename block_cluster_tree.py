@@ -1,7 +1,13 @@
+"""block_cluster_tree.py: :class:`BlockClusterTree`,
+:func:`build_block_cluster_tree`,
+:func:`recursion_build_block_cluster_tree`
+"""
 from utils import admissible, divisor_generator
 
 
 class BlockClusterTree(object):
+    """Compares two cluster trees level wise with respect to an admissibility condition and builds a tree
+    """
     def __init__(self, left_clustertree, right_clustertree, sons=None, level=0, is_admissible=False, plot_info=None):
         self.sons = sons if sons else []
         self.left_clustertree = left_clustertree
@@ -29,6 +35,17 @@ class BlockClusterTree(object):
                 )
 
     def depth(self, root_level=None):
+        """Get depth of the tree
+
+        :param root_level: internal use.
+        :type root_level: int
+        :return: depth
+        :rtype: int
+
+        .. warning::
+
+            **recursive function**
+        """
         if root_level is None:
             root_level = self.level
         if not self.sons:
@@ -37,22 +54,52 @@ class BlockClusterTree(object):
             return max([son.depth(root_level) for son in self.sons])
 
     def to_list(self):
+        """Give list representation for export
+
+        Return a list containing the object and a list with its sons
+
+        .. warning::
+
+            **recursive function**
+        """
         return [self, [son.to_list() for son in self.sons]]
 
     def draw(self, axes, admissible_color='#1e26bc', inadmissible_color='#bc1d38'):
+        """Draw a patch into given axes
+
+        :param axes: axes instance to draw in
+        :type axes: matplotlib.pyplot.axes
+        :param admissible_color: color for admissible patch (see matplotlib for color specs)
+        :type admissible_color: str
+        :param inadmissible_color: color for inadmissible patch
+        :type inadmissible_color: str
+        """
         # set x coordinates for patch
-        ## x_min, x_max = self.left_clustertree.get_patch_coordinates()
         x_min, y_min = self.plot_info
         x_max = x_min + len(self.right_clustertree)
         y_max = y_min + len(self.left_clustertree)
         x = [x_min, x_min, x_max, x_max]
         # set y coordinates for patch
-        ## y_min, y_max = self.right_clustertree.get_patch_coordinates()
         y = [y_min, y_max, y_max, y_min]
         color = admissible_color if self.admissible else inadmissible_color
         axes.fill(x, y, color, ec='k', lw=0.1)
 
     def plot(self, filename=None, face_color='#96acd1', admissible_color='#1e26bc', inadmissible_color='#bc1d38'):
+        """Plot the block cluster tree
+
+        :param filename: filename to save the plot. if omitted, the plot will be displayed
+        :type filename: str
+        :param face_color: background color (see matplotlib for color specs)
+        :param admissible_color: color for admissible patch
+        :type admissible_color: str
+        :param inadmissible_color: color for inadmissible patch
+        :type inadmissible_color: str
+
+        .. note::
+
+            depends on `matplotlib.pyplot`_
+
+        """
         import matplotlib.pyplot as plt
         plt.rc('axes', linewidth=0.5, labelsize=4)
         plt.rc('xtick', labelsize=4)
@@ -80,7 +127,7 @@ class BlockClusterTree(object):
         axes.tick_params(length=2, width=0.5)
         axes.xaxis.tick_top()
         axes.invert_yaxis()
-        self._plot(axes)
+        self._plot(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
         fig.add_axes(axes)
         if not filename:
             plt.show()
@@ -98,8 +145,20 @@ class BlockClusterTree(object):
     def export(self, form='xml', out_file='bct_out'):
         """Export obj in specified format.
 
-                implemented: xml, dot, bin
-                """
+        :param form: format specifier
+        :type form: str
+        :param out_file: path to output file
+        :type out_file: str
+        :raises NotImplementedError: if form is not supported
+
+        .. note::
+
+            implemented so far:
+
+            - xml
+            - dot
+            - bin
+        """
 
         def _to_xml(lst, out_string=''):
             if len(lst[1]):
@@ -162,6 +221,20 @@ class BlockClusterTree(object):
 
 
 def build_block_cluster_tree(left_cluster_tree, right_cluster_tree=None, start_level=0, admissible_function=admissible):
+    """Factory for building a block cluster tree
+
+    :param left_cluster_tree: "left side" cluster tree
+    :type left_cluster_tree: ClusterTree
+    :param right_cluster_tree: "right side" cluster tree
+    :type right_cluster_tree: ClusterTree
+    :param start_level: counter that keeps track of the level
+    :type start_level: int
+    :param admissible_function: function that determines whether two cluster trees are admissible or not. This is
+        crucial for the structure of the block cluster tree. (See :mod:`utils.admissible` for an example)
+    :type admissible_function: function that returns a bool
+    :return: block cluster tree
+    :rtype: BlockClusterTree
+    """
     if not right_cluster_tree:
         right_cluster_tree = left_cluster_tree
     is_admissible = admissible_function(left_cluster_tree, right_cluster_tree)
@@ -175,6 +248,8 @@ def build_block_cluster_tree(left_cluster_tree, right_cluster_tree=None, start_l
 
 
 def recursion_build_block_cluster_tree(current_tree, admissible_function):
+    """Recursion to :func:`build_block_cluster_tree`
+    """
     if not admissible_function(current_tree.left_clustertree, current_tree.right_clustertree):
         # check for sons on both sides
         # if not current_tree.left_clustertree.sons and current_tree.right_clustertree.sons:
