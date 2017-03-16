@@ -1,12 +1,13 @@
-"""Hmat.py"""
-
+"""hmat.py: :class:`HMat`
+"""
 import numpy
 
 from rmat import RMat
 
 
 class HMat(object):
-    """Implement a hierarchical Matrix"""
+    """Implement a hierarchical Matrix
+    """
 
     def __init__(self, blocks=(), content=None, shape=(), parent_index=()):
         self.blocks = blocks  # This list contains the lower level HMat
@@ -29,7 +30,11 @@ class HMat(object):
         return self.content * other
 
     def to_matrix(self):
-        """Return full matrix"""
+        """Full matrix representation
+
+        :return: full matrix
+        :rtype: numpy.matrix
+        """
         if self.blocks:  # The matrix has children so fill recursive
             out_mat = numpy.empty(self.shape)
             for block in self.blocks:
