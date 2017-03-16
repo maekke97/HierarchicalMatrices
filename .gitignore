@@ -6,3 +6,5 @@ out
 *.pyc
 .idea/HMatrix.iml
 build
+source/_static/
+source/_templates/
