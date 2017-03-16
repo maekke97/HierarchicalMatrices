@@ -1,4 +1,8 @@
 *.png
+!source/_img/*.png
 out
 *.dot
 *.xml
+*.pyc
+.idea/HMatrix.iml
+build
