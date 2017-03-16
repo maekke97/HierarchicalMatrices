@@ -18,7 +18,39 @@ class HMat(object):
     def __repr__(self):
         pass
 
-    def content_mul(self, other):
+    def _mul_with_vector(self, other):
+        """Multiply with a vector
+
+        :param other: vector
+        :type other: numpy.array
+        :return: result vector
+        :rtype: numpy.array
+        """
+        if self.content:
+            # We have content. Multiply and return
+            return self.content * other
+        else:
+            x_start, y_start = self.parent_index
+            res_length = self.shape[0]
+            res = numpy.zeros((res_length, 1))
+            for block in self.blocks:
+                x_current, y_current = block.parent_index
+                x_length, y_length = block.shape
+                in_index_start = x_start - x_current
+                in_index_end = in_index_start + x_length
+                res_index_start = y_start - y_current
+                res_index_end = res_index_start + y_length
+                res[res_index_start: res_index_end] += block * other[in_index_start: in_index_end]
+            return res
+
+    def _mul_with_hmatrix(self, other):
+        """Multiply with a matrix
+
+        :param other: matrix
+        :type other: HMat
+        :return: result matrix
+        :rtype: numpy.matrix
+        """
         return self.content * other
 
     def to_matrix(self):
@@ -59,5 +91,23 @@ def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate
     """
     if block_cluster_tree.admissible:
         raise ValueError("Root of the block cluster tree is admissible, can't generate HMat from that.")
-    root = HMat(blocks=[], shape=block_cluster_tree.shape())
-    pass
+    root = HMat(blocks=[], shape=block_cluster_tree.shape(), parent_index=(0, 0))
+    recursion_build_hmatrix(root, block_cluster_tree, generate_rmat_function, generate_full_matrix_function)
+    return root
+
+
+def recursion_build_hmatrix(current_hmat, block_cluster_tree, generate_rmat, generate_full_mat):
+    """Recursion to :func:`build_hmatrix`
+    """
+    if block_cluster_tree.admissible:
+        # admissible level found, so fill content with rank-k matrix and stop
+        current_hmat.content = generate_rmat(block_cluster_tree)
+    elif not block_cluster_tree.sons:
+        # no sons and not admissible, so fill content with full matrix and stop
+        current_hmat.content = generate_full_mat(block_cluster_tree)
+    else:
+        # recursion: generate new hmatrix for every son in block cluster tree
+        for son in block_cluster_tree.sons:
+            new_hmat = HMat(blocks=[], shape=son.shape(), parent_index=son.plot_info)
+            current_hmat.blocks.append(new_hmat)
+            recursion_build_hmatrix(new_hmat, son, generate_rmat, generate_full_mat)

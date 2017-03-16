@@ -72,14 +72,6 @@
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="o">==</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># Matrix-vector or matrix-matrix product</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">columns</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                <span class="n">columns</span> <span class="o">=</span> <span class="mi">1</span>
-            <span class="n">out</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">columns</span><span class="p">))</span>  <span class="c1"># initialize</span>
-
 <div class="viewcode-block" id="HMat.content_mul"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.hmat.HMat.content_mul">[docs]</a>    <span class="k">def</span> <span class="nf">content_mul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">*</span> <span class="n">other</span></div>
 
@@ -105,6 +97,42 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">to_matrix</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>  <span class="c1"># We have regular content, so we return it</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span></div></div>
+
+
+<div class="viewcode-block" id="build_hmatrix"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.hmat.build_hmatrix">[docs]</a><span class="k">def</span> <span class="nf">build_hmatrix</span><span class="p">(</span><span class="n">block_cluster_tree</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">generate_rmat_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">generate_full_matrix_function</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Factory to build an HMat instance</span>
+
+<span class="sd">    :param block_cluster_tree: block cluster tree giving the structure</span>
+<span class="sd">    :type block_cluster_tree: BlockClusterTree</span>
+<span class="sd">    :param generate_rmat_function: function taking an admissible block cluster tree and returning a rank-k matrix</span>
+<span class="sd">    :param generate_full_matrix_function: function taking an inadmissible block cluster tree and returning</span>
+<span class="sd">        a numpy.matrix</span>
+<span class="sd">    :return: hmatrix</span>
+<span class="sd">    :rtype: RMat</span>
+<span class="sd">    :raises: ValueError if root of BlockClusterTree is admissible</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">block_cluster_tree</span><span class="o">.</span><span class="n">admissible</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Root of the block cluster tree is admissible, can&#39;t generate HMat from that.&quot;</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">HMat</span><span class="p">(</span><span class="n">blocks</span><span class="o">=</span><span class="p">[],</span> <span class="n">shape</span><span class="o">=</span><span class="n">block_cluster_tree</span><span class="o">.</span><span class="n">shape</span><span class="p">(),</span> <span class="n">parent_index</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">recursion_build_hmatrix</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">block_cluster_tree</span><span class="p">,</span> <span class="n">generate_rmat_function</span><span class="p">,</span> <span class="n">generate_full_matrix_function</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">root</span></div>
+
+
+<div class="viewcode-block" id="recursion_build_hmatrix"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.hmat.recursion_build_hmatrix">[docs]</a><span class="k">def</span> <span class="nf">recursion_build_hmatrix</span><span class="p">(</span><span class="n">current_hmat</span><span class="p">,</span> <span class="n">block_cluster_tree</span><span class="p">,</span> <span class="n">generate_rmat</span><span class="p">,</span> <span class="n">generate_full_mat</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Recursion to :func:`build_hmatrix`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">block_cluster_tree</span><span class="o">.</span><span class="n">admissible</span><span class="p">:</span>
+        <span class="c1"># admissible level found, so fill content with rank-k matrix and stop</span>
+        <span class="n">current_hmat</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">generate_rmat</span><span class="p">(</span><span class="n">block_cluster_tree</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">block_cluster_tree</span><span class="o">.</span><span class="n">sons</span><span class="p">:</span>
+        <span class="c1"># no sons and not admissible, so we need an exact function</span>
+        <span class="n">current_hmat</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">generate_full_mat</span><span class="p">(</span><span class="n">block_cluster_tree</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># recursion</span>
+        <span class="k">for</span> <span class="n">son</span> <span class="ow">in</span> <span class="n">block_cluster_tree</span><span class="o">.</span><span class="n">sons</span><span class="p">:</span>
+            <span class="n">new_hmat</span> <span class="o">=</span> <span class="n">HMat</span><span class="p">(</span><span class="n">blocks</span><span class="o">=</span><span class="p">[],</span> <span class="n">shape</span><span class="o">=</span><span class="n">son</span><span class="o">.</span><span class="n">shape</span><span class="p">(),</span> <span class="n">parent_index</span><span class="o">=</span><span class="n">son</span><span class="o">.</span><span class="n">plot_info</span><span class="p">)</span>
+            <span class="n">current_hmat</span><span class="o">.</span><span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_hmat</span><span class="p">)</span>
+            <span class="n">recursion_build_hmatrix</span><span class="p">(</span><span class="n">new_hmat</span><span class="p">,</span> <span class="n">son</span><span class="p">,</span> <span class="n">generate_rmat</span><span class="p">,</span> <span class="n">generate_full_mat</span><span class="p">)</span></div>
 </pre></div>
 
           </div>

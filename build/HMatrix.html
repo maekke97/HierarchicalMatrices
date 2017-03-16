@@ -193,6 +193,22 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="HMatrix.block_cluster_tree.BlockClusterTree.shape">
+<code class="descname">shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree.shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return length of left and right cluster tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">x and y dimension</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="HMatrix.block_cluster_tree.BlockClusterTree.to_list">
 <code class="descname">to_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree.to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree.to_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Give list representation for export</p>
@@ -761,6 +777,41 @@ For big Clusters this is costly</p>
 </table>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="HMatrix.hmat.build_hmatrix">
+<code class="descclassname">HMatrix.hmat.</code><code class="descname">build_hmatrix</code><span class="sig-paren">(</span><em>block_cluster_tree=None</em>, <em>generate_rmat_function=None</em>, <em>generate_full_matrix_function=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/hmat.html#build_hmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.hmat.build_hmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory to build an HMat instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>block_cluster_tree</strong> (<a class="reference internal" href="#HMatrix.block_cluster_tree.BlockClusterTree" title="HMatrix.block_cluster_tree.BlockClusterTree"><em>BlockClusterTree</em></a>) &#8211; block cluster tree giving the structure</li>
+<li><strong>generate_rmat_function</strong> &#8211; function taking an admissible block cluster tree and returning a rank-k matrix</li>
+<li><strong>generate_full_matrix_function</strong> &#8211; function taking an inadmissible block cluster tree and returning
+a numpy.matrix</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">hmatrix</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#HMatrix.rmat.RMat" title="HMatrix.rmat.RMat">RMat</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">ValueError if root of BlockClusterTree is admissible</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="HMatrix.hmat.recursion_build_hmatrix">
+<code class="descclassname">HMatrix.hmat.</code><code class="descname">recursion_build_hmatrix</code><span class="sig-paren">(</span><em>current_hmat</em>, <em>block_cluster_tree</em>, <em>generate_rmat</em>, <em>generate_full_mat</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/hmat.html#recursion_build_hmatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.hmat.recursion_build_hmatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursion to <a class="reference internal" href="#HMatrix.hmat.build_hmatrix" title="HMatrix.hmat.build_hmatrix"><code class="xref py py-func docutils literal"><span class="pre">build_hmatrix()</span></code></a></p>
 </dd></dl>
 
 </div>
