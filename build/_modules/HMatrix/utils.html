@@ -1,0 +1,163 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HMatrix.utils &#8212; HMatrix  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for HMatrix.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;utils.py: Utilities for the :mod:`HMatrix` module</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+
+<div class="viewcode-block" id="load"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.utils.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load a :class:`ClusterTree` or :class:`BlockClusterTree` from file</span>
+
+<span class="sd">    :param filename: file to import</span>
+<span class="sd">    :type filename: String</span>
+<span class="sd">    :return: object</span>
+<span class="sd">    :rtype: BlockClusterTree or ClusterTree</span>
+
+<span class="sd">    .. note:: Depends on :mod:`pickle`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">pickle</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">infile</span><span class="p">:</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="admissible"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.utils.admissible">[docs]</a><span class="k">def</span> <span class="nf">admissible</span><span class="p">(</span><span class="n">left_clustertree</span><span class="p">,</span> <span class="n">right_clustertree</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Default admissible condition for BlockClusterTree</span>
+
+<span class="sd">    True if the smaller diameter of the input is smaller or equal to the distance between the two ClusterTrees</span>
+
+<span class="sd">    :param left_clustertree: &quot;Left-side&quot; ClusterTree</span>
+<span class="sd">    :param right_clustertree: &quot;Right-side&quot; ClusterTree</span>
+<span class="sd">    :type left_clustertree: ClusterTree</span>
+<span class="sd">    :type right_clustertree: ClusterTree</span>
+<span class="sd">    :return: admissible</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">diam_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">left_clustertree</span><span class="o">.</span><span class="n">diameter</span><span class="p">(),</span> <span class="n">right_clustertree</span><span class="o">.</span><span class="n">diameter</span><span class="p">())</span>
+    <span class="n">distance</span> <span class="o">=</span> <span class="n">left_clustertree</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">right_clustertree</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">diam_min</span> <span class="o">&lt;=</span> <span class="n">distance</span></div>
+
+
+<div class="viewcode-block" id="divisor_generator"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.utils.divisor_generator">[docs]</a><span class="k">def</span> <span class="nf">divisor_generator</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return divisors of n</span>
+
+<span class="sd">    :param n: integer to find divisors of</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :return: divisors</span>
+<span class="sd">    :rtype: list[int]</span>
+
+<span class="sd">    .. warning::</span>
+<span class="sd">       This is a generator! To get a list with all divisors call::</span>
+
+<span class="sd">          list(divisor_generator(n))</span>
+
+
+<span class="sd">    .. note::</span>
+<span class="sd">       found at</span>
+<span class="sd">       `StackOverflow</span>
+<span class="sd">       &lt;http://stackoverflow.com/questions/171765/what-is-the-best-way-to-get-all-the-divisors-of-a-number&gt;`_</span>
+<span class="sd">       on 2017.03.08</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">large_divisors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">i</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">*</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">large_divisors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span> <span class="o">/</span> <span class="n">i</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">divisor</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">large_divisors</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">divisor</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/test.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Markus Neumann.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

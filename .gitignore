@@ -4,7 +4,6 @@ out
 *.dot
 *.xml
 *.pyc
-build
 source/thesis.bib
 .idea/
 !.idea/dictionaries/nem.xml

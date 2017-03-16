@@ -1,0 +1,314 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HMatrix.cluster_tree &#8212; HMatrix  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for HMatrix.cluster_tree</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;cluster_tree.py: :class:`ClusterTree`, :func:`build_cluster_tree`, :func:`recursion_build_cluster_tree`</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="ClusterTree"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.ClusterTree">[docs]</a><span class="k">class</span> <span class="nc">ClusterTree</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Tree structure built according to the :class:`Splitable` in use</span>
+
+<span class="sd">    Splits are done until max_leaf_size is reached</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">sons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_leaf_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sons</span> <span class="o">=</span> <span class="n">sons</span> <span class="k">if</span> <span class="n">sons</span> <span class="k">else</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_leaf_size</span> <span class="o">=</span> <span class="n">max_leaf_size</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">optional_string</span> <span class="o">=</span> <span class="s2">&quot; with children </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sons</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sons</span> <span class="k">else</span> <span class="s2">&quot; without children&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;ClusterTree at level </span><span class="si">{0}{1}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">),</span> <span class="n">optional_string</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;give str representation of self.&quot;&quot;&quot;</span>
+        <span class="n">cont_str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+            <span class="n">cont_str</span> <span class="o">+=</span> <span class="s1">&#39;[&#39;</span>
+            <span class="n">cont_str</span> <span class="o">+=</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{0:.2f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">p</span><span class="p">])</span>
+            <span class="n">cont_str</span> <span class="o">+=</span> <span class="s2">&quot;] &quot;</span>
+        <span class="c1"># cont_str = &quot;,&quot;.join([str(p) for p in self.content])</span>
+        <span class="c1"># out_str = &quot;ClusterTree at level {0} with content:\n{1}&quot;.format(self.level, cont_str)</span>
+        <span class="c1"># return &quot;,&quot;.join([str(p) for p in self.content])</span>
+        <span class="c1"># return out_str</span>
+        <span class="n">cont_str</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cont_str</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test for equality&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">level</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">content</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">sons</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">sons</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ClusterTree.get_index"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.ClusterTree.get_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get index from content</span>
+
+<span class="sd">        :param item: index to get</span>
+<span class="sd">        :type item: int</span>
+<span class="sd">        :return: index</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClusterTree.get_grid_item"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.ClusterTree.get_grid_item">[docs]</a>    <span class="k">def</span> <span class="nf">get_grid_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get grid item from content</span>
+
+<span class="sd">        :param item: index of item to get</span>
+<span class="sd">        :type item: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">get_grid_item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ClusterTree.get_patch_coordinates"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.ClusterTree.get_patch_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">get_patch_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return min and max out of indices</span>
+
+<span class="sd">        :return: min and max</span>
+<span class="sd">        :rtype: tuple(int, int)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">get_patch_coordinates</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClusterTree.to_list"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.ClusterTree.to_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Give list representation for export</span>
+
+<span class="sd">        Return a list containing the object and a list with its sons</span>
+
+<span class="sd">        .. warning::</span>
+
+<span class="sd">            **recursive function**</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sons</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="p">[</span><span class="n">son</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="k">for</span> <span class="n">son</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sons</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="p">[]]</span></div>
+
+<div class="viewcode-block" id="ClusterTree.export"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.ClusterTree.export">[docs]</a>    <span class="k">def</span> <span class="nf">export</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;xml&#39;</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="s1">&#39;out&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Export obj in specified format.</span>
+
+<span class="sd">        :param form: format specifier</span>
+<span class="sd">        :type form: str</span>
+<span class="sd">        :param out_file: path to output file</span>
+<span class="sd">        :type out_file: str</span>
+<span class="sd">        :raises NotImplementedError: if form is not supported</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            implemented so far:</span>
+
+<span class="sd">            - xml</span>
+<span class="sd">            - dot</span>
+<span class="sd">            - bin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_to_xml</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">out_string</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="n">value_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">display_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">display_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">out_string</span> <span class="o">+=</span> <span class="s1">&#39;&lt;node value=&quot;</span><span class="si">{0}</span><span class="s1">&quot;&gt;</span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value_string</span><span class="p">,</span> <span class="n">display_string</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">out_string</span> <span class="o">=</span> <span class="n">_to_xml</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">out_string</span><span class="p">)</span>
+            <span class="n">out_string</span> <span class="o">+=</span> <span class="s2">&quot;&lt;/node&gt;</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="k">return</span> <span class="n">out_string</span>
+
+        <span class="k">def</span> <span class="nf">_to_dot</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">out_string</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">value_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">item_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">label_string</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">out_string</span> <span class="o">+=</span> <span class="s1">&#39;&#39;&#39;&quot;</span><span class="si">{0}</span><span class="s1">&quot; -- &quot;</span><span class="si">{1}</span><span class="s1">&quot;;</span>
+<span class="s1">                    &quot;</span><span class="si">{0}</span><span class="s1">&quot;[label=&quot;</span><span class="si">{2}</span><span class="s1">&quot;,color=&quot;#cccccc&quot;,style=&quot;filled&quot;,shape=&quot;box&quot;];</span><span class="se">\n</span><span class="s1">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">value_string</span><span class="p">,</span> <span class="n">item_string</span><span class="p">,</span> <span class="n">label_string</span><span class="p">)</span>
+                    <span class="n">out_string</span> <span class="o">=</span> <span class="n">_to_dot</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">out_string</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">out_string</span>
+
+        <span class="k">if</span> <span class="n">form</span> <span class="o">==</span> <span class="s1">&#39;xml&#39;</span><span class="p">:</span>
+            <span class="n">export_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+            <span class="n">head</span> <span class="o">=</span> <span class="s1">&#39;&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">_to_xml</span><span class="p">(</span><span class="n">export_list</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">output</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">form</span> <span class="o">==</span> <span class="s1">&#39;dot&#39;</span><span class="p">:</span>
+            <span class="n">export_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+            <span class="n">head</span> <span class="o">=</span> <span class="s1">&#39;graph {</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">_to_dot</span><span class="p">(</span><span class="n">export_list</span><span class="p">)</span>
+            <span class="n">tail</span> <span class="o">=</span> <span class="s1">&#39;}&#39;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="n">output</span> <span class="o">+</span> <span class="n">tail</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">form</span> <span class="o">==</span> <span class="s1">&#39;bin&#39;</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">pickle</span>
+            <span class="n">file_handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_handle</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">file_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClusterTree.depth"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.ClusterTree.depth">[docs]</a>    <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root_level</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get depth of the tree</span>
+
+<span class="sd">        :param root_level: internal use.</span>
+<span class="sd">        :type root_level: int</span>
+<span class="sd">        :return: depth</span>
+<span class="sd">        :rtype: int</span>
+
+<span class="sd">        .. warning::</span>
+
+<span class="sd">            **recursive function**</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">root_level</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">root_level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">sons</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">-</span> <span class="n">root_level</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="n">son</span><span class="o">.</span><span class="n">depth</span><span class="p">(</span><span class="n">root_level</span><span class="p">)</span> <span class="k">for</span> <span class="n">son</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sons</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="ClusterTree.diameter"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.ClusterTree.diameter">[docs]</a>    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the diameter of content</span>
+
+<span class="sd">        :return: diameter</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">diameter</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ClusterTree.distance"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.ClusterTree.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return distance to other</span>
+
+<span class="sd">        :param other: other cluster tree</span>
+<span class="sd">        :type other: ClusterTree</span>
+<span class="sd">        :return: distance</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">content</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="build_cluster_tree"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.build_cluster_tree">[docs]</a><span class="k">def</span> <span class="nf">build_cluster_tree</span><span class="p">(</span><span class="n">splitable</span><span class="p">,</span> <span class="n">max_leaf_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">start_level</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Factory for building a cluster tree</span>
+
+<span class="sd">    :param splitable: strategy that decides the structure</span>
+<span class="sd">    :type splitable: Splitable</span>
+<span class="sd">    :param max_leaf_size: cluster size at which recursion stops</span>
+<span class="sd">    :type max_leaf_size: int</span>
+<span class="sd">    :param start_level: counter to identify levels</span>
+<span class="sd">    :type start_level: int</span>
+<span class="sd">    :return: cluster tree</span>
+<span class="sd">    :rtype: ClusterTree</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">ClusterTree</span><span class="p">(</span><span class="n">splitable</span><span class="p">,</span> <span class="n">max_leaf_size</span><span class="o">=</span><span class="n">max_leaf_size</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="n">start_level</span><span class="p">)</span>
+    <span class="n">recursion_build_cluster_tree</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">root</span></div>
+
+
+<div class="viewcode-block" id="recursion_build_cluster_tree"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.cluster_tree.recursion_build_cluster_tree">[docs]</a><span class="k">def</span> <span class="nf">recursion_build_cluster_tree</span><span class="p">(</span><span class="n">current_tree</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Recursion to :func:`build_cluster_tree`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_tree</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">current_tree</span><span class="o">.</span><span class="n">max_leaf_size</span><span class="p">:</span>
+        <span class="n">splits</span> <span class="o">=</span> <span class="n">current_tree</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">:</span>
+            <span class="n">new_tree</span> <span class="o">=</span> <span class="n">ClusterTree</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">split</span><span class="p">,</span>
+                                   <span class="n">max_leaf_size</span><span class="o">=</span><span class="n">current_tree</span><span class="o">.</span><span class="n">max_leaf_size</span><span class="p">,</span>
+                                   <span class="n">level</span><span class="o">=</span><span class="n">current_tree</span><span class="o">.</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">current_tree</span><span class="o">.</span><span class="n">sons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_tree</span><span class="p">)</span>
+            <span class="n">recursion_build_cluster_tree</span><span class="p">(</span><span class="n">new_tree</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/test.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Markus Neumann.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,186 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HMatrix.tests.test_block_cluster_tree &#8212; HMatrix  documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for HMatrix.tests.test_block_cluster_tree</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">TestCase</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">block_cluster_tree</span> <span class="k">import</span> <span class="n">BlockClusterTree</span><span class="p">,</span> <span class="n">build_block_cluster_tree</span>
+<span class="kn">from</span> <span class="nn">cluster</span> <span class="k">import</span> <span class="n">Cluster</span>
+<span class="kn">from</span> <span class="nn">cluster_tree</span> <span class="k">import</span> <span class="n">build_cluster_tree</span>
+<span class="kn">from</span> <span class="nn">cuboid</span> <span class="k">import</span> <span class="n">Cuboid</span>
+<span class="kn">from</span> <span class="nn">grid</span> <span class="k">import</span> <span class="n">Grid</span>
+<span class="kn">from</span> <span class="nn">splitable</span> <span class="k">import</span> <span class="n">RegularCuboid</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="k">import</span> <span class="n">admissible</span>
+
+
+<div class="viewcode-block" id="TestBlockClusterTree"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_block_cluster_tree.TestBlockClusterTree">[docs]</a><span class="k">class</span> <span class="nc">TestBlockClusterTree</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="TestBlockClusterTree.setUpClass"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_block_cluster_tree.TestBlockClusterTree.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">lim1</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">lim2</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">link_num</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">points1</span> <span class="o">=</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lim1</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim1</span><span class="p">)]</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">links1</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">cls</span><span class="o">.</span><span class="n">points1</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lim1</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">link_num</span><span class="p">)]]</span>
+                      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim1</span><span class="p">)]</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">points2</span> <span class="o">=</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lim2</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lim2</span><span class="p">])</span>
+                       <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim2</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim2</span><span class="p">)]</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">links2</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">cls</span><span class="o">.</span><span class="n">points2</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lim2</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">link_num</span><span class="p">)]]</span>
+                      <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim2</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim2</span><span class="p">)]</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">points3</span> <span class="o">=</span> <span class="p">[</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">/</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span><span class="p">])</span>
+                       <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span><span class="p">)]</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">links3</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">cls</span><span class="o">.</span><span class="n">points3</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">link_num</span><span class="p">)]]</span>
+                      <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">lim3</span><span class="p">)]</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">grid1</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">points1</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">links1</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">grid2</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">points2</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">links2</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">grid3</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">points3</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">links3</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">cluster1</span> <span class="o">=</span> <span class="n">Cluster</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">grid1</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">cluster2</span> <span class="o">=</span> <span class="n">Cluster</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">grid2</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">cluster3</span> <span class="o">=</span> <span class="n">Cluster</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">grid3</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">cub1</span> <span class="o">=</span> <span class="n">Cuboid</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">cub2</span> <span class="o">=</span> <span class="n">Cuboid</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">cub3</span> <span class="o">=</span> <span class="n">Cuboid</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">rc1</span> <span class="o">=</span> <span class="n">RegularCuboid</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">cluster1</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">rc2</span> <span class="o">=</span> <span class="n">RegularCuboid</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">cluster2</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">rc3</span> <span class="o">=</span> <span class="n">RegularCuboid</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">cluster3</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">ct1</span> <span class="o">=</span> <span class="n">build_cluster_tree</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">rc1</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">ct2</span> <span class="o">=</span> <span class="n">build_cluster_tree</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">rc2</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">ct3</span> <span class="o">=</span> <span class="n">build_cluster_tree</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">rc3</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">bct1</span> <span class="o">=</span> <span class="n">build_block_cluster_tree</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">ct1</span><span class="p">,</span> <span class="n">right_cluster_tree</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">ct1</span><span class="p">,</span> <span class="n">admissible_function</span><span class="o">=</span><span class="n">admissible</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">bct2</span> <span class="o">=</span> <span class="n">build_block_cluster_tree</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">ct2</span><span class="p">,</span> <span class="n">right_cluster_tree</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">ct2</span><span class="p">,</span> <span class="n">admissible_function</span><span class="o">=</span><span class="n">admissible</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">bct3</span> <span class="o">=</span> <span class="n">build_block_cluster_tree</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">ct3</span><span class="p">,</span> <span class="n">right_cluster_tree</span><span class="o">=</span><span class="bp">cls</span><span class="o">.</span><span class="n">ct3</span><span class="p">,</span> <span class="n">admissible_function</span><span class="o">=</span><span class="n">admissible</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestBlockClusterTree.test_init"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_block_cluster_tree.TestBlockClusterTree.test_init">[docs]</a>    <span class="k">def</span> <span class="nf">test_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">BlockClusterTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rc1</span><span class="p">,</span> <span class="n">right_clustertree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rc1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">BlockClusterTree</span><span class="p">)</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">BlockClusterTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rc1</span><span class="p">,</span> <span class="n">right_clustertree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">rc1</span><span class="p">,</span> <span class="n">sons</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">rc2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="n">BlockClusterTree</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct1</span><span class="p">,</span> <span class="n">BlockClusterTree</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct2</span><span class="p">,</span> <span class="n">BlockClusterTree</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct3</span><span class="p">,</span> <span class="n">BlockClusterTree</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestBlockClusterTree.test_repr"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_block_cluster_tree.TestBlockClusterTree.test_repr">[docs]</a>    <span class="k">def</span> <span class="nf">test_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">test_str</span> <span class="o">=</span> <span class="s2">&quot;&lt;BlockClusterTree at level 0&gt;&quot;</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">BlockClusterTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ct1</span><span class="p">,</span> <span class="n">right_clustertree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ct1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="n">test_str</span><span class="p">)</span>
+        <span class="n">test_str</span> <span class="o">=</span> <span class="s2">&quot;&lt;BlockClusterTree at level 0 with children [&lt;BlockClusterTree at level 1&gt;]&gt;&quot;</span>
+        <span class="n">test</span> <span class="o">=</span> <span class="n">BlockClusterTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ct1</span><span class="p">,</span> <span class="n">right_clustertree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ct1</span><span class="p">,</span>
+                                <span class="n">sons</span><span class="o">=</span><span class="p">[</span><span class="n">BlockClusterTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ct1</span><span class="p">,</span> <span class="n">right_clustertree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ct1</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">test</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="n">test_str</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestBlockClusterTree.test_eq"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_block_cluster_tree.TestBlockClusterTree.test_eq">[docs]</a>    <span class="k">def</span> <span class="nf">test_eq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bct1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bct2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bct2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bct3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bct3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertNotEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct3</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bct1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestBlockClusterTree.test_depth"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_block_cluster_tree.TestBlockClusterTree.test_depth">[docs]</a>    <span class="k">def</span> <span class="nf">test_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct1</span><span class="o">.</span><span class="n">depth</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct2</span><span class="o">.</span><span class="n">depth</span><span class="p">(),</span> <span class="mi">6</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct3</span><span class="o">.</span><span class="n">depth</span><span class="p">(),</span> <span class="mi">6</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestBlockClusterTree.test_to_list"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_block_cluster_tree.TestBlockClusterTree.test_to_list">[docs]</a>    <span class="k">def</span> <span class="nf">test_to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct1</span><span class="o">.</span><span class="n">to_list</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct2</span><span class="o">.</span><span class="n">to_list</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bct3</span><span class="o">.</span><span class="n">to_list</span><span class="p">()),</span> <span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestBlockClusterTree.test_export"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_block_cluster_tree.TestBlockClusterTree.test_export">[docs]</a>    <span class="k">def</span> <span class="nf">test_export</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/test.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Markus Neumann.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

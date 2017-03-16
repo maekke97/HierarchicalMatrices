@@ -1,0 +1,1268 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HMatrix package &#8212; HMatrix  documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="HMatrix.tests package" href="HMatrix.tests.html" />
+    <link rel="prev" title="HMatrix" href="modules.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="HMatrix.tests.html" title="HMatrix.tests package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="HMatrix"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">HMatrix</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="hmatrix-package">
+<h1>HMatrix package<a class="headerlink" href="#hmatrix-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="HMatrix.tests.html">HMatrix.tests package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.clusterTreeTest">HMatrix.tests.clusterTreeTest module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.profiler">HMatrix.tests.profiler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.test_block_cluster_tree">HMatrix.tests.test_block_cluster_tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.test_cluster">HMatrix.tests.test_cluster module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.test_cluster_tree">HMatrix.tests.test_cluster_tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.test_cuboid">HMatrix.tests.test_cuboid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.test_grid">HMatrix.tests.test_grid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.test_hmat">HMatrix.tests.test_hmat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.test_rmat">HMatrix.tests.test_rmat module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.test_splitable">HMatrix.tests.test_splitable module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests.test_utils">HMatrix.tests.test_utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HMatrix.tests.html#module-HMatrix.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-HMatrix.block_cluster_tree">
+<span id="hmatrix-block-cluster-tree-module"></span><h2>HMatrix.block_cluster_tree module<a class="headerlink" href="#module-HMatrix.block_cluster_tree" title="Permalink to this headline">¶</a></h2>
+<p>block_cluster_tree.py: <a class="reference internal" href="#HMatrix.block_cluster_tree.BlockClusterTree" title="HMatrix.block_cluster_tree.BlockClusterTree"><code class="xref py py-class docutils literal"><span class="pre">BlockClusterTree</span></code></a>,
+<a class="reference internal" href="#HMatrix.block_cluster_tree.build_block_cluster_tree" title="HMatrix.block_cluster_tree.build_block_cluster_tree"><code class="xref py py-func docutils literal"><span class="pre">build_block_cluster_tree()</span></code></a>,
+<a class="reference internal" href="#HMatrix.block_cluster_tree.recursion_build_block_cluster_tree" title="HMatrix.block_cluster_tree.recursion_build_block_cluster_tree"><code class="xref py py-func docutils literal"><span class="pre">recursion_build_block_cluster_tree()</span></code></a></p>
+<dl class="class">
+<dt id="HMatrix.block_cluster_tree.BlockClusterTree">
+<em class="property">class </em><code class="descclassname">HMatrix.block_cluster_tree.</code><code class="descname">BlockClusterTree</code><span class="sig-paren">(</span><em>left_clustertree</em>, <em>right_clustertree</em>, <em>sons=None</em>, <em>level=0</em>, <em>is_admissible=False</em>, <em>plot_info=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Compares two cluster trees level wise with respect to an admissibility condition and builds a tree</p>
+<dl class="method">
+<dt id="HMatrix.block_cluster_tree.BlockClusterTree.depth">
+<code class="descname">depth</code><span class="sig-paren">(</span><em>root_level=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree.depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree.depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get depth of the tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>root_level</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; internal use.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">depth</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><strong>recursive function</strong></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.block_cluster_tree.BlockClusterTree.draw">
+<code class="descname">draw</code><span class="sig-paren">(</span><em>axes</em>, <em>admissible_color='#1e26bc'</em>, <em>inadmissible_color='#bc1d38'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a patch into given axes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axes</strong> (<a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#matplotlib.pyplot.axes" title="(in Matplotlib v2.0.0)"><em>matplotlib.pyplot.axes</em></a>) &#8211; axes instance to draw in</li>
+<li><strong>admissible_color</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; color for admissible patch (see matplotlib for color specs)</li>
+<li><strong>inadmissible_color</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; color for inadmissible patch</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.block_cluster_tree.BlockClusterTree.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>form='xml'</em>, <em>out_file='bct_out'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree.export"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export obj in specified format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>form</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; format specifier</li>
+<li><strong>out_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to output file</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>NotImplementedError</strong> &#8211; if form is not supported</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>implemented so far:</p>
+<ul class="last simple">
+<li>xml</li>
+<li>dot</li>
+<li>bin</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.block_cluster_tree.BlockClusterTree.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>filename=None</em>, <em>face_color='#133f52'</em>, <em>admissible_color='#76f7a8'</em>, <em>inadmissible_color='#ff234b'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the block cluster tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; filename to save the plot. if omitted, the plot will be displayed</li>
+<li><strong>face_color</strong> &#8211; background color (see matplotlib for color specs)</li>
+<li><strong>admissible_color</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; color for admissible patch</li>
+<li><strong>inadmissible_color</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; color for inadmissible patch</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">depends on <a class="reference external" href="http://matplotlib.org/api/pyplot_api.html#module-matplotlib.pyplot" title="(in Matplotlib v2.0.0)"><code class="xref py py-mod docutils literal"><span class="pre">matplotlib.pyplot</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.block_cluster_tree.BlockClusterTree.to_list">
+<code class="descname">to_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree.to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree.to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give list representation for export</p>
+<p>Return a list containing the object and a list with its sons</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><strong>recursive function</strong></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="HMatrix.block_cluster_tree.build_block_cluster_tree">
+<code class="descclassname">HMatrix.block_cluster_tree.</code><code class="descname">build_block_cluster_tree</code><span class="sig-paren">(</span><em>left_cluster_tree</em>, <em>right_cluster_tree=None</em>, <em>start_level=0</em>, <em>admissible_function=&lt;function admissible&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#build_block_cluster_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.build_block_cluster_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory for building a block cluster tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>left_cluster_tree</strong> (<a class="reference internal" href="#HMatrix.cluster_tree.ClusterTree" title="HMatrix.cluster_tree.ClusterTree"><em>ClusterTree</em></a>) &#8211; &#8220;left side&#8221; cluster tree</li>
+<li><strong>right_cluster_tree</strong> (<a class="reference internal" href="#HMatrix.cluster_tree.ClusterTree" title="HMatrix.cluster_tree.ClusterTree"><em>ClusterTree</em></a>) &#8211; &#8220;right side&#8221; cluster tree</li>
+<li><strong>start_level</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; counter that keeps track of the level</li>
+<li><strong>admissible_function</strong> (<em>function that returns a bool</em>) &#8211; function that determines whether two cluster trees are admissible or not. This is
+crucial for the structure of the block cluster tree. (See <code class="xref py py-mod docutils literal"><span class="pre">utils.admissible</span></code> for an example)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">block cluster tree</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#HMatrix.block_cluster_tree.BlockClusterTree" title="HMatrix.block_cluster_tree.BlockClusterTree">BlockClusterTree</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="HMatrix.block_cluster_tree.recursion_build_block_cluster_tree">
+<code class="descclassname">HMatrix.block_cluster_tree.</code><code class="descname">recursion_build_block_cluster_tree</code><span class="sig-paren">(</span><em>current_tree</em>, <em>admissible_function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#recursion_build_block_cluster_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.recursion_build_block_cluster_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursion to <a class="reference internal" href="#HMatrix.block_cluster_tree.build_block_cluster_tree" title="HMatrix.block_cluster_tree.build_block_cluster_tree"><code class="xref py py-func docutils literal"><span class="pre">build_block_cluster_tree()</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-HMatrix.cluster">
+<span id="hmatrix-cluster-module"></span><h2>HMatrix.cluster module<a class="headerlink" href="#module-HMatrix.cluster" title="Permalink to this headline">¶</a></h2>
+<p>cluster.py: <a class="reference internal" href="#HMatrix.cluster.Cluster" title="HMatrix.cluster.Cluster"><code class="xref py py-class docutils literal"><span class="pre">Cluster</span></code></a> object and iterator</p>
+<dl class="class">
+<dt id="HMatrix.cluster.Cluster">
+<em class="property">class </em><code class="descclassname">HMatrix.cluster.</code><code class="descname">Cluster</code><span class="sig-paren">(</span><em>grid</em>, <em>indices=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster.html#Cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster.Cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Handles operations on a <code class="xref py py-class docutils literal"><span class="pre">Grid</span></code> object by manipulating an index list</p>
+<ul>
+<li><p class="first"><strong>Attributes</strong>:</p>
+<blockquote>
+<div><p>grid: Grid object</p>
+<p>indices: list of indices</p>
+</div></blockquote>
+</li>
+</ul>
+<dl class="method">
+<dt id="HMatrix.cluster.Cluster.diameter">
+<code class="descname">diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster.html#Cluster.diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster.Cluster.diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute diameter</p>
+<p>Return the maximal Euclidean distance between two points
+For big Clusters this is costly</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">diameter</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster.Cluster.dim">
+<code class="descname">dim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster.html#Cluster.dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster.Cluster.dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute dimension</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dim of Grid</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster.Cluster.distance">
+<code class="descname">distance</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster.html#Cluster.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster.Cluster.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute distance to other cluster</p>
+<p>Return minimal Euclidean distance between points of self and other</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> &#8211; another instance of Cluster</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">distance</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster.Cluster.get_grid_item">
+<code class="descname">get_grid_item</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster.html#Cluster.get_grid_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster.Cluster.get_grid_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return item from grid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster.Cluster.get_index">
+<code class="descname">get_index</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster.html#Cluster.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster.Cluster.get_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return index at item</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">item-th index</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster.Cluster.get_patch_coordinates">
+<code class="descname">get_patch_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster.html#Cluster.get_patch_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster.Cluster.get_patch_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return min and max out of indices</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">min and max</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="HMatrix.cluster.ClusterIterator">
+<em class="property">class </em><code class="descclassname">HMatrix.cluster.</code><code class="descname">ClusterIterator</code><span class="sig-paren">(</span><em>cluster</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster.html#ClusterIterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster.ClusterIterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Iterator to Cluster object</p>
+<dl class="method">
+<dt id="HMatrix.cluster.ClusterIterator.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster.html#ClusterIterator.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster.ClusterIterator.next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-HMatrix.cluster_tree">
+<span id="hmatrix-cluster-tree-module"></span><h2>HMatrix.cluster_tree module<a class="headerlink" href="#module-HMatrix.cluster_tree" title="Permalink to this headline">¶</a></h2>
+<p>cluster_tree.py: <a class="reference internal" href="#HMatrix.cluster_tree.ClusterTree" title="HMatrix.cluster_tree.ClusterTree"><code class="xref py py-class docutils literal"><span class="pre">ClusterTree</span></code></a>, <a class="reference internal" href="#HMatrix.cluster_tree.build_cluster_tree" title="HMatrix.cluster_tree.build_cluster_tree"><code class="xref py py-func docutils literal"><span class="pre">build_cluster_tree()</span></code></a>, <a class="reference internal" href="#HMatrix.cluster_tree.recursion_build_cluster_tree" title="HMatrix.cluster_tree.recursion_build_cluster_tree"><code class="xref py py-func docutils literal"><span class="pre">recursion_build_cluster_tree()</span></code></a></p>
+<dl class="class">
+<dt id="HMatrix.cluster_tree.ClusterTree">
+<em class="property">class </em><code class="descclassname">HMatrix.cluster_tree.</code><code class="descname">ClusterTree</code><span class="sig-paren">(</span><em>content</em>, <em>sons=None</em>, <em>max_leaf_size=1</em>, <em>level=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#ClusterTree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.ClusterTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Tree structure built according to the <code class="xref py py-class docutils literal"><span class="pre">Splitable</span></code> in use</p>
+<p>Splits are done until max_leaf_size is reached</p>
+<dl class="method">
+<dt id="HMatrix.cluster_tree.ClusterTree.depth">
+<code class="descname">depth</code><span class="sig-paren">(</span><em>root_level=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#ClusterTree.depth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.ClusterTree.depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get depth of the tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>root_level</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; internal use.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">depth</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><strong>recursive function</strong></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster_tree.ClusterTree.diameter">
+<code class="descname">diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#ClusterTree.diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.ClusterTree.diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the diameter of content</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">diameter</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster_tree.ClusterTree.distance">
+<code class="descname">distance</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#ClusterTree.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.ClusterTree.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return distance to other</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<a class="reference internal" href="#HMatrix.cluster_tree.ClusterTree" title="HMatrix.cluster_tree.ClusterTree"><em>ClusterTree</em></a>) &#8211; other cluster tree</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">distance</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster_tree.ClusterTree.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>form='xml'</em>, <em>out_file='out'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#ClusterTree.export"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.ClusterTree.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export obj in specified format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>form</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; format specifier</li>
+<li><strong>out_file</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; path to output file</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>NotImplementedError</strong> &#8211; if form is not supported</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>implemented so far:</p>
+<ul class="last simple">
+<li>xml</li>
+<li>dot</li>
+<li>bin</li>
+</ul>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster_tree.ClusterTree.get_grid_item">
+<code class="descname">get_grid_item</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#ClusterTree.get_grid_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.ClusterTree.get_grid_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get grid item from content</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index of item to get</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster_tree.ClusterTree.get_index">
+<code class="descname">get_index</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#ClusterTree.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.ClusterTree.get_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get index from content</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index to get</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">index</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster_tree.ClusterTree.get_patch_coordinates">
+<code class="descname">get_patch_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#ClusterTree.get_patch_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.ClusterTree.get_patch_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return min and max out of indices</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">min and max</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cluster_tree.ClusterTree.to_list">
+<code class="descname">to_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#ClusterTree.to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.ClusterTree.to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give list representation for export</p>
+<p>Return a list containing the object and a list with its sons</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last"><strong>recursive function</strong></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="HMatrix.cluster_tree.build_cluster_tree">
+<code class="descclassname">HMatrix.cluster_tree.</code><code class="descname">build_cluster_tree</code><span class="sig-paren">(</span><em>splitable</em>, <em>max_leaf_size=1</em>, <em>start_level=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#build_cluster_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.build_cluster_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory for building a cluster tree</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>splitable</strong> (<a class="reference internal" href="#HMatrix.splitable.Splitable" title="HMatrix.splitable.Splitable"><em>Splitable</em></a>) &#8211; strategy that decides the structure</li>
+<li><strong>max_leaf_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; cluster size at which recursion stops</li>
+<li><strong>start_level</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; counter to identify levels</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">cluster tree</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#HMatrix.cluster_tree.ClusterTree" title="HMatrix.cluster_tree.ClusterTree">ClusterTree</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="HMatrix.cluster_tree.recursion_build_cluster_tree">
+<code class="descclassname">HMatrix.cluster_tree.</code><code class="descname">recursion_build_cluster_tree</code><span class="sig-paren">(</span><em>current_tree</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cluster_tree.html#recursion_build_cluster_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cluster_tree.recursion_build_cluster_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursion to <a class="reference internal" href="#HMatrix.cluster_tree.build_cluster_tree" title="HMatrix.cluster_tree.build_cluster_tree"><code class="xref py py-func docutils literal"><span class="pre">build_cluster_tree()</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-HMatrix.cuboid">
+<span id="hmatrix-cuboid-module"></span><h2>HMatrix.cuboid module<a class="headerlink" href="#module-HMatrix.cuboid" title="Permalink to this headline">¶</a></h2>
+<p>cuboid.py: <a class="reference internal" href="#HMatrix.cuboid.Cuboid" title="HMatrix.cuboid.Cuboid"><code class="xref py py-class docutils literal"><span class="pre">Cuboid</span></code></a> and <a class="reference internal" href="#HMatrix.cuboid.minimal_cuboid" title="HMatrix.cuboid.minimal_cuboid"><code class="xref py py-func docutils literal"><span class="pre">minimal_cuboid()</span></code></a></p>
+<dl class="class">
+<dt id="HMatrix.cuboid.Cuboid">
+<em class="property">class </em><code class="descclassname">HMatrix.cuboid.</code><code class="descname">Cuboid</code><span class="sig-paren">(</span><em>low_corner</em>, <em>high_corner</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cuboid.html#Cuboid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cuboid.Cuboid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Cuboid that is parallel to the axis in Cartesian coordinates.</p>
+<p>Characterized by two diagonal corners.</p>
+<ul>
+<li><p class="first"><strong>Attributes</strong>:</p>
+<blockquote>
+<div><p>low_corner: numpy.array with minimal values in each dimension</p>
+<p>high_corner: numpy.array with maximal values in each dimension</p>
+</div></blockquote>
+</li>
+</ul>
+<dl class="method">
+<dt id="HMatrix.cuboid.Cuboid.diameter">
+<code class="descname">diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cuboid.html#Cuboid.diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cuboid.Cuboid.diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the diameter of the cuboid.</p>
+<p>Diameter is the Euclidean distance between low_corner and high_corner.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">diameter</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cuboid.Cuboid.distance">
+<code class="descname">distance</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cuboid.html#Cuboid.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cuboid.Cuboid.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return distance to other Cuboid.</p>
+<p>Distance is the minimal Euclidean distance between points in self and points in other.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<a class="reference internal" href="#HMatrix.cuboid.Cuboid" title="HMatrix.cuboid.Cuboid"><em>Cuboid</em></a>) &#8211; other cuboid</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">distance</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.cuboid.Cuboid.split">
+<code class="descname">split</code><span class="sig-paren">(</span><em>axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cuboid.html#Cuboid.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cuboid.Cuboid.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the cuboid in half</p>
+<p>If axis is specified, the cuboid is split along the given axis, else the maximal axis is chosen.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; axis along which to split (optional)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">cuboid1, cuboid2</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a>(<a class="reference internal" href="#HMatrix.cuboid.Cuboid" title="HMatrix.cuboid.Cuboid">Cuboid</a>, <a class="reference internal" href="#HMatrix.cuboid.Cuboid" title="HMatrix.cuboid.Cuboid">Cuboid</a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="HMatrix.cuboid.minimal_cuboid">
+<code class="descclassname">HMatrix.cuboid.</code><code class="descname">minimal_cuboid</code><span class="sig-paren">(</span><em>cluster</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/cuboid.html#minimal_cuboid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.cuboid.minimal_cuboid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build minimal cuboid</p>
+<p>Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cluster</strong> (<a class="reference internal" href="#HMatrix.cluster.Cluster" title="HMatrix.cluster.Cluster"><em>Cluster</em></a>) &#8211; cluster to build cuboid around</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">minimal cuboid</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#HMatrix.cuboid.Cuboid" title="HMatrix.cuboid.Cuboid">Cuboid</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-HMatrix.grid">
+<span id="hmatrix-grid-module"></span><h2>HMatrix.grid module<a class="headerlink" href="#module-HMatrix.grid" title="Permalink to this headline">¶</a></h2>
+<p>grid.py: <a class="reference internal" href="#HMatrix.grid.Grid" title="HMatrix.grid.Grid"><code class="xref py py-class docutils literal"><span class="pre">Grid</span></code></a> object and iterator</p>
+<dl class="class">
+<dt id="HMatrix.grid.Grid">
+<em class="property">class </em><code class="descclassname">HMatrix.grid.</code><code class="descname">Grid</code><span class="sig-paren">(</span><em>points</em>, <em>links</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/grid.html#Grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.grid.Grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Discretized grid characterized by points and links</p>
+<ul>
+<li><p class="first"><strong>Attributes</strong>:</p>
+<blockquote>
+<div><p>points: list of coordinates</p>
+<p>links: list of links for each point</p>
+</div></blockquote>
+</li>
+</ul>
+<dl class="method">
+<dt id="HMatrix.grid.Grid.dim">
+<code class="descname">dim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/grid.html#Grid.dim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.grid.Grid.dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dimension of the Grid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dimension</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.grid.Grid.get_link">
+<code class="descname">get_link</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/grid.html#Grid.get_link"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.grid.Grid.get_link" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return link at position item</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">links</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.grid.Grid.get_point">
+<code class="descname">get_point</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/grid.html#Grid.get_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.grid.Grid.get_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return point at position item</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">point</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="HMatrix.grid.GridIterator">
+<em class="property">class </em><code class="descclassname">HMatrix.grid.</code><code class="descname">GridIterator</code><span class="sig-paren">(</span><em>grid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/grid.html#GridIterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.grid.GridIterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Iterator to Grid object</p>
+<dl class="method">
+<dt id="HMatrix.grid.GridIterator.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/grid.html#GridIterator.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.grid.GridIterator.next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-HMatrix.hmat">
+<span id="hmatrix-hmat-module"></span><h2>HMatrix.hmat module<a class="headerlink" href="#module-HMatrix.hmat" title="Permalink to this headline">¶</a></h2>
+<p>hmat.py: <a class="reference internal" href="#HMatrix.hmat.HMat" title="HMatrix.hmat.HMat"><code class="xref py py-class docutils literal"><span class="pre">HMat</span></code></a></p>
+<dl class="class">
+<dt id="HMatrix.hmat.HMat">
+<em class="property">class </em><code class="descclassname">HMatrix.hmat.</code><code class="descname">HMat</code><span class="sig-paren">(</span><em>blocks=()</em>, <em>content=None</em>, <em>shape=()</em>, <em>parent_index=()</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/hmat.html#HMat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.hmat.HMat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Implement a hierarchical Matrix</p>
+<dl class="method">
+<dt id="HMatrix.hmat.HMat.content_mul">
+<code class="descname">content_mul</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/hmat.html#HMat.content_mul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.hmat.HMat.content_mul" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.hmat.HMat.to_matrix">
+<code class="descname">to_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/hmat.html#HMat.to_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.hmat.HMat.to_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Full matrix representation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">full matrix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.matrix.html#numpy.matrix" title="(in NumPy v1.12)">numpy.matrix</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-HMatrix.rmat">
+<span id="hmatrix-rmat-module"></span><h2>HMatrix.rmat module<a class="headerlink" href="#module-HMatrix.rmat" title="Permalink to this headline">¶</a></h2>
+<p>rmat.py: <a class="reference internal" href="#HMatrix.rmat.RMat" title="HMatrix.rmat.RMat"><code class="xref py py-class docutils literal"><span class="pre">RMat</span></code></a></p>
+<dl class="class">
+<dt id="HMatrix.rmat.RMat">
+<em class="property">class </em><code class="descclassname">HMatrix.rmat.</code><code class="descname">RMat</code><span class="sig-paren">(</span><em>left_mat</em>, <em>right_mat</em>, <em>max_rank</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/rmat.html#RMat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.rmat.RMat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Rank-k matrix</p>
+<p>Implementation of the low rank matrix as described in [HB2015]</p>
+<dl class="method">
+<dt id="HMatrix.rmat.RMat.form_add">
+<code class="descname">form_add</code><span class="sig-paren">(</span><em>other</em>, <em>rank=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/rmat.html#RMat.form_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.rmat.RMat.form_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Formatted addition of self and other, i.e. addition and reduction to rank:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="bp">self</span> <span class="o">+</span> <span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">rank</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If rank is omitted, reduction to min(rank(self), rank(other))</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>other</strong> (<a class="reference internal" href="#HMatrix.rmat.RMat" title="HMatrix.rmat.RMat"><em>RMat</em></a>) &#8211; other rank-k matrix</li>
+<li><strong>rank</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; rank after reduction</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">reduced result</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#HMatrix.rmat.RMat" title="HMatrix.rmat.RMat">RMat</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.rmat.RMat.norm">
+<code class="descname">norm</code><span class="sig-paren">(</span><em>order=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/rmat.html#RMat.norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.rmat.RMat.norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Norm of the matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>order</strong> &#8211; order of the norm (see in <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.norm.html#numpy.linalg.norm" title="(in NumPy v1.12)"><code class="xref py py-func docutils literal"><span class="pre">numpy.linalg.norm()</span></code></a>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">norm</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.rmat.RMat.reduce">
+<code class="descname">reduce</code><span class="sig-paren">(</span><em>new_k</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/rmat.html#RMat.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.rmat.RMat.reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a reduced QR decomposition to rank new_k</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>new_k</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; rank to reduce to</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">reduced matrix</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#HMatrix.rmat.RMat" title="HMatrix.rmat.RMat">RMat</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.rmat.RMat.to_matrix">
+<code class="descname">to_matrix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/rmat.html#RMat.to_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.rmat.RMat.to_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Full matrix representation:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">left_mat</span> <span class="o">*</span> <span class="n">right_mat</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">full matrix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.matrix.html#numpy.matrix" title="(in NumPy v1.12)"><code class="xref py py-class docutils literal"><span class="pre">numpy.matrix</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-HMatrix.splitable">
+<span id="hmatrix-splitable-module"></span><h2>HMatrix.splitable module<a class="headerlink" href="#module-HMatrix.splitable" title="Permalink to this headline">¶</a></h2>
+<p>splitable.py: <a class="reference internal" href="#HMatrix.splitable.Splitable" title="HMatrix.splitable.Splitable"><code class="xref py py-class docutils literal"><span class="pre">Splitable</span></code></a> (Interface) and iterator and different strategies</p>
+<ul>
+<li><p class="first"><a class="reference internal" href="#HMatrix.splitable.RegularCuboid" title="HMatrix.splitable.RegularCuboid"><code class="xref py py-class docutils literal"><span class="pre">RegularCuboid</span></code></a></p>
+<blockquote>
+<div><p>Starting from a minimal cuboid that get&#8217;s split in half on every level, points are distributed according to
+their geometric location</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="#HMatrix.splitable.MinimalCuboid" title="HMatrix.splitable.MinimalCuboid"><code class="xref py py-class docutils literal"><span class="pre">MinimalCuboid</span></code></a></p>
+<blockquote>
+<div><p>Same as RegularCuboid, but after every split, the cuboids are reduced to minimal size</p>
+</div></blockquote>
+</li>
+<li><p class="first"><a class="reference internal" href="#HMatrix.splitable.Balanced" title="HMatrix.splitable.Balanced"><code class="xref py py-class docutils literal"><span class="pre">Balanced</span></code></a></p>
+<blockquote>
+<div><p>Distributes the points evenly on every level, depends solely on the order of the initial list</p>
+</div></blockquote>
+</li>
+</ul>
+<dl class="class">
+<dt id="HMatrix.splitable.Balanced">
+<em class="property">class </em><code class="descclassname">HMatrix.splitable.</code><code class="descname">Balanced</code><a class="reference internal" href="_modules/HMatrix/splitable.html#Balanced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Balanced" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#HMatrix.splitable.Splitable" title="HMatrix.splitable.Splitable"><code class="xref py py-class docutils literal"><span class="pre">HMatrix.splitable.Splitable</span></code></a></p>
+<dl class="method">
+<dt id="HMatrix.splitable.Balanced.diameter">
+<code class="descname">diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#Balanced.diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Balanced.diameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.Balanced.distance">
+<code class="descname">distance</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#Balanced.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Balanced.distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.Balanced.split">
+<code class="descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#Balanced.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Balanced.split" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="HMatrix.splitable.MinimalCuboid">
+<em class="property">class </em><code class="descclassname">HMatrix.splitable.</code><code class="descname">MinimalCuboid</code><a class="reference internal" href="_modules/HMatrix/splitable.html#MinimalCuboid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.MinimalCuboid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#HMatrix.splitable.Splitable" title="HMatrix.splitable.Splitable"><code class="xref py py-class docutils literal"><span class="pre">HMatrix.splitable.Splitable</span></code></a></p>
+<dl class="method">
+<dt id="HMatrix.splitable.MinimalCuboid.diameter">
+<code class="descname">diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#MinimalCuboid.diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.MinimalCuboid.diameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.MinimalCuboid.distance">
+<code class="descname">distance</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#MinimalCuboid.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.MinimalCuboid.distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.MinimalCuboid.split">
+<code class="descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#MinimalCuboid.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.MinimalCuboid.split" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="HMatrix.splitable.RegularCuboid">
+<em class="property">class </em><code class="descclassname">HMatrix.splitable.</code><code class="descname">RegularCuboid</code><span class="sig-paren">(</span><em>cluster</em>, <em>cuboid=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#RegularCuboid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.RegularCuboid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#HMatrix.splitable.Splitable" title="HMatrix.splitable.Splitable"><code class="xref py py-class docutils literal"><span class="pre">HMatrix.splitable.Splitable</span></code></a></p>
+<p>Method of regular cuboids</p>
+<p>If no cuboid is given, a minimal cuboid is built around initial list of indices. Split is then
+implemented by splitting the surrounding cuboid in half along longest axis and distributing indices according to the
+cuboid they belong to.</p>
+<p>Gives a binary tree</p>
+<dl class="method">
+<dt id="HMatrix.splitable.RegularCuboid.diameter">
+<code class="descname">diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#RegularCuboid.diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.RegularCuboid.diameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the diameter of the cuboid</p>
+<p>Diameter of the surrounding cuboid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">diameter</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.RegularCuboid.distance">
+<code class="descname">distance</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#RegularCuboid.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.RegularCuboid.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the distance between own cuboid and other cuboid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>other</strong> (<a class="reference internal" href="#HMatrix.splitable.Splitable" title="HMatrix.splitable.Splitable"><em>Splitable</em></a>) &#8211; other splitable</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">distance</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.RegularCuboid.get_grid_item">
+<code class="descname">get_grid_item</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#RegularCuboid.get_grid_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.RegularCuboid.get_grid_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get grid item from cluster</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index of item to get</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.RegularCuboid.get_index">
+<code class="descname">get_index</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#RegularCuboid.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.RegularCuboid.get_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get index from cluster</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index to get</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">index</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.RegularCuboid.get_patch_coordinates">
+<code class="descname">get_patch_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#RegularCuboid.get_patch_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.RegularCuboid.get_patch_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return min and max out of indices</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">min and max</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#tuple" title="(in Python v2.7)">tuple</a>(<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a>, <a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a>)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.RegularCuboid.split">
+<code class="descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#RegularCuboid.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.RegularCuboid.split" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split the cuboid and distribute items in cluster according to the cuboid they belong to</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">left_RegularCuboid, right_RegularCuboid</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#HMatrix.splitable.RegularCuboid" title="HMatrix.splitable.RegularCuboid">RegularCuboid</a>, <a class="reference internal" href="#HMatrix.splitable.RegularCuboid" title="HMatrix.splitable.RegularCuboid">RegularCuboid</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="HMatrix.splitable.Splitable">
+<em class="property">class </em><code class="descclassname">HMatrix.splitable.</code><code class="descname">Splitable</code><a class="reference internal" href="_modules/HMatrix/splitable.html#Splitable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Splitable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Interface to the different strategies that can be used to split a cluster in two.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Methods that need to be implemented by subclasses:</p>
+<ul class="last simple">
+<li>__len__: return the length of the cluster</li>
+<li>__iter__: return SplitableIterator(self)</li>
+<li>__repr__: give a meaningful string representation</li>
+<li>__getitem__: return item from inner cluster</li>
+<li>__eq__: check for equality against other Splitable</li>
+<li>get_index: return index from inner cluster</li>
+<li>get_grid_item: return grid item from inner cluster</li>
+<li>get_patch_coordinates: return min and max of index list of cluster</li>
+<li>split: split the object in two or more, return new instances</li>
+<li>diameter: return the diameter of the object</li>
+<li>distance: return the distance to other object</li>
+</ul>
+</div>
+<dl class="method">
+<dt id="HMatrix.splitable.Splitable.diameter">
+<code class="descname">diameter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#Splitable.diameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Splitable.diameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.Splitable.distance">
+<code class="descname">distance</code><span class="sig-paren">(</span><em>other</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#Splitable.distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Splitable.distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.Splitable.get_grid_item">
+<code class="descname">get_grid_item</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#Splitable.get_grid_item"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Splitable.get_grid_item" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.Splitable.get_index">
+<code class="descname">get_index</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#Splitable.get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Splitable.get_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.Splitable.get_patch_coordinates">
+<code class="descname">get_patch_coordinates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#Splitable.get_patch_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Splitable.get_patch_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.splitable.Splitable.split">
+<code class="descname">split</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#Splitable.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.Splitable.split" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="HMatrix.splitable.SplitableIterator">
+<em class="property">class </em><code class="descclassname">HMatrix.splitable.</code><code class="descname">SplitableIterator</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#SplitableIterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.SplitableIterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Iterator to the Splitable implementations.</p>
+<dl class="method">
+<dt id="HMatrix.splitable.SplitableIterator.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/splitable.html#SplitableIterator.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.splitable.SplitableIterator.next" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-HMatrix.utils">
+<span id="hmatrix-utils-module"></span><h2>HMatrix.utils module<a class="headerlink" href="#module-HMatrix.utils" title="Permalink to this headline">¶</a></h2>
+<p>utils.py: Utilities for the <a class="reference internal" href="#module-HMatrix" title="HMatrix"><code class="xref py py-mod docutils literal"><span class="pre">HMatrix</span></code></a> module</p>
+<dl class="function">
+<dt id="HMatrix.utils.admissible">
+<code class="descclassname">HMatrix.utils.</code><code class="descname">admissible</code><span class="sig-paren">(</span><em>left_clustertree</em>, <em>right_clustertree</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/utils.html#admissible"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.utils.admissible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default admissible condition for BlockClusterTree</p>
+<p>True if the smaller diameter of the input is smaller or equal to the distance between the two ClusterTrees</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>left_clustertree</strong> (<a class="reference internal" href="#HMatrix.cluster_tree.ClusterTree" title="HMatrix.cluster_tree.ClusterTree"><em>ClusterTree</em></a>) &#8211; &#8220;Left-side&#8221; ClusterTree</li>
+<li><strong>right_clustertree</strong> (<a class="reference internal" href="#HMatrix.cluster_tree.ClusterTree" title="HMatrix.cluster_tree.ClusterTree"><em>ClusterTree</em></a>) &#8211; &#8220;Right-side&#8221; ClusterTree</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">admissible</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)">bool</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="HMatrix.utils.divisor_generator">
+<code class="descclassname">HMatrix.utils.</code><code class="descname">divisor_generator</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/utils.html#divisor_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.utils.divisor_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return divisors of n</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; integer to find divisors of</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">divisors</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2/library/functions.html#list" title="(in Python v2.7)">list</a>[<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)">int</a>]</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>This is a generator! To get a list with all divisors call:</p>
+<div class="last highlight-default"><div class="highlight"><pre><span></span><span class="nb">list</span><span class="p">(</span><span class="n">divisor_generator</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">found at
+<a class="reference external" href="http://stackoverflow.com/questions/171765/what-is-the-best-way-to-get-all-the-divisors-of-a-number">StackOverflow</a>
+on 2017.03.08</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="HMatrix.utils.load">
+<code class="descclassname">HMatrix.utils.</code><code class="descname">load</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/utils.html#load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.utils.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a <code class="xref py py-class docutils literal"><span class="pre">ClusterTree</span></code> or <code class="xref py py-class docutils literal"><span class="pre">BlockClusterTree</span></code> from file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>String</em>) &#8211; file to import</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#HMatrix.block_cluster_tree.BlockClusterTree" title="HMatrix.block_cluster_tree.BlockClusterTree">BlockClusterTree</a> or <a class="reference internal" href="#HMatrix.cluster_tree.ClusterTree" title="HMatrix.cluster_tree.ClusterTree">ClusterTree</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Depends on <a class="reference external" href="https://docs.python.org/2/library/pickle.html#module-pickle" title="(in Python v2.7)"><code class="xref py py-mod docutils literal"><span class="pre">pickle</span></code></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-HMatrix">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-HMatrix" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/test.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">HMatrix package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-HMatrix.block_cluster_tree">HMatrix.block_cluster_tree module</a></li>
+<li><a class="reference internal" href="#module-HMatrix.cluster">HMatrix.cluster module</a></li>
+<li><a class="reference internal" href="#module-HMatrix.cluster_tree">HMatrix.cluster_tree module</a></li>
+<li><a class="reference internal" href="#module-HMatrix.cuboid">HMatrix.cuboid module</a></li>
+<li><a class="reference internal" href="#module-HMatrix.grid">HMatrix.grid module</a></li>
+<li><a class="reference internal" href="#module-HMatrix.hmat">HMatrix.hmat module</a></li>
+<li><a class="reference internal" href="#module-HMatrix.rmat">HMatrix.rmat module</a></li>
+<li><a class="reference internal" href="#module-HMatrix.splitable">HMatrix.splitable module</a></li>
+<li><a class="reference internal" href="#module-HMatrix.utils">HMatrix.utils module</a></li>
+<li><a class="reference internal" href="#module-HMatrix">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">HMatrix</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="HMatrix.tests.html"
+                        title="next chapter">HMatrix.tests package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/HMatrix.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="HMatrix.tests.html" title="HMatrix.tests package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="HMatrix"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >HMatrix</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Markus Neumann.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,243 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HMatrix.tests.test_rmat &#8212; HMatrix  documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for HMatrix.tests.test_rmat</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">TestCase</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">rmat</span> <span class="k">import</span> <span class="n">RMat</span>
+
+
+<div class="viewcode-block" id="TestRMat"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat">[docs]</a><span class="k">class</span> <span class="nc">TestRMat</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TestRMat.test_setup"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_setup">[docs]</a>    <span class="k">def</span> <span class="nf">test_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left_block</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">right_block</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+        <span class="n">rmat</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left_block</span><span class="p">,</span> <span class="n">right_block</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertIsInstance</span><span class="p">(</span><span class="n">rmat</span><span class="p">,</span> <span class="n">RMat</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_initExceptions"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_initExceptions">[docs]</a>    <span class="k">def</span> <span class="nf">test_initExceptions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left_block</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+        <span class="n">right_block</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">RMat</span><span class="p">,</span> <span class="n">left_block</span><span class="p">,</span> <span class="n">right_block</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">RMat</span><span class="p">,</span> <span class="n">left_block</span><span class="p">,</span> <span class="n">left_block</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_str"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_str">[docs]</a>    <span class="k">def</span> <span class="nf">test_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;Rank-k matrix with left block:</span>
+<span class="s1">[[1]</span>
+<span class="s1"> [2]</span>
+<span class="s1"> [3]]</span>
+<span class="s1">and right block:</span>
+<span class="s1">[[4]</span>
+<span class="s1"> [5]</span>
+<span class="s1"> [6]]&#39;&#39;&#39;</span>
+        <span class="n">rmat</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]]),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]]),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">rmat</span><span class="p">),</span> <span class="n">check</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_repr"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_repr">[docs]</a>    <span class="k">def</span> <span class="nf">test_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="s1">&#39;&lt;RMat with left_mat: matrix([[1],[2],[3]]), right_mat: matrix([[4],[5],[6]]) and max_rank: 1&gt;&#39;</span>
+        <span class="n">rmat</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]]),</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]]),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">rmat</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="n">check</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_add"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_add">[docs]</a>    <span class="k">def</span> <span class="nf">test_add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="n">left2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
+        <span class="n">add_left</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+        <span class="n">right1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">]])</span>
+        <span class="n">right2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]])</span>
+        <span class="n">add_right</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+        <span class="n">rmat1</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left1</span><span class="p">,</span> <span class="n">right1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">rmat2</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left2</span><span class="p">,</span> <span class="n">right2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">add_mat</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">add_left</span><span class="p">,</span> <span class="n">add_right</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">rmat1</span> <span class="o">+</span> <span class="n">rmat2</span><span class="p">,</span> <span class="n">add_mat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">rmat1</span> <span class="o">+</span> <span class="n">rmat2</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">rmat2</span> <span class="o">+</span> <span class="n">rmat1</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_neg"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_neg">[docs]</a>    <span class="k">def</span> <span class="nf">test_neg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="n">right1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
+        <span class="n">rmat_pos</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left1</span><span class="p">,</span> <span class="n">right1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">rmat_neg</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="o">-</span><span class="n">left1</span><span class="p">,</span> <span class="n">right1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="o">-</span><span class="n">rmat_pos</span><span class="p">,</span> <span class="n">rmat_neg</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_minus"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_minus">[docs]</a>    <span class="k">def</span> <span class="nf">test_minus</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="n">left2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
+        <span class="n">sub_left</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">]])</span>
+        <span class="n">right1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">]])</span>
+        <span class="n">right2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]])</span>
+        <span class="n">sub_right</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+        <span class="n">rmat1</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left1</span><span class="p">,</span> <span class="n">right1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">rmat2</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left2</span><span class="p">,</span> <span class="n">right2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">sub_mat</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">sub_left</span><span class="p">,</span> <span class="n">sub_right</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">minus</span> <span class="o">=</span> <span class="n">rmat1</span> <span class="o">-</span> <span class="n">rmat2</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">minus</span><span class="p">,</span> <span class="n">sub_mat</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">minus</span><span class="o">.</span><span class="n">to_matrix</span><span class="p">(),</span> <span class="n">res</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_abs"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_abs">[docs]</a>    <span class="k">def</span> <span class="nf">test_abs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]])</span>
+        <span class="n">rmat</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">rmat</span><span class="p">),</span> <span class="mf">32.832910319</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_mul"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_mul">[docs]</a>    <span class="k">def</span> <span class="nf">test_mul</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">right1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+        <span class="n">rmat1</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left1</span><span class="p">,</span> <span class="n">right1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">left2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+        <span class="n">right2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">rmat2</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left2</span><span class="p">,</span> <span class="n">right2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">left3</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
+        <span class="n">right3</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">]])</span>
+        <span class="n">rmat3</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left3</span><span class="p">,</span> <span class="n">right3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">left4</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="n">right4</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]])</span>
+        <span class="n">rmat4</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left4</span><span class="p">,</span> <span class="n">right4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">res1</span> <span class="o">=</span> <span class="n">rmat1</span> <span class="o">*</span> <span class="n">rmat2</span>
+        <span class="n">res2</span> <span class="o">=</span> <span class="n">rmat4</span> <span class="o">*</span> <span class="n">rmat2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res1</span><span class="o">.</span><span class="n">k_max</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">res2</span><span class="o">.</span><span class="n">k_max</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">rmat2</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">,</span> <span class="n">rmat3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">rmat1</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">,</span> <span class="n">rmat3</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_norm"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_norm">[docs]</a>    <span class="k">def</span> <span class="nf">test_norm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
+        <span class="n">rmat</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">rmat</span><span class="o">.</span><span class="n">norm</span><span class="p">(),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">rmat</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_toMatrix"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_toMatrix">[docs]</a>    <span class="k">def</span> <span class="nf">test_toMatrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">]])</span>
+        <span class="n">rmat</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">check_mat</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">rmat</span><span class="o">.</span><span class="n">to_matrix</span><span class="p">(),</span> <span class="n">check_mat</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_reduce"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_reduce">[docs]</a>    <span class="k">def</span> <span class="nf">test_reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left_block</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">right_block</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
+        <span class="n">rmat</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left_block</span><span class="p">,</span> <span class="n">right_block</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">red_rmat</span> <span class="o">=</span> <span class="n">rmat</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">res_a</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mf">30.52901104</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.60036909</span><span class="p">],</span>
+                              <span class="p">[</span><span class="mf">31.80619274</span><span class="p">,</span> <span class="mf">2.24569436</span><span class="p">],</span>
+                              <span class="p">[</span><span class="mf">32.3747334</span><span class="p">,</span> <span class="mf">1.18885057</span><span class="p">]</span>
+                              <span class="p">])</span>
+        <span class="n">res_b</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mf">0.16125158</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.98446933</span><span class="p">],</span>
+                              <span class="p">[</span><span class="mf">0.85768556</span><span class="p">,</span> <span class="mf">0.17458427</span><span class="p">],</span>
+                              <span class="p">[</span><span class="mf">0.488235</span><span class="p">,</span> <span class="mf">0.01845182</span><span class="p">]</span>
+                              <span class="p">])</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">res_a</span><span class="p">,</span> <span class="n">res_b</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">red_rmat</span><span class="p">,</span> <span class="n">res</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_form_add"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_form_add">[docs]</a>    <span class="k">def</span> <span class="nf">test_form_add</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+        <span class="n">right1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">left2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">right2</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+        <span class="n">rmat1</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left1</span><span class="p">,</span> <span class="n">right1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">rmat2</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left2</span><span class="p">,</span> <span class="n">right2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">added</span> <span class="o">=</span> <span class="n">rmat1</span> <span class="o">+</span> <span class="n">rmat2</span>
+        <span class="n">added2</span> <span class="o">=</span> <span class="n">rmat2</span> <span class="o">+</span> <span class="n">rmat1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">added</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">rmat1</span><span class="o">.</span><span class="n">form_add</span><span class="p">(</span><span class="n">rmat2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">added</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">rmat1</span><span class="o">.</span><span class="n">form_add</span><span class="p">(</span><span class="n">rmat2</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">added2</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="n">rmat2</span><span class="o">.</span><span class="n">form_add</span><span class="p">(</span><span class="n">rmat1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">added2</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">rmat2</span><span class="o">.</span><span class="n">form_add</span><span class="p">(</span><span class="n">rmat1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestRMat.test_type"><a class="viewcode-back" href="../../../HMatrix.tests.html#HMatrix.tests.test_rmat.TestRMat.test_type">[docs]</a>    <span class="k">def</span> <span class="nf">test_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">left1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+        <span class="n">right1</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">matrix</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="n">rmat1</span> <span class="o">=</span> <span class="n">RMat</span><span class="p">(</span><span class="n">left1</span><span class="p">,</span> <span class="n">right1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">rmat1</span><span class="p">),</span> <span class="n">RMat</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/test.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Markus Neumann.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>

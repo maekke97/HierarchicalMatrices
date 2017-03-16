@@ -1,0 +1,360 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>HMatrix.splitable &#8212; HMatrix  documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for HMatrix.splitable</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;splitable.py: :class:`Splitable` (Interface) and iterator and different strategies</span>
+
+<span class="sd">- :class:`RegularCuboid`</span>
+
+<span class="sd">    Starting from a minimal cuboid that get&#39;s split in half on every level, points are distributed according to</span>
+<span class="sd">    their geometric location</span>
+
+<span class="sd">- :class:`MinimalCuboid`</span>
+
+<span class="sd">    Same as RegularCuboid, but after every split, the cuboids are reduced to minimal size</span>
+
+<span class="sd">- :class:`Balanced`</span>
+
+<span class="sd">    Distributes the points evenly on every level, depends solely on the order of the initial list</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">cluster</span> <span class="k">import</span> <span class="n">Cluster</span>
+<span class="kn">from</span> <span class="nn">cuboid</span> <span class="k">import</span> <span class="n">minimal_cuboid</span>
+
+
+<div class="viewcode-block" id="Splitable"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Splitable">[docs]</a><span class="k">class</span> <span class="nc">Splitable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Interface to the different strategies that can be used to split a cluster in two.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        Methods that need to be implemented by subclasses:</span>
+
+<span class="sd">        - __len__: return the length of the cluster</span>
+<span class="sd">        - __iter__: return SplitableIterator(self)</span>
+<span class="sd">        - __repr__: give a meaningful string representation</span>
+<span class="sd">        - __getitem__: return item from inner cluster</span>
+<span class="sd">        - __eq__: check for equality against other Splitable</span>
+<span class="sd">        - get_index: return index from inner cluster</span>
+<span class="sd">        - get_grid_item: return grid item from inner cluster</span>
+<span class="sd">        - get_patch_coordinates: return min and max of index list of cluster</span>
+<span class="sd">        - split: split the object in two or more, return new instances</span>
+<span class="sd">        - diameter: return the diameter of the object</span>
+<span class="sd">        - distance: return the distance to other object</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SplitableIterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Splitable.get_index"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Splitable.get_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Splitable.get_grid_item"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Splitable.get_grid_item">[docs]</a>    <span class="k">def</span> <span class="nf">get_grid_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Splitable.get_patch_coordinates"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Splitable.get_patch_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">get_patch_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Splitable.split"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Splitable.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Splitable.diameter"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Splitable.diameter">[docs]</a>    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Splitable.distance"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Splitable.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="c1"># type: (Splitable) -&gt; float</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+
+<div class="viewcode-block" id="SplitableIterator"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.SplitableIterator">[docs]</a><span class="k">class</span> <span class="nc">SplitableIterator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Iterator to the Splitable implementations.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">obj</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="SplitableIterator.next"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.SplitableIterator.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">counter</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="RegularCuboid"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.RegularCuboid">[docs]</a><span class="k">class</span> <span class="nc">RegularCuboid</span><span class="p">(</span><span class="n">Splitable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Method of regular cuboids</span>
+
+<span class="sd">    If no cuboid is given, a minimal cuboid is built around initial list of indices. Split is then</span>
+<span class="sd">    implemented by splitting the surrounding cuboid in half along longest axis and distributing indices according to the</span>
+<span class="sd">    cuboid they belong to.</span>
+
+<span class="sd">    Gives a binary tree</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cluster</span><span class="p">,</span> <span class="n">cuboid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build a RegularCuboid</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cluster: Cluster instance</span>
+<span class="sd">            cuboid: Cuboid instance surrounding the cluster. (optional)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span> <span class="o">=</span> <span class="n">cluster</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cuboid</span> <span class="o">=</span> <span class="n">cuboid</span> <span class="k">if</span> <span class="n">cuboid</span> <span class="k">else</span> <span class="n">minimal_cuboid</span><span class="p">(</span><span class="n">cluster</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;RegularCuboid with cluster </span><span class="si">{0}</span><span class="s2"> and cuboid </span><span class="si">{1}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cuboid</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SplitableIterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the length of the cluster&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check for equality&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">cluster</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">cuboid</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">cuboid</span>
+
+<div class="viewcode-block" id="RegularCuboid.get_index"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.RegularCuboid.get_index">[docs]</a>    <span class="k">def</span> <span class="nf">get_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get index from cluster</span>
+
+<span class="sd">        :param item: index to get</span>
+<span class="sd">        :type item: int</span>
+<span class="sd">        :return: index</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RegularCuboid.get_grid_item"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.RegularCuboid.get_grid_item">[docs]</a>    <span class="k">def</span> <span class="nf">get_grid_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get grid item from cluster</span>
+
+<span class="sd">        :param item: index of item to get</span>
+<span class="sd">        :type item: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">get_grid_item</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RegularCuboid.get_patch_coordinates"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.RegularCuboid.get_patch_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">get_patch_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return min and max out of indices</span>
+
+<span class="sd">        :return: min and max</span>
+<span class="sd">        :rtype: tuple(int, int)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">get_patch_coordinates</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RegularCuboid.split"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.RegularCuboid.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Split the cuboid and distribute items in cluster according to the cuboid they belong to</span>
+
+<span class="sd">        :return: left_RegularCuboid, right_RegularCuboid</span>
+<span class="sd">        :rtype: RegularCuboid, RegularCuboid</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">left_cuboid</span><span class="p">,</span> <span class="n">right_cuboid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cuboid</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">left_indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">right_indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">indices</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">points</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">in</span> <span class="n">left_cuboid</span><span class="p">:</span>
+                <span class="n">left_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">right_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">left_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">left_cluster</span> <span class="o">=</span> <span class="n">Cluster</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">left_indices</span><span class="p">)</span>
+            <span class="n">left_rc</span> <span class="o">=</span> <span class="n">RegularCuboid</span><span class="p">(</span><span class="n">left_cluster</span><span class="p">,</span> <span class="n">left_cuboid</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">left_rc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">right_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">right_cluster</span> <span class="o">=</span> <span class="n">Cluster</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">grid</span><span class="p">,</span> <span class="n">right_indices</span><span class="p">)</span>
+            <span class="n">right_rc</span> <span class="o">=</span> <span class="n">RegularCuboid</span><span class="p">(</span><span class="n">right_cluster</span><span class="p">,</span> <span class="n">right_cuboid</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">right_rc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">left_rc</span> <span class="ow">and</span> <span class="n">right_rc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">right_rc</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">right_rc</span> <span class="ow">and</span> <span class="n">left_rc</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">left_rc</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">left_rc</span><span class="p">,</span> <span class="n">right_rc</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="RegularCuboid.diameter"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.RegularCuboid.diameter">[docs]</a>    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the diameter of the cuboid</span>
+
+<span class="sd">        Diameter of the surrounding cuboid</span>
+
+<span class="sd">        :return: diameter</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cuboid</span><span class="o">.</span><span class="n">diameter</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="RegularCuboid.distance"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.RegularCuboid.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the distance between own cuboid and other cuboid</span>
+
+<span class="sd">        :param other: other splitable</span>
+<span class="sd">        :type other: Splitable</span>
+<span class="sd">        :return: distance</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cuboid</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">cuboid</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="MinimalCuboid"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.MinimalCuboid">[docs]</a><span class="k">class</span> <span class="nc">MinimalCuboid</span><span class="p">(</span><span class="n">Splitable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SplitableIterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MinimalCuboid.split"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.MinimalCuboid.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MinimalCuboid.diameter"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.MinimalCuboid.diameter">[docs]</a>    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MinimalCuboid.distance"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.MinimalCuboid.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+
+
+<div class="viewcode-block" id="Balanced"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Balanced">[docs]</a><span class="k">class</span> <span class="nc">Balanced</span><span class="p">(</span><span class="n">Splitable</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">SplitableIterator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Balanced.split"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Balanced.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Balanced.diameter"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Balanced.diameter">[docs]</a>    <span class="k">def</span> <span class="nf">diameter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Balanced.distance"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.splitable.Balanced.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/test.png" alt="Logo"/>
+            </a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">HMatrix  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Markus Neumann.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.3.
+    </div>
+  </body>
+</html>
