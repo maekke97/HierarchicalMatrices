@@ -35,7 +35,7 @@ link_num = 2
 # bct1 = build_block_cluster_tree(ct1)
 # bct1.plot('plot_test1.png')
 
-lim2 = 2 ** 4
+lim2 = 2 ** 8
 # points2left = [np.array([0, float(i)/lim2]) for i in xrange(lim2)]
 # points2top = [np.array([float(i)/lim2, 1]) for i in xrange(lim2)]
 # points2right = [np.array([1, float(i)/lim2]) for i in xrange(lim2, 0, -1)]

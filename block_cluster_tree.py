@@ -84,7 +84,7 @@ class BlockClusterTree(object):
         color = admissible_color if self.admissible else inadmissible_color
         axes.fill(x, y, color, ec='k', lw=0.1)
 
-    def plot(self, filename=None, face_color='#96acd1', admissible_color='#1e26bc', inadmissible_color='#bc1d38'):
+    def plot(self, filename=None, face_color='#133f52', admissible_color='#76f7a8', inadmissible_color='#ff234b'):
         """Plot the block cluster tree
 
         :param filename: filename to save the plot. if omitted, the plot will be displayed
@@ -124,6 +124,8 @@ class BlockClusterTree(object):
             y_ticks = y_divisors[-1]
         axes.set_xticks(range(x_min, x_max + 2, x_ticks))
         axes.set_yticks(range(y_min, y_max + 2, y_ticks))
+        axes.set_xticks([])
+        axes.set_yticks([])
         axes.tick_params(length=2, width=0.5)
         axes.xaxis.tick_top()
         axes.invert_yaxis()
