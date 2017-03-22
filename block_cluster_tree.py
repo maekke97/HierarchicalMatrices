@@ -84,19 +84,22 @@ class BlockClusterTree(object):
         """
         # set x coordinates for patch
         x_min, y_min = self.plot_info
-        x_max = x_min + len(self.right_clustertree)
-        y_max = y_min + len(self.left_clustertree)
+        x_max = x_min + len(self.left_clustertree)
+        y_max = y_min + len(self.right_clustertree)
         x = [x_min, x_min, x_max, x_max]
         # set y coordinates for patch
         y = [y_min, y_max, y_max, y_min]
         color = admissible_color if self.admissible else inadmissible_color
         axes.fill(x, y, color, ec='k', lw=0.1)
 
-    def plot(self, filename=None, face_color='#133f52', admissible_color='#76f7a8', inadmissible_color='#ff234b'):
+    def plot(self, filename=None, ticks=False, face_color='#133f52',
+             admissible_color='#76f7a8', inadmissible_color='#ff234b'):
         """Plot the block cluster tree
 
         :param filename: filename to save the plot. if omitted, the plot will be displayed
         :type filename: str
+        :param ticks: show ticks in the plot
+        :type ticks: bool
         :param face_color: background color (see matplotlib for color specs)
         :param admissible_color: color for admissible patch
         :type admissible_color: str
@@ -109,6 +112,7 @@ class BlockClusterTree(object):
 
         """
         import matplotlib.pyplot as plt
+
         plt.rc('axes', linewidth=0.5, labelsize=4)
         plt.rc('xtick', labelsize=4)
         plt.rc('ytick', labelsize=4)
@@ -120,20 +124,22 @@ class BlockClusterTree(object):
         axes = plt.axes()
         axes.set_xlim(x_min, x_max + 1)
         axes.set_ylim(y_min, y_max + 1)
-        x_divisors = list(divisor_generator(x_max + 1))
-        y_divisors = list(divisor_generator(y_max + 1))
-        if len(x_divisors) > 4:
-            x_ticks = x_divisors[-4]
+        if ticks:
+            x_divisors = list(divisor_generator(x_max + 1))
+            y_divisors = list(divisor_generator(y_max + 1))
+            if len(x_divisors) > 4:
+                x_ticks = x_divisors[-4]
+            else:
+                x_ticks = x_divisors[-1]
+            if len(y_divisors) > 4:
+                y_ticks = y_divisors[-4]
+            else:
+                y_ticks = y_divisors[-1]
+            axes.set_xticks(range(x_min, x_max + 2, x_ticks))
+            axes.set_yticks(range(y_min, y_max + 2, y_ticks))
         else:
-            x_ticks = x_divisors[-1]
-        if len(y_divisors) > 4:
-            y_ticks = y_divisors[-4]
-        else:
-            y_ticks = y_divisors[-1]
-        axes.set_xticks(range(x_min, x_max + 2, x_ticks))
-        axes.set_yticks(range(y_min, y_max + 2, y_ticks))
-        axes.set_xticks([])
-        axes.set_yticks([])
+            axes.set_xticks([])
+            axes.set_yticks([])
         axes.tick_params(length=2, width=0.5)
         axes.xaxis.tick_top()
         axes.invert_yaxis()
@@ -142,7 +148,8 @@ class BlockClusterTree(object):
         if not filename:
             plt.show()
         else:
-            plt.tight_layout()
+            # remove whitespace around the plot
+            plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
             plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None)
 
     def _plot(self, axes, admissible_color='#1e26bc', inadmissible_color='#bc1d38'):

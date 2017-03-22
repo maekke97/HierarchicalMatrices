@@ -71,4 +71,7 @@ class TestHmat(TestCase):
         check = numpy.matrix([[i]*10 for i in xrange(55, 150, 10)])
         res = hmat._mul_with_matrix(numpy.matrix(numpy.ones((10, 10))))
         self.assertTrue(numpy.array_equal(check, res))
+        res = hmat._mul_with_matrix(numpy.matrix(numpy.ones((10, 15))))
+        check = numpy.matrix([[i] * 15 for i in xrange(55, 150, 10)])
         self.assertRaises(ValueError, hmat._mul_with_matrix, numpy.ones((11, 10)))
+        self.assertRaises(ValueError, hmat._mul_with_matrix, numpy.ones((9, 11)))

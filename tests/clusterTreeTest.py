@@ -54,7 +54,7 @@ ct2 = build_cluster_tree(rc2)
 ct2.export('dot', 'out2.dot')
 bct2 = build_block_cluster_tree(ct2)
 # bct2.export('dot', 'out2.dot')
-bct2.plot('plot_test2.png')
+bct2.plot('plotUnitCircle256.png', face_color='#ffffff')
 
 # lim3 = 2 ** 2
 # points3 = [np.array([float(i) / lim3, float(j) / lim3, float(k) / lim3]) for i in xrange(lim3) for j in

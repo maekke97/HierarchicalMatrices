@@ -1,4 +1,4 @@
-*.png
+tests/*.png
 !source/_img/*.png
 out
 *.dot
