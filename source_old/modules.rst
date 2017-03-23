@@ -1,7 +1,7 @@
-HierMat
+HMatrix
 =======
 
 .. toctree::
    :maxdepth: 4
 
-   HierMat
+   HMatrix
