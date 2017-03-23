@@ -9,14 +9,15 @@ class TestRMat(TestCase):
     def test_setup(self):
         left_block = numpy.matrix([[1, 2, 3], [3, 2, 1], [2, 3, 1]])
         right_block = numpy.matrix([[2, 3, 4], [4, 3, 2], [3, 4, 2]])
-        rmat = RMat(left_block, right_block, 3)
+        rmat = RMat(left_block, right_block)
+        self.assertIsInstance(rmat, RMat)
+        rmat = RMat(left_block, right_block, 1)
         self.assertIsInstance(rmat, RMat)
 
     def test_initExceptions(self):
         left_block = numpy.matrix([[1, 2], [2, 3], [3, 4]])
         right_block = numpy.matrix([[1], [2], [3]])
         self.assertRaises(ValueError, RMat, left_block, right_block, 2)
-        self.assertRaises(ValueError, RMat, left_block, left_block, 1)
 
     def test_str(self):
         check = '''Rank-k matrix with left block:
@@ -91,10 +92,28 @@ and right block:
         rmat4 = RMat(left4, right4, 1)
         res1 = rmat1 * rmat2
         res2 = rmat4 * rmat2
-        self.assertEqual(res1.k_max, 3)
-        self.assertEqual(res2.k_max, 2)
+        self.assertEqual(res1.max_rank, 3)
+        self.assertEqual(res2.max_rank, 2)
         self.assertRaises(ValueError, rmat2.__mul__, rmat3)
         self.assertRaises(ValueError, rmat1.__mul__, rmat3)
+        mat = numpy.matrix(numpy.ones((3, 1)))
+        res = RMat(left1, mat.T * right1)
+        self.assertEqual(res, rmat1 * mat)
+        self.assertRaises(ValueError, rmat1.__rmul__, mat)
+        mat = numpy.matrix(numpy.ones((1, 3)))
+        res = RMat(mat * left1, right1)
+        self.assertEqual(res, mat * rmat1)
+        mat = numpy.matrix(numpy.ones((4, 1)))
+        self.assertRaises(ValueError, rmat1.__mul__, mat)
+        mat = numpy.ones((3, 1))
+        res = left1 * (right1.T * mat)
+        self.assertTrue(numpy.array_equal(res, rmat1 * mat))
+        mat = numpy.ones((4, 1))
+        self.assertRaises(ValueError, rmat1.__mul__, mat)
+        self.assertRaises(NotImplementedError, rmat1.__mul__, 'a')
+        self.assertRaises(NotImplementedError, rmat1.__rmul__, 'a')
+        self.assertEqual(rmat1 * 1, rmat1)
+        self.assertEqual(1 * rmat1, rmat1)
 
     def test_norm(self):
         left = numpy.matrix([[1], [2], [3]])

@@ -52,7 +52,7 @@ class RMat(object):
         """Check for equality"""
         left_eq = numpy.array_equal(self.left_mat, other.left_mat)
         right_eq = numpy.array_equal(self.right_mat, other.right_mat)
-        return left_eq and right_eq and self.max_rank == other.k_max
+        return left_eq and right_eq and self.max_rank == other.max_rank
 
     def __add__(self, other):
         """Add two Rank-k-matrices
@@ -61,7 +61,7 @@ class RMat(object):
         """
         new_left = numpy.concatenate([self.left_mat, other.left_mat], axis=1)
         new_right = numpy.concatenate([self.right_mat, other.right_mat], axis=1)
-        new_k = self.max_rank + other.k_max
+        new_k = self.max_rank + other.max_rank
         return RMat(new_left, new_right, new_k)
 
     def __sub__(self, other):
@@ -94,6 +94,10 @@ class RMat(object):
             return self._mul_with_rmat(other)
         elif type(other) == numpy.matrix:
             return self._mul_with_mat(other)
+        elif type(other) == numpy.ndarray:
+            return self._mul_with_vector(other)
+        elif type(other) == int:
+            return self._mul_with_int(other)
         else:
             raise NotImplementedError("Operand of type {0} not supported".format(type(other)))
 
@@ -122,14 +126,22 @@ class RMat(object):
         else:
             return RMat(self.left_mat, other.right_mat * (other.left_mat.T * self.right_mat), r1)
 
-    def __rmul__(self, other):
-        """:todo: implement this!
+    def _mul_with_vector(self, other):
+        """Multiplication with vector"""
+        return self.left_mat * (self.right_mat.T * other)
 
-        :param other:
-        :return:
-        """
-        # TODO: implement this
-        pass
+    def _mul_with_int(self, other):
+        """Multiplication with scalar"""
+        return RMat(other * self.left_mat, self.right_mat, self.max_rank)
+
+    def __rmul__(self, other):
+        """Multiplication numpy.matrix * RMat"""
+        if type(other) == numpy.matrix:
+            return RMat(other * self.left_mat, self.right_mat, self.max_rank)
+        elif type(other) == int:
+            return self._mul_with_int(other)
+        else:
+            raise NotImplementedError("Operand of type {0} not supported".format(type(other)))
 
     def form_add(self, other, rank=None):
         """Formatted addition of self and other, i.e. addition and reduction to rank::
