@@ -1,5 +1,4 @@
 tests/*.png
-!source/_img/*.png
 source_old
 out
 *.dot
