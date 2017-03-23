@@ -79,6 +79,18 @@ class HMat(object):
                 res[row_start:row_end, :] += block * other[row_start:row_end, :]
             return res
 
+    def _mul_with_rmat(self, other):
+        """Multiplication with an RMat
+
+        :param other: rmatrix.RMat to multiply
+        :type other: RMat
+        :return:
+        """
+        if type(self.content) == RMat:
+            return self.content * other
+        elif self.content is not None:
+            return other.__rmul__(self.content)
+
     def to_matrix(self):
         """Full matrix representation
 

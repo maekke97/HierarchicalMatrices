@@ -151,6 +151,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">RMat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">left_mat</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">right_mat</span> <span class="o">*</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">left_mat</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">right_mat</span><span class="p">),</span> <span class="n">r1</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;:todo: implement this!</span>
+
+<span class="sd">        :param other:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: implement this</span>
+        <span class="k">pass</span>
+
 <div class="viewcode-block" id="RMat.form_add"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.rmat.RMat.form_add">[docs]</a>    <span class="k">def</span> <span class="nf">form_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Formatted addition of self and other, i.e. addition and reduction to rank::</span>
 

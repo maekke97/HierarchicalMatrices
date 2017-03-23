@@ -133,6 +133,19 @@
                 <span class="n">res</span><span class="p">[</span><span class="n">row_start</span><span class="p">:</span><span class="n">row_end</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">block</span> <span class="o">*</span> <span class="n">other</span><span class="p">[</span><span class="n">row_start</span><span class="p">:</span><span class="n">row_end</span><span class="p">,</span> <span class="p">:]</span>
             <span class="k">return</span> <span class="n">res</span>
 
+    <span class="k">def</span> <span class="nf">_mul_with_rmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Multiplication with an RMat</span>
+
+<span class="sd">        :param other: rmatrix.RMat to multiply</span>
+<span class="sd">        :type other: RMat</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span> <span class="o">==</span> <span class="n">RMat</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">*</span> <span class="n">other</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="HMat.to_matrix"><a class="viewcode-back" href="../../HMatrix.html#HMatrix.hmat.HMat.to_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">to_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Full matrix representation</span>
 

@@ -170,7 +170,7 @@
 
 <dl class="method">
 <dt id="HMatrix.block_cluster_tree.BlockClusterTree.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>filename=None</em>, <em>face_color='#133f52'</em>, <em>admissible_color='#76f7a8'</em>, <em>inadmissible_color='#ff234b'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>filename=None</em>, <em>ticks=False</em>, <em>face_color='#133f52'</em>, <em>admissible_color='#76f7a8'</em>, <em>inadmissible_color='#ff234b'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/block_cluster_tree.html#BlockClusterTree.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.block_cluster_tree.BlockClusterTree.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the block cluster tree</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -178,6 +178,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; filename to save the plot. if omitted, the plot will be displayed</li>
+<li><strong>ticks</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; show ticks in the plot</li>
 <li><strong>face_color</strong> &#8211; background color (see matplotlib for color specs)</li>
 <li><strong>admissible_color</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; color for admissible patch</li>
 <li><strong>inadmissible_color</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; color for inadmissible patch</li>
@@ -728,6 +729,20 @@ For big Clusters this is costly</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; index</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">point</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="HMatrix.grid.Grid.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/HMatrix/grid.html#Grid.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#HMatrix.grid.Grid.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the grid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; file to save the plot in</td>
 </tr>
 </tbody>
 </table>

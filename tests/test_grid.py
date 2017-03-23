@@ -10,9 +10,9 @@ class TestGrid(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.lim1 = 16
-        cls.lim2 = 8
+        cls.lim2 = 4
         cls.lim3 = 4
-        cls.link_num = 4
+        cls.link_num = 2
         cls.points1 = [numpy.array([float(i) / cls.lim1]) for i in xrange(cls.lim1)]
         cls.links1 = [[cls.points1[l] for l in [random.randint(0, cls.lim1 - 1) for x in xrange(cls.link_num)]]
                       for i in xrange(cls.lim1)]
@@ -90,3 +90,6 @@ class TestGrid(TestCase):
         self.assertEqual(self.grid1.dim(), 1)
         self.assertEqual(self.grid2.dim(), 2)
         self.assertEqual(self.grid3.dim(), 3)
+
+    def test_plot(self):
+        self.grid2.plot()
