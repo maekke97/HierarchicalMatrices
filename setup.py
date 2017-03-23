@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name='HMatrix',
+    name='HierMat',
     version='',
     packages=['HierMat'],
     url='',
