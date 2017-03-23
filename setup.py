@@ -3,7 +3,7 @@ from distutils.core import setup
 setup(
     name='HMatrix',
     version='',
-    packages=['HMatrix'],
+    packages=[''],
     url='',
     license='',
     author='nem',
