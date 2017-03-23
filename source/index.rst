@@ -10,7 +10,7 @@ Welcome to Hierarchical Matrices's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   HierMat
+   modules
 
 Indices and tables
 ==================
