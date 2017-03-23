@@ -3,11 +3,7 @@ import sys
 
 import numpy as np
 
-from block_cluster_tree import build_block_cluster_tree
-from cluster import Cluster
-from cluster_tree import build_cluster_tree
-from grid import Grid
-from splitable import RegularCuboid
+from HierMat.grid import Grid
 
 sys.setrecursionlimit(200)
 

@@ -2,14 +2,14 @@ import random
 from unittest import TestCase
 
 import numpy
-
 from block_cluster_tree import BlockClusterTree
 from cluster import Cluster
 from cluster_tree import ClusterTree
 from cuboid import Cuboid
-from grid import Grid
-from splitable import RegularCuboid
 from utils import admissible, load
+
+from HierMat.grid import Grid
+from HierMat.splitable import RegularCuboid
 
 
 class TestUtils(TestCase):

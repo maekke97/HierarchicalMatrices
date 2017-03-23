@@ -3,13 +3,13 @@ import random
 from unittest import TestCase
 
 import numpy
-
 from cluster import Cluster
 from cluster_tree import ClusterTree, build_cluster_tree
 from cuboid import Cuboid
-from grid import Grid
-from splitable import RegularCuboid
 from utils import load
+
+from HierMat.grid import Grid
+from HierMat.splitable import RegularCuboid
 
 
 class TestClusterTree(TestCase):

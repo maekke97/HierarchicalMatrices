@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy
 
-from hmat import HMat
+from HierMat.hmat import HMat
 
 
 class TestHmat(TestCase):

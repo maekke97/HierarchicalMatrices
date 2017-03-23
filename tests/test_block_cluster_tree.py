@@ -2,14 +2,14 @@ import random
 from unittest import TestCase
 
 import numpy
-
 from block_cluster_tree import BlockClusterTree, build_block_cluster_tree
 from cluster import Cluster
 from cluster_tree import build_cluster_tree
 from cuboid import Cuboid
-from grid import Grid
-from splitable import RegularCuboid
 from utils import admissible
+
+from HierMat.grid import Grid
+from HierMat.splitable import RegularCuboid
 
 
 class TestBlockClusterTree(TestCase):

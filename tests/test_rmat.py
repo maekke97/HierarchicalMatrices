@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy
 
-from rmat import RMat
+from HierMat.rmat import RMat
 
 
 class TestRMat(TestCase):

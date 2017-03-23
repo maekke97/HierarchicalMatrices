@@ -14,7 +14,8 @@
     Distributes the points evenly on every level, depends solely on the order of the initial list
 """
 from cluster import Cluster
-from cuboid import minimal_cuboid
+
+from HierMat.cuboid import minimal_cuboid
 
 
 class Splitable(object):

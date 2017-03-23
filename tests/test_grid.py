@@ -3,7 +3,7 @@ from unittest import TestCase
 
 import numpy
 
-from grid import Grid
+from HierMat.grid import Grid
 
 
 class TestGrid(TestCase):

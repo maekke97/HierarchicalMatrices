@@ -2,9 +2,9 @@ import random
 from unittest import TestCase
 
 import numpy
-
 from cluster import Cluster
-from grid import Grid
+
+from HierMat.grid import Grid
 
 
 class TestCluster(TestCase):

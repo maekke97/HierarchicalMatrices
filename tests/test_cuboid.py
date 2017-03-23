@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy
 
-from cuboid import Cuboid
+from HierMat.cuboid import Cuboid
 
 
 class TestCuboid(TestCase):

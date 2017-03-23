@@ -2,11 +2,11 @@ import random
 from unittest import TestCase
 
 import numpy
-
 from cluster import Cluster
 from cuboid import Cuboid
-from grid import Grid
-from splitable import Splitable, RegularCuboid
+
+from HierMat.grid import Grid
+from HierMat.splitable import Splitable, RegularCuboid
 
 
 class TestSplitable(TestCase):
