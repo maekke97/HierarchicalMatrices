@@ -1,10 +1,1 @@
 sphinxcontrib.bibtex
-block_cluster_tree.py
-cluster_tree.py
-cluster.py
-cuboid.py
-grid.py
-hmat.py
-rmat.py
-splitable.py
-utils.py
