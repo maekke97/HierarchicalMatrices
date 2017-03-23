@@ -1,2 +1,1 @@
-<h3>Documentation</h3>
-<a href="build/index.html" title="General Index">index</a>
+Documentation can be found at <a href=http://hierarchical-matrices.readthedocs.io/en/latest/>ReadTheDocs</a>
