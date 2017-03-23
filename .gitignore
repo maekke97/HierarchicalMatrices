@@ -8,4 +8,4 @@ source/thesis.bib
 .idea/*
 !.idea/dictionaries
 !.idea/dictionaries/nem.xml
-build/_static/test.png
+build
