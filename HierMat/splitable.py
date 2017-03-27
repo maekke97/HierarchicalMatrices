@@ -198,8 +198,8 @@ class RegularCuboid(Splitable):
     def distance(self, other):
         """Return the distance between own cuboid and other cuboid
 
-        :param other: other splitable
-        :type other: Splitable
+        :param other: other regular cuboid
+        :type other: RegularCuboid
         :return: distance
         :rtype: float
         """

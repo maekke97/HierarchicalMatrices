@@ -18,13 +18,35 @@ class HMat(object):
     def __repr__(self):
         return '<HMat with {content}>'.format(content=self.blocks if self.blocks else self.content)
 
+    def __add__(self, other):
+        """Addiion with several types"""
+        if type(other) is HMat:
+            return self._add_hmat(other)
+        elif type(other) is RMat:
+            return self._add_rmat(other)
+        elif type(other) is numpy.matrix:
+            return self._add_matrix(other)
+        else:
+            raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
+
+    def _add_hmat(self, other):
+        pass
+
+    def _add_rmat(self, other):
+        pass
+
+    def _add_matrix(self, other):
+        pass
+
     def __mul__(self, other):
         if type(other) is numpy.ndarray:
             return self._mul_with_vector(other)
         elif type(other) is numpy.matrix:
             return self._mul_with_matrix(other)
+        elif type(other) is int:
+            return self._mul_with_int(other)
         else:
-            raise TypeError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
+            raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
 
     def _mul_with_vector(self, other):
         """Multiply with a vector
@@ -86,10 +108,23 @@ class HMat(object):
         :type other: RMat
         :return:
         """
+        out = HMat(shape=self.shape, root_index=self.root_index)
         if type(self.content) == RMat:
-            return self.content * other
+            out.content = self.content * other
         elif self.content is not None:
             return other.__rmul__(self.content)
+        else:
+            raise TypeError("Encountered HMat * RMat! What should I do?!")
+
+    def _mul_with_int(self, other):
+        """Multiplication with integer"""
+        out = HMat(shape=self.shape, root_index=self.root_index)
+        if self.content is not None:
+            out.content = self.content * other
+            return out
+        else:
+            out.blocks = [block * other for block in self.blocks]
+            return out
 
     def to_matrix(self):
         """Full matrix representation

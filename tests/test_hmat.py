@@ -75,3 +75,19 @@ class TestHmat(TestCase):
         check = numpy.matrix([[i] * 15 for i in xrange(55, 150, 10)])
         self.assertRaises(ValueError, hmat._mul_with_matrix, numpy.ones((11, 10)))
         self.assertRaises(ValueError, hmat._mul_with_matrix, numpy.ones((9, 11)))
+
+    def test_mul_with_int(self):
+        block1 = numpy.matrix([numpy.arange(i, i + 5) for i in xrange(1, 6)])
+        block2 = numpy.matrix([numpy.arange(i, i + 5) for i in xrange(6, 11)])
+        block4 = numpy.matrix([numpy.arange(i, i + 5) for i in xrange(11, 16)])
+        hmat1 = HMat(content=block1, shape=(5, 5), root_index=(0, 0))
+        hmat2 = HMat(content=block2, shape=(5, 5), root_index=(5, 0))
+        hmat3 = HMat(content=block2, shape=(5, 5), root_index=(0, 5))
+        hmat4 = HMat(content=block4, shape=(5, 5), root_index=(5, 5))
+        hmat = HMat(blocks=[hmat1, hmat2, hmat3, hmat4], shape=(10, 10), root_index=(0, 0))
+        check = numpy.matrix([[i for i in xrange(j, j+10)] for j in xrange(1, 11)])
+        res = hmat * 1
+        self.assertTrue(numpy.array_equal(res.to_matrix(), check))
+        check *= 2
+        res = hmat * 2
+        self.assertTrue(numpy.array_equal(res.to_matrix(), check))

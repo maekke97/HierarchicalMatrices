@@ -90,13 +90,13 @@ class RMat(object):
 
     def __mul__(self, other):
         """Multiplication of self and other"""
-        if type(other) == RMat:
+        if type(other) is RMat:
             return self._mul_with_rmat(other)
-        elif type(other) == numpy.matrix:
+        elif type(other) is numpy.matrix:
             return self._mul_with_mat(other)
-        elif type(other) == numpy.ndarray:
+        elif type(other) is numpy.ndarray:
             return self._mul_with_vector(other)
-        elif type(other) == int:
+        elif type(other) is int:
             return self._mul_with_int(other)
         else:
             raise NotImplementedError("Operand of type {0} not supported".format(type(other)))
@@ -136,9 +136,9 @@ class RMat(object):
 
     def __rmul__(self, other):
         """Multiplication numpy.matrix * RMat"""
-        if type(other) == numpy.matrix:
+        if type(other) is numpy.matrix:
             return RMat(other * self.left_mat, self.right_mat, self.max_rank)
-        elif type(other) == int:
+        elif type(other) is int:
             return self._mul_with_int(other)
         else:
             raise NotImplementedError("Operand of type {0} not supported".format(type(other)))
@@ -168,7 +168,7 @@ class RMat(object):
             left_mat * right_mat.T
 
         :return: full matrix
-        :rtype: :class:`numpy.matrix`
+        :rtype: numpy.matrix
         """
         return self.left_mat * self.right_mat.T
 

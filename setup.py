@@ -8,5 +8,6 @@ setup(
     license='',
     author='nem',
     author_email='',
+    requires=['numpy', 'matplotlib'],
     description=''
 )

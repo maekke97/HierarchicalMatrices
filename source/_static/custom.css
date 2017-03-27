@@ -1,9 +1,27 @@
 /* custom overwrites for the theme */
 
+div.related {
+    background-color: #304070;
+}
+
+div.document {
+    background-color: #304090;
+}
+
 .field {
-    border: 1px solid #60adff;
+    border: 1px solid #6070ff;
 }
 
 .field-name {
-    background-color: #60adff;
+    background-color: #90c0ff;
+}
+
+.hint {
+    background-color: #e9f0ff;
+    border: 1px solid #6090ff;
+}
+
+div.note {
+    background-color: #e9f0ff;
+    border: 1px solid #6090ff;
 }

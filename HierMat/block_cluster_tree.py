@@ -42,7 +42,7 @@ class BlockClusterTree(object):
         :return: depth
         :rtype: int
 
-        .. warning::
+        .. hint::
 
             **recursive function**
         """
