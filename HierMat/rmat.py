@@ -55,6 +55,18 @@ class RMat(object):
         return left_eq and right_eq and self.max_rank == other.max_rank
 
     def __add__(self, other):
+        """Addition of self and other"""
+        if self.shape != other.shape:
+            raise ValueError('operands could not be broadcast together with shapes '
+                             '{0.shape} {1.shape}'.format(self, other))
+        if type(other) is RMat:
+            return self._add_rmat(other)
+        elif type(other) is numpy.matrix:
+            return self._add_mat(other)
+        else:
+            raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
+
+    def _add_rmat(self, other):
         """Add two Rank-k-matrices
 
         Resulting matrix will have higher rank
@@ -63,6 +75,10 @@ class RMat(object):
         new_right = numpy.concatenate([self.right_mat, other.right_mat], axis=1)
         new_k = self.max_rank + other.max_rank
         return RMat(new_left, new_right, new_k)
+
+    def _add_mat(self, other):
+        """Add full matrix to r matrix"""
+        pass
 
     def __sub__(self, other):
         """Subtract two Rank-k-matrices"""
@@ -99,7 +115,7 @@ class RMat(object):
         elif type(other) is int:
             return self._mul_with_int(other)
         else:
-            raise NotImplementedError("Operand of type {0} not supported".format(type(other)))
+            raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
 
     def _mul_with_mat(self, other):
         """Multiplication with full matrix"""
@@ -141,7 +157,7 @@ class RMat(object):
         elif type(other) is int:
             return self._mul_with_int(other)
         else:
-            raise NotImplementedError("Operand of type {0} not supported".format(type(other)))
+            raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
 
     def form_add(self, other, rank=None):
         """Formatted addition of self and other, i.e. addition and reduction to rank::

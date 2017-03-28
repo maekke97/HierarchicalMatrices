@@ -1,3 +1,33 @@
+"""
+HierMat
+=======
+
+This library is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this package.  If not, see <http://www.gnu.org/licenses/>.
+"""
+# This library is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with HierMat.  If not, see <http://www.gnu.org/licenses/>.
+
 from distutils.core import setup
 
 setup(
@@ -6,10 +36,11 @@ setup(
     packages=['HierMat'],
     url='http://hierarchical-matrices.readthedocs.io/en/latest/HierMat.html',
     download_url='https://git.math.uzh.ch/markus.neumann/HMatrix',
-    license='GPL',
+    license='GNU GPL v3',
     author='Markus Neumann',
     author_email='markus.neumann@math.uzh.ch',
     requires=['numpy', 'matplotlib'],
-    description='''This package is the result of my master thesis at the Institute of Mathematics, University of Zurich.
+    description='Framework for Hierarchical Matrices',
+    long_description='''This package is the result of my master thesis at the Institute of Mathematics, University of Zurich.
 It provides a framework for the concept of hierarchical matrices and is manly based on the book by W. Hackbusch.'''
 )

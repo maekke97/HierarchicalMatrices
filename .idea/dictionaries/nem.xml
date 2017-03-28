@@ -7,9 +7,11 @@
       <w>facecolor</w>
       <w>frobenius</w>
       <w>hackbusch</w>
+      <w>hier</w>
       <w>hmat</w>
       <w>hmatrix</w>
       <w>linalg</w>
+      <w>matplotlib</w>
       <w>neumann</w>
       <w>rmat</w>
       <w>sauter</w>
