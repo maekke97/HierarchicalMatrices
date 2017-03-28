@@ -73,7 +73,7 @@ class ClusterTree(object):
 
         Return a list containing the object and a list with its sons
 
-        .. warning::
+        .. hint::
 
             **recursive function**
         """
@@ -157,7 +157,7 @@ class ClusterTree(object):
         :return: depth
         :rtype: int
 
-        .. warning::
+        .. hint::
 
             **recursive function**
         """

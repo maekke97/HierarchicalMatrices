@@ -58,7 +58,7 @@ class BlockClusterTree(object):
 
         Return a list containing the object and a list with its sons
 
-        .. warning::
+        .. hint::
 
             **recursive function**
         """

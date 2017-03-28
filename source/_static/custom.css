@@ -1,4 +1,14 @@
 /* custom overwrites for the theme */
+.highlight {
+    background-color: #e9f0ff;
+}
+
+pre {
+    background-color: #e9f0ff;
+    border: 1px solid #6070ff;
+    border-left: none;
+    border-right: none;
+}
 
 div.related {
     background-color: #304070;
@@ -19,9 +29,11 @@ div.document {
 .hint {
     background-color: #e9f0ff;
     border: 1px solid #6090ff;
+    border-radius: 5px;
 }
 
 div.note {
     background-color: #e9f0ff;
     border: 1px solid #6090ff;
+    border-radius: 5px;
 }
