@@ -11,11 +11,11 @@ pre {
 }
 
 div.related {
-    background-color: #304070;
+    background-color: #102060;
 }
 
 div.document {
-    background-color: #304090;
+    background-color: #203070;
 }
 
 .field {
@@ -36,4 +36,8 @@ div.note {
     background-color: #e9f0ff;
     border: 1px solid #6090ff;
     border-radius: 5px;
+}
+
+div.footer {
+    background-color: #001040;
 }

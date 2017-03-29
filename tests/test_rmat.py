@@ -13,11 +13,22 @@ class TestRMat(TestCase):
         self.assertIsInstance(rmat, RMat)
         rmat = RMat(left_block, right_block, 1)
         self.assertIsInstance(rmat, RMat)
+        rmat = RMat(left_block, right_block, 4)
+        self.assertIsInstance(rmat, RMat)
 
     def test_initExceptions(self):
         left_block = numpy.matrix([[1, 2], [2, 3], [3, 4]])
         right_block = numpy.matrix([[1], [2], [3]])
         self.assertRaises(ValueError, RMat, left_block, right_block, 2)
+        self.assertRaises(ValueError, RMat, left_block)
+        self.assertRaises(ValueError, RMat, left_block, max_rank=0)
+
+    def test_from_matrix(self):
+        mat = numpy.matrix(numpy.ones((3, 3)))
+        check = RMat(mat, max_rank=1)
+        self.assertAlmostEqual(check.norm(), numpy.linalg.norm(mat))
+        check = RMat(mat, max_rank=4)
+        self.assertAlmostEqual(check.norm(), numpy.linalg.norm(mat))
 
     def test_str(self):
         check = '''Rank-k matrix with left block:
@@ -44,10 +55,15 @@ and right block:
         right2 = numpy.matrix([[4], [5], [6]])
         add_right = numpy.matrix([[5, 4], [6, 5], [7, 6]])
         rmat1 = RMat(left1, right1, 1)
-        rmat2 = RMat(left2, right2, 1)
+        rmat2 = RMat(left2, right2, 2)
         add_mat = RMat(add_left, add_right, 2)
-        self.assertEqual(rmat1 + rmat2, add_mat)
+        res = rmat1 + rmat2
+        self.assertAlmostEqual(rmat1 + rmat2, add_mat)
         self.assertAlmostEqual(abs(rmat1 + rmat2), abs(rmat2 + rmat1))
+        self.assertRaises(ValueError, rmat1.__add__, numpy.ones((2, 4)))
+        self.assertRaises(NotImplementedError, rmat1.__add__, 1)
+        self.assertRaises(NotImplementedError, rmat1.__add__, numpy.ones((3, 3)))
+        self.assertRaises(NotImplementedError, rmat1.__add__, numpy.matrix(numpy.ones((3, 3))))
 
     def test_neg(self):
         left1 = numpy.matrix([[1], [2], [3]])
@@ -68,8 +84,7 @@ and right block:
         sub_mat = RMat(sub_left, sub_right, 2)
         minus = rmat1 - rmat2
         res = numpy.matrix([[-3, -4, -5], [-2, -3, -4], [-1, -2, -3]])
-        self.assertEqual(minus, sub_mat)
-        self.assertTrue(numpy.array_equal(minus.to_matrix(), res))
+        self.assertEqual(minus, sub_mat.reduce(1))
 
     def test_abs(self):
         left = numpy.matrix([[1], [2], [3]])

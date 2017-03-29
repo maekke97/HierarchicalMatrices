@@ -9,7 +9,7 @@ class RMat(object):
     Implementation of the low rank matrix as described in [HB2015]
     """
 
-    def __init__(self, left_mat, right_mat, max_rank=None):
+    def __init__(self, left_mat, right_mat=None, max_rank=None):
         """Build Rank-k matrix
 
         Arguments:
@@ -17,22 +17,51 @@ class RMat(object):
             right_mat: numpy.matrix m x k
             max_rank: integer max_rank
         """
-        # check input
-        left_shape = left_mat.shape
-        right_shape = right_mat.shape
-        if left_shape[1] != right_shape[1]:
-            raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
-                             '{0.shape[1]} (dim 1) != {1.shape[1]} (dim 1)'.format(left_mat, right_mat))
-        if not max_rank:
-            self.max_rank = left_shape[1]
+        # check for wrong input
+        if right_mat is None and max_rank is None:
+            raise ValueError('Not enough input arguments. At least one of right_mat and max_rank has to be specified')
+        if max_rank == 0:
+            raise ValueError('max_rank must be a positive integer')
+
+        # check for direct conversion
+        if right_mat is None:
+            self.from_matrix(left_mat, max_rank)
+        else:  # default constructor
+            left_shape = left_mat.shape
+            right_shape = right_mat.shape
+            if left_shape[1] != right_shape[1]:
+                raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
+                                 '{0.shape[1]} (dim 1) != {1.shape[1]} (dim 1)'.format(left_mat, right_mat))
+            if not max_rank:
+                self.max_rank = left_shape[1]
+            else:
+                self.max_rank = max_rank
+            self.left_mat = left_mat
+            self.right_mat = right_mat
+            self.shape = (left_shape[0], right_shape[0])
+            # check if we have to reduce
+            if self.max_rank < left_shape[1]:
+                self._reduce(self.max_rank)
+
+    def from_matrix(self, matrix, max_rank):
+        """Convert a full matrix to the rank k format 
+        
+        :param matrix: Matrix to convert to RMat
+        :type matrix: numpy.matrix
+        :param max_rank: maximum rank
+        :type max_rank: int
+        :return: Best approximation of matrix in RMat format
+        :rtype: RMat
+        """
+        # check dimension
+        if max_rank > min(matrix.shape):
+            self.max_rank = min(matrix.shape)
         else:
             self.max_rank = max_rank
-        self.left_mat = left_mat
-        self.right_mat = right_mat
-        self.shape = (left_shape[0], right_shape[0])
-        # check if we have to reduce
-        if self.max_rank < left_shape[1]:
-            self._reduce(self.max_rank)
+        u, s, v = numpy.linalg.svd(matrix)
+        self.left_mat = u[:, 0: self.max_rank] * numpy.diag(s[0: self.max_rank])
+        self.right_mat = v[0: self.max_rank, :].T
+        self.shape = matrix.shape
 
     def __repr__(self):
         left_str = self.left_mat.__repr__().replace('\n', '').replace(' ', '')
@@ -56,13 +85,18 @@ class RMat(object):
 
     def __add__(self, other):
         """Addition of self and other"""
-        if self.shape != other.shape:
-            raise ValueError('operands could not be broadcast together with shapes '
-                             '{0.shape} {1.shape}'.format(self, other))
+        try:
+            if self.shape != other.shape:
+                raise ValueError('operands could not be broadcast together with shapes '
+                                 '{0.shape} {1.shape}'.format(self, other))
+        except AttributeError:
+            raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
         if type(other) is RMat:
-            return self._add_rmat(other)
-        elif type(other) is numpy.matrix:
-            return self._add_mat(other)
+            # if ranks are equal, do formatted addition, else do exact
+            if self.max_rank == other.max_rank:
+                return self.form_add(other, self.max_rank)
+            else:
+                return self._add_rmat(other)
         else:
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
 
@@ -75,10 +109,6 @@ class RMat(object):
         new_right = numpy.concatenate([self.right_mat, other.right_mat], axis=1)
         new_k = self.max_rank + other.max_rank
         return RMat(new_left, new_right, new_k)
-
-    def _add_mat(self, other):
-        """Add full matrix to r matrix"""
-        pass
 
     def __sub__(self, other):
         """Subtract two Rank-k-matrices"""
@@ -175,8 +205,9 @@ class RMat(object):
         """
         if not rank:
             rank = min((self.max_rank, other.max_rank))
-        res = self + other
-        return res.reduce(rank)
+        res = self._add_rmat(other)
+        res._reduce(rank)
+        return res
 
     def to_matrix(self):
         """Full matrix representation::
@@ -219,3 +250,4 @@ class RMat(object):
         new_right = q_right * v[:, 0:new_k]
         self.left_mat = new_left
         self.right_mat = new_right
+        self.max_rank = new_k
