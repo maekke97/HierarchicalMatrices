@@ -198,7 +198,7 @@ class BlockClusterTree(object):
             return out_string
 
         def _to_dot(lst, out_string=''):
-            if len(lst) > 1 and type(lst[1]) is list:
+            if len(lst) > 1:
                 for item in lst[1]:
                     if type(item) is list:
                         value_string = str(lst[0])
@@ -208,15 +208,6 @@ class BlockClusterTree(object):
                                 "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
                             value_string, item_string, label_string)
                         out_string = _to_dot(item, out_string)
-                    else:
-                        value_string = str(lst[0])
-                        item_string = item
-                        label_string = len(eval(value_string.replace('|', ',')))
-                        out_string += '''"{0}" -- "{1}";
-                                "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];
-                                "{1}"[color="#cccccc",style="filled",shape="box"];\n'''.format(value_string,
-                                                                                               item_string,
-                                                                                               label_string)
             return out_string
 
         if form == 'xml':
