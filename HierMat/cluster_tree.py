@@ -23,21 +23,34 @@ class ClusterTree(object):
 
     def __str__(self):
         """give str representation of self."""
+        cont_str = ",".join([str(p) for p in self.content])
+        out_str = "ClusterTree at level {0} with content:\n{1}".format(self.level, cont_str)
+        return out_str
+
+    def _plot_str(self):
+        """string for plots"""
         cont_str = ''
         for p in self.content:
             cont_str += '['
             cont_str += ",".join(["{0:.2f}".format(i) for i in p])
             cont_str += "] "
-        # cont_str = ",".join([str(p) for p in self.content])
-        # out_str = "ClusterTree at level {0} with content:\n{1}".format(self.level, cont_str)
-        # return ",".join([str(p) for p in self.content])
-        # return out_str
         cont_str.rstrip()
         return cont_str
 
     def __eq__(self, other):
-        """Test for equality"""
-        return self.level == other.level and self.content == other.content and self.sons == other.sons
+        """Test for equality
+        :param other: other cluster tree
+        :type other: ClusterTree
+        """
+        return (self.level == other.level and self.content == other.content
+                and self.sons == other.sons and self.max_leaf_size == other.max_leaf_size)
+
+    def __ne__(self, other):
+        """Test for inequality
+        :param other: other cluster tree
+        :type other: ClusterTree
+        """
+        return not (self == other)
 
     def __getitem__(self, item):
         return self.content[item]

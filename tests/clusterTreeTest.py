@@ -4,6 +4,10 @@ import sys
 import numpy as np
 
 from HierMat.grid import Grid
+from HierMat.cluster import Cluster
+from HierMat.splitable import RegularCuboid
+from HierMat.cluster_tree import build_cluster_tree
+from HierMat.block_cluster_tree import build_block_cluster_tree
 
 sys.setrecursionlimit(200)
 
@@ -46,13 +50,13 @@ links2.append([points2[0]])
 
 grid2 = Grid(points2, links2)
 grid2.plot('GridPlot.png')
-# cluster2 = Cluster(grid2)
-# rc2 = RegularCuboid(cluster2, )
-# ct2 = build_cluster_tree(rc2)
-# ct2.export('dot', 'out2.dot')
-# bct2 = build_block_cluster_tree(ct2)
-# # bct2.export('dot', 'out2.dot')
-# bct2.plot('plotUnitCircle256.png', face_color='#ffffff')
+cluster2 = Cluster(grid2)
+rc2 = RegularCuboid(cluster2, )
+ct2 = build_cluster_tree(rc2)
+ct2.export('dot', 'out2.dot')
+bct2 = build_block_cluster_tree(ct2)
+# bct2.export('dot', 'out2.dot')
+bct2.plot('plotUnitCircle256.png', face_color='#ffffff')
 
 # lim3 = 2 ** 2
 # points3 = [np.array([float(i) / lim3, float(j) / lim3, float(k) / lim3]) for i in xrange(lim3) for j in

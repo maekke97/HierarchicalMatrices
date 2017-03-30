@@ -1,12 +1,14 @@
-import math
-import random
 from unittest import TestCase
 
 import numpy
-from cluster import Cluster
-from cluster_tree import ClusterTree, build_cluster_tree
-from cuboid import Cuboid
-from utils import load
+import math
+import random
+import os
+
+from HierMat.cluster import Cluster
+from HierMat.cluster_tree import ClusterTree, build_cluster_tree
+from HierMat.cuboid import Cuboid
+from HierMat.utils import load
 
 from HierMat.grid import Grid
 from HierMat.splitable import RegularCuboid
@@ -71,6 +73,15 @@ class TestClusterTree(TestCase):
         test = "ClusterTree at level 0 with content:\n{0}".format(test_fill)
         self.assertEqual(str(self.ct1), test)
 
+    def test_plot_str(self):
+        cont_str = ''
+        for p in self.ct1.content:
+            cont_str += '['
+            cont_str += ",".join(["{0:.2f}".format(i) for i in p])
+            cont_str += "] "
+        cont_str.rstrip()
+        self.assertEqual(cont_str, self.ct1._plot_str())
+
     def test_getitem(self):
         self.assertTrue(numpy.array_equal(self.ct1[0], self.rc1[0]))
         self.assertTrue(numpy.array_equal(self.ct2[-1], self.rc2[-1]))
@@ -92,13 +103,26 @@ class TestClusterTree(TestCase):
         self.assertTrue(numpy.array_equal(self.ct3.get_grid_item(0), self.grid3[0]))
         self.assertTrue(numpy.array_equal(self.ct3.get_grid_item(-1), self.grid3[-1]))
 
+    def test_get_patch_coordinates(self):
+        self.assertEqual(self.ct1.get_patch_coordinates(), (0, self.lim1 - 1))
+        self.assertEqual(self.ct2.get_patch_coordinates(), (0, self.lim2**2 - 1))
+        self.assertEqual(self.ct3.get_patch_coordinates(), (0, self.lim3**3 - 1))
+
     def test_eq(self):
         self.assertEqual(self.ct1, self.ct1)
-        self.assertNotEqual(self.ct1, self.ct2)
+        self.assertFalse(self.ct1 == self.ct2)
         self.assertEqual(self.ct2, self.ct2)
-        self.assertNotEqual(self.ct2, self.ct3)
+        self.assertFalse(self.ct2 == self.ct3)
         self.assertEqual(self.ct3, self.ct3)
+        self.assertFalse(self.ct3 == self.ct1)
+
+    def test_ne(self):
+        self.assertNotEqual(self.ct1, self.ct2)
+        self.assertFalse(self.ct1 != self.ct1)
+        self.assertNotEqual(self.ct2, self.ct3)
+        self.assertFalse(self.ct2 != self.ct2)
         self.assertNotEqual(self.ct3, self.ct1)
+        self.assertFalse(self.ct3 != self.ct3)
 
     def test_to_list(self):
         self.assertEqual(len(self.ct1.to_list()), 2)
@@ -112,6 +136,9 @@ class TestClusterTree(TestCase):
         self.ct1.export('xml', out_file_xml)
         self.ct1.export('dot', out_file_dot)
         self.ct1.export('bin', out_file_bin)
+        self.assertTrue(os.path.exists(out_file_xml))
+        self.assertTrue(os.path.exists(out_file_dot))
+        self.assertTrue(os.path.exists(out_file_bin))
         test_ct = load(out_file_bin)
         self.assertEqual(self.ct1, test_ct)
         out_file_xml = 'test_EI_2.xml'
@@ -120,6 +147,9 @@ class TestClusterTree(TestCase):
         self.ct2.export('xml', out_file_xml)
         self.ct2.export('dot', out_file_dot)
         self.ct2.export('bin', out_file_bin)
+        self.assertTrue(os.path.exists(out_file_xml))
+        self.assertTrue(os.path.exists(out_file_dot))
+        self.assertTrue(os.path.exists(out_file_bin))
         test_ct = load(out_file_bin)
         self.assertEqual(self.ct2, test_ct)
         out_file_xml = 'test_EI_3.xml'
@@ -128,6 +158,9 @@ class TestClusterTree(TestCase):
         self.ct3.export('xml', out_file_xml)
         self.ct3.export('dot', out_file_dot)
         self.ct3.export('bin', out_file_bin)
+        self.assertTrue(os.path.exists(out_file_xml))
+        self.assertTrue(os.path.exists(out_file_dot))
+        self.assertTrue(os.path.exists(out_file_bin))
         test_ct = load(out_file_bin)
         self.assertEqual(self.ct3, test_ct)
         self.assertRaises(NotImplementedError, self.ct1.export, 'test', out_file_bin)
@@ -181,3 +214,12 @@ class TestClusterTree(TestCase):
         dist_rc = RegularCuboid(dist_cluster)
         dist_ct = ClusterTree(dist_rc, 1)
         self.assertEqual(self.ct3.distance(dist_ct), dist_check)
+
+    @classmethod
+    def tearDownClass(cls):
+        try:
+            for i in xrange(3):
+                for spec in ['bin', 'dot', 'xml']:
+                    os.remove('test_EI_{0}.{1}'.format(i+1, spec))
+        except OSError:
+            pass

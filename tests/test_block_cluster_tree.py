@@ -1,13 +1,16 @@
-import random
 from unittest import TestCase
 
 import numpy
-from block_cluster_tree import BlockClusterTree, build_block_cluster_tree
-from cluster import Cluster
-from cluster_tree import build_cluster_tree
-from cuboid import Cuboid
-from utils import admissible
+import random
+import math
+import os
+import matplotlib.figure
 
+from HierMat.block_cluster_tree import BlockClusterTree, build_block_cluster_tree
+from HierMat.cluster import Cluster
+from HierMat.cluster_tree import build_cluster_tree
+from HierMat.cuboid import Cuboid
+from HierMat.utils import admissible, load
 from HierMat.grid import Grid
 from HierMat.splitable import RegularCuboid
 
@@ -15,8 +18,8 @@ from HierMat.splitable import RegularCuboid
 class TestBlockClusterTree(TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.lim1 = 16
-        cls.lim2 = 8
+        cls.lim1 = 8
+        cls.lim2 = 3
         cls.lim3 = 4
         cls.link_num = 4
         cls.points1 = [numpy.array([float(i) / cls.lim1]) for i in xrange(cls.lim1)]
@@ -69,16 +72,24 @@ class TestBlockClusterTree(TestCase):
 
     def test_eq(self):
         self.assertEqual(self.bct1, self.bct1)
-        self.assertNotEqual(self.bct1, self.bct2)
+        self.assertFalse(self.bct1 == self.bct2)
         self.assertEqual(self.bct2, self.bct2)
-        self.assertNotEqual(self.bct2, self.bct3)
+        self.assertFalse(self.bct2 == self.bct3)
         self.assertEqual(self.bct3, self.bct3)
+        self.assertFalse(self.bct3 == self.bct1)
+
+    def test_ne(self):
+        self.assertNotEqual(self.bct1, self.bct2)
+        self.assertFalse(self.bct1 != self.bct1)
+        self.assertNotEqual(self.bct2, self.bct3)
+        self.assertFalse(self.bct2 != self.bct2)
         self.assertNotEqual(self.bct3, self.bct1)
+        self.assertFalse(self.bct3 != self.bct3)
 
     def test_depth(self):
-        self.assertEqual(self.bct1.depth(), 4)
-        self.assertEqual(self.bct2.depth(), 6)
-        self.assertEqual(self.bct3.depth(), 6)
+        self.assertEqual(self.bct1.depth(), math.log(self.lim1, 2))
+        self.assertEqual(self.bct2.depth(), math.ceil(math.log(self.lim2, 2)*2))
+        self.assertEqual(self.bct3.depth(), math.log(self.lim3, 2)*3)
 
     def test_to_list(self):
         self.assertEqual(len(self.bct1.to_list()), 2)
@@ -91,4 +102,48 @@ class TestBlockClusterTree(TestCase):
         self.assertEqual(self.bct3.shape(), (self.lim3**3, self.lim3**3))
 
     def test_export(self):
-        self.fail()
+        out_string = 'test_EI_bct1.'
+        forms = ['xml', 'dot', 'bin']
+        for form in forms:
+            self.bct1.export(form, out_file=out_string + form)
+            self.assertTrue(os.path.exists(out_string + form))
+        check = load(out_string + 'bin')
+        self.assertEqual(check, self.bct1)
+        out_string = 'test_EI_bct2.'
+        for form in forms:
+            self.bct2.export(form, out_file=out_string + form)
+            self.assertTrue(os.path.exists(out_string + form))
+        check = load(out_string + 'bin')
+        self.assertEqual(check, self.bct2)
+        out_string = 'test_EI_bct3.'
+        for form in forms:
+            self.bct3.export(form, out_file=out_string + form)
+            self.assertTrue(os.path.exists(out_string + form))
+        check = load(out_string + 'bin')
+        self.assertEqual(check, self.bct3)
+
+    def test_plot(self):
+        out_string = 'test_plot_bct1'
+        self.bct1.plot(out_string)
+        self.assertTrue(os.path.exists(out_string))
+        out_string = 'test_plot_bct2'
+        self.bct2.plot(out_string, ticks=True)
+        self.assertTrue(os.path.exists(out_string))
+        out_string = 'test_plot_bct3'
+        self.bct3.plot(out_string)
+        self.assertTrue(os.path.exists(out_string))
+        fig = self.bct3.plot(ticks=True)
+        self.assertIsInstance(fig, matplotlib.figure.Figure)
+
+    @classmethod
+    def tearDownClass(cls):
+        out_string = 'test_EI_bct{0}.'
+        plot_out = 'test_plot_bct'
+        forms = ['xml', 'dot', 'bin']
+        try:
+            for i in xrange(3):
+                for form in forms:
+                    os.remove(out_string.format(i+1)+form)
+                os.remove(plot_out + str(i+1))
+        except OSError:
+            pass

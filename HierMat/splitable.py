@@ -53,6 +53,9 @@ class Splitable(object):
     def __eq__(self, other):
         raise NotImplementedError()
 
+    def __ne__(self, other):
+        return not (self == other)
+
     def get_index(self, item):
         raise NotImplementedError()
 

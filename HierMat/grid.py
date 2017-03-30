@@ -15,10 +15,12 @@ class Grid(object):
         :type links: list[list[numpy.array or list[float]]]
         :raise ValueError: if points and links have different length
         """
+        # check input
+        if len(points) != len(links):
+            raise ValueError('points and links must be of same length')
+        # fill instance
         self.points = points
         self.links = links
-        if len(self.points) != len(self.links):
-            raise ValueError("Points and links must be of same length.")
 
     def __len__(self):
         """Return length of points
@@ -61,9 +63,7 @@ class Grid(object):
         :return: True on inequality
         :rtype: bool
         """
-        points_eq = numpy.array_equal(self.points, other.points)
-        links_eq = numpy.array_equal(self.links, other.links)
-        return not points_eq or not links_eq
+        return not (self == other)
 
     def get_point(self, item):
         """Return point at position item
@@ -94,13 +94,13 @@ class Grid(object):
     def plot(self, filename=None):
         """Plot the grid
 
-        :param filename: file to save the plot in
+        :param filename: file to save the plot in. If not specified, the figure is returned
         :type filename: str
         """
         # check dimensions:
         d = self.dim()
         if d != 2:
-            raise ValueError("Only 2D plot is supported")
+            raise NotImplementedError("Only 2D plot is supported for now")
         import matplotlib.pyplot as plt
 
         plt.rc('axes', linewidth=0.5, labelsize=4)

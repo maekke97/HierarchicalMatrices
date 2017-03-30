@@ -119,11 +119,20 @@ class TestSplitable(TestCase):
     def test_eq(self):
         self.assertRaises(NotImplementedError, self.dummy.__eq__, self.dummy)
         self.assertEqual(self.rc1, self.rc1)
-        self.assertNotEqual(self.rc1, self.rc2)
+        self.assertFalse(self.rc1 == self.rc2)
         self.assertEqual(self.rc2, self.rc2)
-        self.assertNotEqual(self.rc2, self.rc3)
+        self.assertFalse(self.rc2 == self.rc3)
         self.assertEqual(self.rc3, self.rc3)
+        self.assertFalse(self.rc3 == self.rc1)
+
+    def test_ne(self):
+        self.assertRaises(NotImplementedError, self.dummy.__ne__, self.dummy)
+        self.assertNotEqual(self.rc1, self.rc2)
+        self.assertFalse(self.rc1 != self.rc1)
+        self.assertNotEqual(self.rc2, self.rc3)
+        self.assertFalse(self.rc2 != self.rc2)
         self.assertNotEqual(self.rc3, self.rc1)
+        self.assertFalse(self.rc3 != self.rc3)
 
     def test_split(self):
         self.assertRaises(NotImplementedError, self.dummy.split)

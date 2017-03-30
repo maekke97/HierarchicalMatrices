@@ -23,8 +23,18 @@ class Cuboid(object):
         :param high_corner: high corner
         :type high_corner: numpy.array
         """
+        if len(low_corner) != len(high_corner):
+            raise ValueError('corners must have same dimension')
         self.low_corner = array(low_corner, float)
         self.high_corner = array(high_corner, float)
+
+    def __len__(self):
+        """Dimension of the corners
+        
+        :return: len(high_corner)
+        :rtype: int
+        """
+        return len(self.high_corner)
 
     def __eq__(self, other):
         """Test for equality
@@ -34,7 +44,8 @@ class Cuboid(object):
         :return: equal
         :rtype: bool
         """
-        # TODO: check dimension match
+        if len(self) != len(other):
+            return False
         low_eq = self.low_corner == other.low_corner
         high_eq = self.high_corner == other.high_corner
         return low_eq.all() and high_eq.all()
@@ -47,9 +58,7 @@ class Cuboid(object):
         :return: equal
         :rtype: bool
         """
-        low_ne = self.low_corner != other.low_corner
-        high_ne = self.high_corner != other.high_corner
-        return low_ne.all() and high_ne.all()
+        return not (self == other)
 
     def __contains__(self, point):
         """Check if point is inside the cuboid

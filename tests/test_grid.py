@@ -104,10 +104,13 @@ class TestGrid(TestCase):
     def test_plot(self):
         self.grid2.plot('grid_plot_test.png')
         self.assertTrue(os.path.exists('grid_plot_test.png'))
-        self.assertRaises(ValueError, self.grid1.plot)
+        self.assertRaises(NotImplementedError, self.grid1.plot)
         fig = self.grid2.plot()
         self.assertTrue(isinstance(fig, matplotlib.figure.Figure))
 
     @classmethod
     def tearDownClass(cls):
-        os.remove('grid_plot_test.png')
+        try:
+            os.remove('grid_plot_test.png')
+        except OSError:
+            pass

@@ -16,6 +16,12 @@ class TestCuboid(TestCase):
         self.assertEqual(type(self.cub1), Cuboid)
         self.assertEqual(type(self.cub2), Cuboid)
         self.assertEqual(type(self.cub3), Cuboid)
+        self.assertRaises(ValueError, Cuboid, [0], [0, 1])
+
+    def test_len(self):
+        self.assertEqual(len(self.cub1), 1)
+        self.assertEqual(len(self.cub2), 2)
+        self.assertEqual(len(self.cub3), 3)
 
     def test_eq(self):
         self.assertEqual(self.cub1, self.cub1)
@@ -40,7 +46,6 @@ class TestCuboid(TestCase):
         self.assertFalse(numpy.array([-0.1, 0.9]) in self.cub2)
         self.assertTrue(numpy.array([0, 1, 0]) in self.cub3)
         self.assertFalse(numpy.array([2, 0, 1]) in self.cub3)
-        self.assertRaises(ValueError, self.cub3.__contains__, numpy.array([1, 1]))
 
     def test_repr(self):
         check = "Cuboid({0},{1})".format(str(self.cub1.low_corner), str(self.cub1.high_corner))

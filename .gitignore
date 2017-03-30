@@ -3,6 +3,7 @@ source_old
 out
 *.dot
 *.xml
+*.bin
 *.pyc
 .idea/*
 !.idea/dictionaries

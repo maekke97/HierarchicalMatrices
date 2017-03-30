@@ -26,13 +26,19 @@ class BlockClusterTree(object):
         return left_len * right_len
 
     def __eq__(self, other):
-        """Test for equality"""
+        """Test for equality
+        :type other: BlockClusterTree
+        """
         return (self.left_clustertree == other.left_clustertree
                 and self.right_clustertree == other.right_clustertree
                 and self.sons == other.sons
-                # and self.admissible == other.admissible
+                and self.admissible == other.admissible
                 and self.level == other.level
+                and self.plot_info == other.plot_info
                 )
+
+    def __ne__(self, other):
+        return not (self == other)
 
     def depth(self, root_level=None):
         """Get depth of the tree
@@ -143,19 +149,19 @@ class BlockClusterTree(object):
         axes.tick_params(length=2, width=0.5)
         axes.xaxis.tick_top()
         axes.invert_yaxis()
-        self._plot(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
+        self.plot_recursion(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
         fig.add_axes(axes)
         if not filename:
-            plt.show()
+            return fig
         else:
             # remove whitespace around the plot
             plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
             plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None)
 
-    def _plot(self, axes, admissible_color='#1e26bc', inadmissible_color='#bc1d38'):
+    def plot_recursion(self, axes, admissible_color='#1e26bc', inadmissible_color='#bc1d38'):
         if self.sons:
             for son in self.sons:
-                son._plot(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
+                son.plot_recursion(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
         else:
             self.draw(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
 

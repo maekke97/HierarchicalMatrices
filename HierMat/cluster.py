@@ -1,5 +1,7 @@
 """cluster.py: :class:`Cluster` object and iterator
 """
+from HierMat.grid import Grid
+
 import numpy
 
 
@@ -10,15 +12,13 @@ class Cluster(object):
     def __init__(self, grid, indices=None):
         """Create a cluster
 
-        Argument:
-            grid: Grid object
-
-        Optional argument:
-            indices: List of indices
+        :param grid: grid to build cluster around
+        :type grid: Grid
+        :param indices: index list (optional)
+        :type indices: list
         """
         self.grid = grid
         self.indices = range(len(grid)) if not indices else indices
-        self._current = 0
 
     def __getitem__(self, item):
         """Get item
@@ -52,7 +52,7 @@ class Cluster(object):
     def __ne__(self, other):
         """Test for inequality
         """
-        return self.grid != other.grid or self.indices != other.indices
+        return not (self == other)
 
     def get_grid_item(self, item):
         """Return item from grid
