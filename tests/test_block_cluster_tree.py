@@ -57,6 +57,8 @@ class TestBlockClusterTree(TestCase):
         self.assertIsInstance(test, BlockClusterTree)
         test = BlockClusterTree(self.rc1, right_clustertree=self.rc1, sons=[self.rc2])
         self.assertIsInstance(test, BlockClusterTree)
+        test = build_block_cluster_tree(self.ct1)
+        self.assertIsInstance(test, BlockClusterTree)
         self.assertIsInstance(self.bct1, BlockClusterTree)
         self.assertIsInstance(self.bct2, BlockClusterTree)
         self.assertIsInstance(self.bct3, BlockClusterTree)
@@ -121,6 +123,7 @@ class TestBlockClusterTree(TestCase):
             self.assertTrue(os.path.exists(out_string + form))
         check = load(out_string + 'bin')
         self.assertEqual(check, self.bct3)
+        self.assertRaises(NotImplementedError, self.bct1.export, form='bla')
 
     def test_plot(self):
         out_string = 'test_plot_bct1'
