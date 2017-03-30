@@ -1,9 +1,9 @@
-import random
 from unittest import TestCase
 
 import numpy
-from cluster import Cluster
-from cuboid import Cuboid
+import random
+from HierMat.cluster import Cluster
+from HierMat.cuboid import Cuboid
 
 from HierMat.grid import Grid
 from HierMat.splitable import Splitable, RegularCuboid
@@ -163,6 +163,14 @@ class TestSplitable(TestCase):
         left_split, right_split = self.rc3.split()
         self.assertEqual(left_rc, left_split)
         self.assertEqual(right_rc, right_split)
+        grid = Grid([0, 1, 5], [[1], [5], [0]])
+        clust = Cluster(grid)
+        regcub = RegularCuboid(clust)
+        split1, split2 = regcub.split()
+        split3 = split1.split()
+        split4 = split2.split()
+        self.assertEqual(len(split3), 1)
+        self.assertEqual(len(split4), 1)
 
     def test_diameter(self):
         self.assertRaises(NotImplementedError, self.dummy.diameter)

@@ -18,6 +18,62 @@ class HMat(object):
     def __repr__(self):
         return '<HMat with {content}>'.format(content=self.blocks if self.blocks else self.content)
 
+    def __eq__(self, other):
+        """Test for equality
+        
+        :param other: other HMat
+        :type other: HMat
+        :return: true on equal
+        :rtype: bool
+        """
+        length = len(self.blocks)
+        if len(other.blocks) != length:
+            return False
+        block_checks = [self.blocks[i] == other.blocks[i] for i in xrange(length)]
+        if not all(block_checks):
+            return False
+        if type(self.content) is not type(other.content):
+            return False
+        if type(self.content) is RMat:
+            if self.content != other.content:
+                return False
+        if type(self.content) is numpy.matrix:
+            if not numpy.array_equal(self.content, other.content):
+                return False
+        if self.shape != other.shape:
+            return False
+        if self.root_index != other.root_index:
+            return False
+        return True
+
+    def __ne__(self, other):
+        """Test for inequality
+        
+        :param other: other HMat
+        :type other: HMat
+        :return: true on not equal
+        :rtype: bool
+        """
+        length = len(self.blocks)
+        if len(other.blocks) != length:
+            return True
+        block_checks = [self.blocks[i] == other.blocks[i] for i in xrange(length)]
+        if not all(block_checks):
+            return True
+        if type(self.content) != type(other.content):
+            return True
+        if type(self.content) is RMat:
+            if self.content != other.content:
+                return True
+        if type(self.content) is numpy.matrix:
+            if not numpy.array_equal(self.content, other.content):
+                return True
+        if self.shape != other.shape:
+            return True
+        if self.root_index != other.root_index:
+            return True
+        return False
+
     def __add__(self, other):
         """Addiion with several types"""
         if type(other) is HMat:
@@ -30,7 +86,28 @@ class HMat(object):
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
 
     def _add_hmat(self, other):
-        pass
+        """
+        
+        :param other: HMat to add
+        :type other: HMat
+        :return: sum
+        :rtype: HMat
+        """
+        # check inputs
+        if self.shape != other.shape:
+            raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
+                             '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
+        if self.root_index != other.root_index:
+            raise ValueError('root indices {0.root_index} and {1.root_index} not the same'.format(self, other))
+        if (self.content is None and other.blocks is None) or (self.blocks is None and other.content is None):
+            raise ValueError('block structure is not the same for {0} and {1}'.format(self, other))
+        if self.content is not None:  # both have content
+            return HMat(content=self.content + other.content, shape=self.shape, root_index=self.root_index)
+        if self.blocks is not None:  # both have children
+            blocks = len(self.blocks)
+            return HMat(blocks=[self.blocks[i] + other.blocks[i] for i in xrange(blocks)],
+                        shape=self.shape, root_index=self.root_index)
+        return None
 
     def _add_rmat(self, other):
         pass

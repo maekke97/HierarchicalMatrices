@@ -5,14 +5,7 @@ import numpy
 
 class Grid(object):
     """Discretized grid characterized by points and links
-
-    - **Attributes**:
-
-        points: list of coordinates
-
-        links: list of links for each point
     """
-
     def __init__(self, points, links):
         """Create a Grid
 
@@ -53,10 +46,24 @@ class Grid(object):
 
         :param other: other grid
         :type other: Grid
+        :return: True on equality
+        :rtype: bool
         """
         points_eq = numpy.array_equal(self.points, other.points)
         links_eq = numpy.array_equal(self.links, other.links)
         return points_eq and links_eq
+
+    def __ne__(self, other):
+        """Test for inequality
+
+        :param other: other grid
+        :type other: Grid
+        :return: True on inequality
+        :rtype: bool
+        """
+        points_eq = numpy.array_equal(self.points, other.points)
+        links_eq = numpy.array_equal(self.links, other.links)
+        return not points_eq or not links_eq
 
     def get_point(self, item):
         """Return point at position item
@@ -109,7 +116,7 @@ class Grid(object):
             for link in self.links[i]:
                 plt.plot([self.points[i][0], link[0]], [self.points[i][1], link[1]], '-b')
         if not filename:
-            plt.show()
+            return fig
         else:
             plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None, bb_inches='tight')
 

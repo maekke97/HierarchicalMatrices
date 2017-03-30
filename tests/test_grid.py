@@ -1,7 +1,9 @@
-import random
 from unittest import TestCase
 
 import numpy
+import random
+import os
+import matplotlib.figure
 
 from HierMat.grid import Grid
 
@@ -32,7 +34,7 @@ class TestGrid(TestCase):
         self.assertEqual(type(self.grid1), Grid)
         self.assertEqual(type(self.grid2), Grid)
         self.assertEqual(type(self.grid3), Grid)
-        self.assertRaises(ValueError, Grid, self.points1, self.links2)
+        self.assertRaises(ValueError, Grid, self.points1, self.links3)
 
     def test_len(self):
         self.assertEqual(len(self.grid1), self.lim1)
@@ -80,11 +82,19 @@ class TestGrid(TestCase):
 
     def test_eq(self):
         self.assertEqual(self.grid1, self.grid1)
-        self.assertNotEqual(self.grid1, self.grid2)
+        self.assertFalse(self.grid1 == self.grid2)
         self.assertEqual(self.grid2, self.grid2)
-        self.assertNotEqual(self.grid2, self.grid3)
+        self.assertFalse(self.grid2 == self.grid3)
         self.assertEqual(self.grid3, self.grid3)
+        self.assertFalse(self.grid3 == self.grid1)
+
+    def test_ne(self):
+        self.assertNotEqual(self.grid1, self.grid2)
+        self.assertFalse(self.grid1 != self.grid1)
+        self.assertNotEqual(self.grid2, self.grid3)
+        self.assertFalse(self.grid2 != self.grid2)
         self.assertNotEqual(self.grid3, self.grid1)
+        self.assertFalse(self.grid3 != self.grid3)
 
     def test_dim(self):
         self.assertEqual(self.grid1.dim(), 1)
@@ -92,4 +102,12 @@ class TestGrid(TestCase):
         self.assertEqual(self.grid3.dim(), 3)
 
     def test_plot(self):
-        self.grid2.plot()
+        self.grid2.plot('grid_plot_test.png')
+        self.assertTrue(os.path.exists('grid_plot_test.png'))
+        self.assertRaises(ValueError, self.grid1.plot)
+        fig = self.grid2.plot()
+        self.assertTrue(isinstance(fig, matplotlib.figure.Figure))
+
+    @classmethod
+    def tearDownClass(cls):
+        os.remove('grid_plot_test.png')

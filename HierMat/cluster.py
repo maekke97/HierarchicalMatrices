@@ -5,12 +5,6 @@ import numpy
 
 class Cluster(object):
     """Handles operations on a :class:`Grid` object by manipulating an index list
-
-    - **Attributes**:
-
-        grid: Grid object
-
-        indices: list of indices
     """
 
     def __init__(self, grid, indices=None):
@@ -54,6 +48,11 @@ class Cluster(object):
         """Test for equality
         """
         return self.grid == other.grid and self.indices == other.indices
+
+    def __ne__(self, other):
+        """Test for inequality
+        """
+        return self.grid != other.grid or self.indices != other.indices
 
     def get_grid_item(self, item):
         """Return item from grid

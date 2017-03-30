@@ -19,11 +19,19 @@ class TestCuboid(TestCase):
 
     def test_eq(self):
         self.assertEqual(self.cub1, self.cub1)
-        self.assertNotEqual(self.cub1, self.cub2)
+        self.assertFalse(self.cub1 == self.cub2)
         self.assertEqual(self.cub2, self.cub2)
-        self.assertNotEqual(self.cub2, self.cub3)
+        self.assertFalse(self.cub2 == self.cub3)
         self.assertEqual(self.cub3, self.cub3)
+        self.assertFalse(self.cub3 == self.cub1)
+
+    def test_ne(self):
+        self.assertNotEqual(self.cub1, self.cub2)
+        self.assertFalse(self.cub1 != self.cub1)
+        self.assertNotEqual(self.cub2, self.cub3)
+        self.assertFalse(self.cub2 != self.cub2)
         self.assertNotEqual(self.cub3, self.cub1)
+        self.assertFalse(self.cub3 != self.cub3)
 
     def test_contains(self):
         self.assertTrue(numpy.array([0.5]) in self.cub1)

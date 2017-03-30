@@ -1,6 +1,10 @@
 """utils.py: Utilities for the :mod:`HMatrix` module
 """
 import math
+import numpy
+from HierMat.cluster import Cluster
+from HierMat.cuboid import Cuboid
+# TODO: write tests
 
 
 def load(filename):
@@ -64,3 +68,31 @@ def divisor_generator(n):
                 large_divisors.append(n / i)
     for divisor in reversed(large_divisors):
         yield divisor
+
+
+def minimal_cuboid(cluster):
+    """Build minimal cuboid
+
+    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
+
+    :param cluster: cluster to build cuboid around
+    :type cluster: Cluster
+    :return: minimal cuboid
+    :rtype: Cuboid
+    """
+    points = cluster.grid.points
+    low_corner = numpy.array(points[0], float, ndmin=1)
+    high_corner = numpy.array(points[0], float, ndmin=1)
+    for p in points:
+        p = numpy.array(p, float, ndmin=1)
+        lower = p >= low_corner
+        if not lower.all():
+            for i in xrange(len(low_corner)):
+                if not lower[i]:
+                    low_corner[i] = p[i]
+        higher = p <= high_corner
+        if not higher.all():
+            for i in xrange(len(high_corner)):
+                if not higher[i]:
+                    high_corner[i] = p[i]
+    return Cuboid(low_corner, high_corner)

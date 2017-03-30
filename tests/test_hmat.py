@@ -12,15 +12,39 @@ class TestHmat(TestCase):
         cls.content2 = numpy.matrix(numpy.zeros((3, 2)))
         cls.content3 = numpy.matrix(numpy.zeros((4, 2)))
         cls.content4 = numpy.matrix(numpy.zeros((4, 4)))
-        cls.content21 = numpy.matrix(numpy.ones((3, 4)))
         cls.hmat1 = HMat(content=cls.content1, shape=(3, 4), root_index=(0, 0))
-        cls.hmat21 = HMat(content=cls.content21, shape=(3, 4), root_index=(0, 0))
-        cls.hmat20 = HMat(blocks=[cls.hmat21], shape=(3, 4), root_index=(0, 0))
         cls.hmat2 = HMat(content=cls.content2, shape=(3, 2), root_index=(0, 4))
         cls.hmat3 = HMat(content=cls.content3, shape=(4, 2), root_index=(3, 0))
         cls.hmat4 = HMat(content=cls.content4, shape=(4, 4), root_index=(3, 2))
         cls.hmat = HMat(blocks=[cls.hmat1, cls.hmat2, cls.hmat3, cls.hmat4], shape=(7, 6), root_index=(0, 0))
+        cls.content21 = numpy.matrix(numpy.ones((3, 4)))
+        cls.hmat21 = HMat(content=cls.content21, shape=(3, 4), root_index=(0, 0))
+        cls.hmat20 = HMat(blocks=[cls.hmat21], shape=(3, 4), root_index=(0, 0))
         cls.hmat_lvl2 = HMat(blocks=[cls.hmat20, cls.hmat2, cls.hmat3, cls.hmat4], shape=(7, 6), root_index=(0, 0))
+
+    def test_eq(self):
+        self.assertEqual(self.hmat1, self.hmat1)
+        self.assertEqual(self.hmat, self.hmat)
+        self.assertEqual(self.hmat_lvl2, self.hmat_lvl2)
+        self.assertFalse(self.hmat2 == self.hmat1)
+        self.assertFalse(self.hmat20 == self.hmat1)
+        self.assertFalse(HMat(content=self.content1, shape=(4, 4), root_index=(0, 0)) == self.hmat1)
+        self.assertFalse(HMat(content=self.content1, shape=(3, 4), root_index=(1, 0)) == self.hmat1)
+        self.assertFalse(HMat(blocks=[self.hmat1], shape=(3, 4), root_index=(0, 0)) == self.hmat20)
+        self.assertFalse(HMat(content=numpy.ones((3, 4)), shape=(3, 4), root_index=(0, 0)) == self.hmat1)
+
+    def test_neq(self):
+        self.assertNotEqual(self.hmat2, self.hmat1)
+        self.assertNotEqual(self.hmat20, self.hmat1)
+
+    def test_add(self):
+        addend1 = HMat(content=numpy.matrix(numpy.ones((3, 4))), shape=(3, 4), root_index=(0, 0))
+        addend2 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 4))
+        addend3 = HMat(content=numpy.matrix(numpy.ones((4, 2))), shape=(4, 2), root_index=(3, 0))
+        addend4 = HMat(content=numpy.matrix(numpy.ones((4, 4))), shape=(4, 4), root_index=(3, 2))
+        addend_hmat = HMat(blocks=[addend1, addend2, addend3, addend4], shape=(7, 6), root_index=(0, 0))
+        res = addend_hmat + self.hmat
+        self.assertEqual(res, addend_hmat)
 
     def test_repr(self):
         check = '<HMat with {content}>'.format(content=self.hmat_lvl2.blocks)
@@ -43,7 +67,7 @@ class TestHmat(TestCase):
         self.assertTrue(numpy.array_equal(self.hmat_lvl2.to_matrix(), check_lvl2))
 
     def test_mul(self):
-        self.assertRaises(TypeError, self.hmat_lvl2.__mul__, self.hmat_lvl2)
+        self.assertRaises(NotImplementedError, self.hmat_lvl2.__mul__, self.hmat_lvl2)
 
     def test_mul_with_vector(self):
         block1 = numpy.matrix([numpy.arange(i, i+5) for i in xrange(1, 6)])

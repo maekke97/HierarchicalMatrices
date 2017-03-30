@@ -2,12 +2,11 @@ import random
 from unittest import TestCase
 
 import numpy
-from block_cluster_tree import BlockClusterTree
-from cluster import Cluster
-from cluster_tree import ClusterTree
-from cuboid import Cuboid
-from utils import admissible, load
-
+from HierMat.block_cluster_tree import BlockClusterTree, build_block_cluster_tree
+from HierMat.cluster import Cluster
+from HierMat.cluster_tree import ClusterTree, build_cluster_tree
+from HierMat.cuboid import Cuboid
+from HierMat.utils import admissible, load
 from HierMat.grid import Grid
 from HierMat.splitable import RegularCuboid
 
@@ -42,13 +41,12 @@ class TestUtils(TestCase):
         cls.rc1 = RegularCuboid(cls.cluster1)
         cls.rc2 = RegularCuboid(cls.cluster2)
         cls.rc3 = RegularCuboid(cls.cluster3)
-        cls.ct1 = ClusterTree(cls.rc1, 1)
-        cls.ct2 = ClusterTree(cls.rc2, 1)
-        cls.ct3 = ClusterTree(cls.rc3, 1)
-        cls.bct1 = BlockClusterTree(cls.ct1, cls.ct1, admissible_function=admissible)
-        cls.bct2 = BlockClusterTree(cls.ct2, cls.ct2, admissible_function=admissible)
-        cls.bct3 = BlockClusterTree(cls.ct3, cls.ct3, admissible_function=admissible)
-    
+        cls.ct1 = build_cluster_tree(cls.rc1, 1)
+        cls.ct2 = build_cluster_tree(cls.rc2, 1)
+        cls.ct3 = build_cluster_tree(cls.rc3, 1)
+        cls.bct1 = build_block_cluster_tree(cls.ct1, cls.ct1, admissible_function=admissible)
+        cls.bct2 = build_block_cluster_tree(cls.ct2, cls.ct2, admissible_function=admissible)
+
     def test_setup1(self):
         self.assertIsInstance(self.grid1, Grid)
         self.assertIsInstance(self.cluster1, Cluster)

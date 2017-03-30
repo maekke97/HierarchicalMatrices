@@ -15,11 +15,11 @@
 """
 from cluster import Cluster
 
-from HierMat.cuboid import minimal_cuboid
+from HierMat.utils import minimal_cuboid
 
 
 class Splitable(object):
-    """Interface to the different strategies that can be used to split a cluster in two.
+    """Interface to the different strategies that can be used to split a cluster in two or more.
 
     .. note::
 
@@ -207,11 +207,22 @@ class RegularCuboid(Splitable):
 
 
 class MinimalCuboid(Splitable):
-    """
+    """Method of minimal cuboids
+
+    Split is implemented by splitting the surrounding cuboid in half along longest axis and distributing indices 
+    according to the cuboid they belong to. Afterwards all resulting cuboids are shrunk to minimal.
+
+    Gives a binary tree
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, cluster):
+        """Build a MinimalCuboid
+
+        :param cluster: cluster to surround
+        :type cluster: Cluster
+        """
+        self.cluster = cluster
+        self.cuboid = minimal_cuboid(cluster)
 
     def __eq__(self, other):
         pass

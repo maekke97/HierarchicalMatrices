@@ -34,9 +34,22 @@ class Cuboid(object):
         :return: equal
         :rtype: bool
         """
+        # TODO: check dimension match
         low_eq = self.low_corner == other.low_corner
         high_eq = self.high_corner == other.high_corner
         return low_eq.all() and high_eq.all()
+
+    def __ne__(self, other):
+        """Test for inequality
+
+        :param other: other cuboid
+        :type other: Cuboid
+        :return: equal
+        :rtype: bool
+        """
+        low_ne = self.low_corner != other.low_corner
+        high_ne = self.high_corner != other.high_corner
+        return low_ne.all() and high_ne.all()
 
     def __contains__(self, point):
         """Check if point is inside the cuboid
@@ -118,31 +131,3 @@ class Cuboid(object):
         distance_vector = array(checks, dtype=float)
         min_vector = numpy.amin(abs(distance_matrix), axis=0)
         return numpy.linalg.norm(min_vector * distance_vector)
-
-
-def minimal_cuboid(cluster):
-    """Build minimal cuboid
-
-    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
-
-    :param cluster: cluster to build cuboid around
-    :type cluster: Cluster
-    :return: minimal cuboid
-    :rtype: Cuboid
-    """
-    points = cluster.grid.points
-    low_corner = numpy.array(points[0], float, ndmin=1)
-    high_corner = numpy.array(points[0], float, ndmin=1)
-    for p in points:
-        p = numpy.array(p, float, ndmin=1)
-        lower = p >= low_corner
-        if not lower.all():
-            for i in xrange(len(low_corner)):
-                if not lower[i]:
-                    low_corner[i] = p[i]
-        higher = p <= high_corner
-        if not higher.all():
-            for i in xrange(len(high_corner)):
-                if not higher[i]:
-                    high_corner[i] = p[i]
-    return Cuboid(low_corner, high_corner)

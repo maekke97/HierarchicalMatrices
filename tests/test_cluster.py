@@ -2,7 +2,7 @@ import random
 from unittest import TestCase
 
 import numpy
-from cluster import Cluster
+from HierMat.cluster import Cluster
 
 from HierMat.grid import Grid
 
@@ -102,11 +102,19 @@ class TestCluster(TestCase):
 
     def test_eq(self):
         self.assertEqual(self.cluster1, self.cluster1)
-        self.assertNotEqual(self.cluster1, self.cluster2)
+        self.assertFalse(self.cluster1 == self.cluster2)
         self.assertEqual(self.cluster2, self.cluster2)
-        self.assertNotEqual(self.cluster2, self.cluster3)
+        self.assertFalse(self.cluster2 == self.cluster3)
         self.assertEqual(self.cluster3, self.cluster3)
+        self.assertFalse(self.cluster3 == self.cluster1)
+
+    def test_ne(self):
+        self.assertNotEqual(self.cluster1, self.cluster2)
+        self.assertFalse(self.cluster1 != self.cluster1)
+        self.assertNotEqual(self.cluster2, self.cluster3)
+        self.assertFalse(self.cluster2 != self.cluster2)
         self.assertNotEqual(self.cluster3, self.cluster1)
+        self.assertFalse(self.cluster3 != self.cluster3)
 
     def test_dim(self):
         self.assertEqual(self.cluster1.dim(), 1)
