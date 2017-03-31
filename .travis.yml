@@ -7,7 +7,7 @@ install:
 
 script:
   - env DISPLAY=:99.0 coverage run --source=HierMat setup.py nosetests
-  - sonar-scanner-Dsonar.projectKey=$SONAR_TOKEN -Dsonar.host.url=https://sonarqube.com -Dsonar.organization=maekke97-github -Dsonar.sources=HierMat -Dsonar.login=$SONAR_TOKEN
+  - sonar-scanner-Dsonar.projectKey=hierarchicalmatrices -Dsonar.host.url=https://sonarqube.com -Dsonar.organization=maekke97-github -Dsonar.sources=HierMat -Dsonar.login=$SONAR_TOKEN
 
 before_script:
   - "export DISPLAY=:99.0"
