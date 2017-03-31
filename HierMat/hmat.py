@@ -34,12 +34,10 @@ class HMat(object):
             return False
         if type(self.content) is not type(other.content):
             return False
-        if type(self.content) is RMat:
-            if self.content != other.content:
-                return False
-        if type(self.content) is numpy.matrix:
-            if not numpy.array_equal(self.content, other.content):
-                return False
+        if type(self.content) is RMat and self.content != other.content:
+            return False
+        if type(self.content) is numpy.matrix and not numpy.array_equal(self.content, other.content):
+            return False
         if self.shape != other.shape:
             return False
         if self.root_index != other.root_index:
@@ -54,25 +52,7 @@ class HMat(object):
         :return: true on not equal
         :rtype: bool
         """
-        length = len(self.blocks)
-        if len(other.blocks) != length:
-            return True
-        block_checks = [self.blocks[i] == other.blocks[i] for i in xrange(length)]
-        if not all(block_checks):
-            return True
-        if type(self.content) != type(other.content):
-            return True
-        if type(self.content) is RMat:
-            if self.content != other.content:
-                return True
-        if type(self.content) is numpy.matrix:
-            if not numpy.array_equal(self.content, other.content):
-                return True
-        if self.shape != other.shape:
-            return True
-        if self.root_index != other.root_index:
-            return True
-        return False
+        return not self == other
 
     def __add__(self, other):
         """Addiion with several types"""

@@ -83,6 +83,9 @@ class RMat(object):
         right_eq = numpy.array_equal(self.right_mat, other.right_mat)
         return left_eq and right_eq and self.max_rank == other.max_rank
 
+    def __ne__(self, other):
+        return not self == other
+
     def __add__(self, other):
         """Addition of self and other"""
         try:
