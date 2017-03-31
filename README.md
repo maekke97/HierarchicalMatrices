@@ -1,5 +1,5 @@
-Welcome to Hierarchical Matrices's documentation!
-=================================================
+Welcome to Hierarchical Matrices!
+=================================
 
 This package is the result of my master thesis at the [Institute of Mathematics, University of Zurich](http://www.math.uzh.ch/index.php?&L=1)
 
