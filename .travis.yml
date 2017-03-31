@@ -1,8 +1,12 @@
 language: python
 python: "2.7"
-install: pip install -r requirements.txt .
-script: env DISPLAY=:99.0 nosetests tests
+install:
+  - pip install coveralls
+  - pip install -r requirements.txt .
+script: env DISPLAY=:99.0 coverage run --source=yourpackagename setup.py test
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3
+after_success:
+  coveralls
