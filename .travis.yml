@@ -5,7 +5,10 @@ install:
   - pip install -r requirements.txt .
 script:
   - env DISPLAY=:99.0 coverage run --source=HierMat setup.py nosetests
-  - sonar-runner
+  - sonar-scanner -Dsonar.projectKey=your_project_key_that_must_be_unique \
+    -Dsonar.sources=. \
+    -Dsonar.host.url=https://sonarqube.com \
+    -Dsonar.organization=maekke97-github
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
