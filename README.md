@@ -1,4 +1,4 @@
-Documentation can be found at <a href=http://hierarchicalmatrices.readthedocs.io/en/latest/>ReadTheDocs</a>
+[![Docs Status](https://readthedocs.org/projects/hierarchicalmatrices/badge/)](https://readthedocs.org/projects/hierarchicalmatrices/badge/)
 
 [![Build Status](https://travis-ci.org/maekke97/HierarchicalMatrices.svg?branch=master)](https://travis-ci.org/maekke97/HierarchicalMatrices.svg?branch=master)
 
