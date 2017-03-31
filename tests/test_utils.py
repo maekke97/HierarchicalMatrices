@@ -12,6 +12,7 @@ from HierMat.splitable import RegularCuboid
 
 
 class TestUtils(TestCase):
+    """This is a test for the webhook"""
     pass
     # @classmethod
     # def setUpClass(cls):
