@@ -185,14 +185,14 @@ class BlockClusterTree(object):
         if form == 'xml':
             export_list = self.to_list()
             head = '<?xml version="1.0" encoding="utf-8"?>\n'
-            output = _to_xml(export_list)
+            output = self._to_xml(export_list)
             output = head + output
             with open(out_file, "w") as out:
                 out.write(output)
         elif form == 'dot':
             export_list = self.to_list()
             head = 'graph {\n'
-            output = _to_dot(export_list)
+            output = self._to_dot(export_list)
             tail = '}'
             output = head + output + tail
             with open(out_file, "w") as out:
