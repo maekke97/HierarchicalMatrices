@@ -63,7 +63,7 @@ class Grid(object):
         :return: True on inequality
         :rtype: bool
         """
-        return not (self == other)
+        return not self == other
 
     def get_point(self, item):
         """Return point at position item

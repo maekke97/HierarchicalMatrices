@@ -54,7 +54,7 @@ class Splitable(object):
         raise NotImplementedError()
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def get_index(self, item):
         raise NotImplementedError()
@@ -128,7 +128,7 @@ class RegularCuboid(Splitable):
         return self.cluster == other.cluster and self.cuboid == other.cuboid
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self == other
 
     def get_index(self, item):
         """Get index from cluster

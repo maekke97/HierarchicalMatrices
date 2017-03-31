@@ -58,7 +58,7 @@ class Cuboid(object):
         :return: equal
         :rtype: bool
         """
-        return not (self == other)
+        return not self == other
 
     def __contains__(self, point):
         """Check if point is inside the cuboid
