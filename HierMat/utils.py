@@ -85,14 +85,10 @@ def minimal_cuboid(cluster):
     high_corner = numpy.array(points[0], float, ndmin=1)
     for p in points:
         p = numpy.array(p, float, ndmin=1)
-        lower = p >= low_corner
-        if not lower.all():
-            for i in xrange(len(low_corner)):
-                if not lower[i]:
-                    low_corner[i] = p[i]
-        higher = p <= high_corner
-        if not higher.all():
-            for i in xrange(len(high_corner)):
-                if not higher[i]:
-                    high_corner[i] = p[i]
+        lowers = (p < low_corner).nonzero()
+        for l in lowers:
+            low_corner[l] = p[l]
+        highers = (p > high_corner).nonzero()
+        for h in highers:
+            high_corner[h] = p[h]
     return Cuboid(low_corner, high_corner)
