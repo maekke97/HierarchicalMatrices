@@ -52,7 +52,7 @@ class Cluster(object):
     def __ne__(self, other):
         """Test for inequality
         """
-        return not (self == other)
+        return not self == other
 
     def get_grid_item(self, item):
         """Return item from grid
