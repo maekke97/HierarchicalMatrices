@@ -216,7 +216,7 @@ class BlockClusterTree(object):
         out_string += '<node value="{0}">{1}\n'.format(value_string, display_string)
         if len(lst) > 1 and type(lst[1]) is list:
             for item in lst[1]:
-                out_string = _to_xml(item, out_string)
+                out_string = BlockClusterTree._to_xml(item, out_string)
         out_string += "</node>\n"
         return out_string
 
@@ -231,7 +231,7 @@ class BlockClusterTree(object):
                     out_string += '''"{0}" -- "{1}";
                             "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
                         value_string, item_string, label_string)
-                    out_string = _to_dot(item, out_string)
+                    out_string = BlockClusterTree._to_dot(item, out_string)
         return out_string
 
 
