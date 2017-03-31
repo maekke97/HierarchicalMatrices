@@ -26,7 +26,7 @@ This package is the result of my master thesis at the `Institute of Mathematics,
 
 It is manly based on :cite:`hackbusch2015hierarchical`.
 
-The whole package including this documentation can be found at this `Git Repository`_
+The whole package including this documentation can be found at this `GitHub Repository`_
 
 :Author: `Markus Neumann`_
 
@@ -47,9 +47,9 @@ Links and references
 
 `Prof. Dr. Stefan Sauter`_
 
-.. _Git Repository: https://git.math.uzh.ch/markus.neumann/HMatrix
+.. _GitHub Repository: https://github.com/maekke97/HierarchicalMatrices
 
-`Git Repository`_
+`GitHub Repository`_
 
 .. _Markus Neumann: markus.neumann@math.uzh.ch
 
