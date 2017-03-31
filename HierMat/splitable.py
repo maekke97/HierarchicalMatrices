@@ -65,14 +65,13 @@ class Splitable(object):
     def get_patch_coordinates(self):
         raise NotImplementedError()
 
-    def split(self):
-        raise NotImplementedError()
-
     def diameter(self):
         raise NotImplementedError()
 
     def distance(self, other):
-        # type: (Splitable) -> float
+        raise NotImplementedError()
+
+    def split(self):
         raise NotImplementedError()
 
 
@@ -120,9 +119,6 @@ class RegularCuboid(Splitable):
     def __getitem__(self, item):
         return self.cluster[item]
 
-    def __iter__(self):
-        return SplitableIterator(self)
-
     def __len__(self):
         """Return the length of the cluster"""
         return len(self.cluster)
@@ -130,6 +126,9 @@ class RegularCuboid(Splitable):
     def __eq__(self, other):
         """Check for equality"""
         return self.cluster == other.cluster and self.cuboid == other.cuboid
+
+    def __ne__(self, other):
+        return not (self == other)
 
     def get_index(self, item):
         """Get index from cluster
@@ -160,8 +159,8 @@ class RegularCuboid(Splitable):
     def split(self):
         """Split the cuboid and distribute items in cluster according to the cuboid they belong to
 
-        :return: left_RegularCuboid, right_RegularCuboid
-        :rtype: RegularCuboid, RegularCuboid
+        :return: list of smaller regular cuboids 
+        :rtype: list(RegularCuboid)
         """
         left_cuboid, right_cuboid = self.cuboid.split()
         left_indices = []
@@ -209,7 +208,7 @@ class RegularCuboid(Splitable):
         return self.cuboid.distance(other.cuboid)
 
 
-class MinimalCuboid(Splitable):
+class MinimalCuboid(RegularCuboid):
     """Method of minimal cuboids
 
     Split is implemented by splitting the surrounding cuboid in half along longest axis and distributing indices 
@@ -224,55 +223,109 @@ class MinimalCuboid(Splitable):
         :param cluster: cluster to surround
         :type cluster: Cluster
         """
-        self.cluster = cluster
-        self.cuboid = minimal_cuboid(cluster)
+        super(MinimalCuboid, self).__init__(cluster)
 
-    def __eq__(self, other):
-        pass
-
-    def __len__(self):
-        pass
-
-    def __getitem__(self, item):
-        pass
-
-    def __iter__(self):
-        return SplitableIterator(self)
+    def __repr__(self):
+        return "<MinimalCuboid with cluster {0} and cuboid {1}>".format(self.cluster, self.cuboid)
 
     def split(self):
-        pass
+        """Split the cuboid and distribute items in cluster according to the cuboid they belong to. Reduce every split
+        to minimal size
 
-    def diameter(self):
-        pass
-
-    def distance(self, other):
-        pass
+        :return: list of minimal cuboids of smaller size
+        :rtype: list(MinimalCuboid)
+        """
+        splits = super(MinimalCuboid, self).split()
+        outs = [MinimalCuboid(split.cluster) for split in splits]
+        return outs
 
 
 class Balanced(Splitable):
-    """
+    """Balanced strategy, where a cluster is always split in half only according to its size, without regarding the
+    geometry
+    
+    Gives a binary tree
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, cluster):
+        """
+        
+        :param cluster: a cluster instance
+        :type cluster: Cluster
+        """
+        self.cluster = cluster
 
     def __eq__(self, other):
-        pass
+        return self.cluster == other.cluster
 
     def __len__(self):
-        pass
+        return len(self.cluster)
 
     def __getitem__(self, item):
-        pass
+        return self.cluster[item]
 
-    def __iter__(self):
-        return SplitableIterator(self)
+    def __repr__(self):
+        return "<Balanced with cluster {0}>".format(self.cluster)
 
-    def split(self):
-        pass
+    def get_index(self, item):
+        """Get index from cluster
+
+        :param item: index to get
+        :type item: int
+        :return: index
+        :rtype: int
+        """
+        return self.cluster.get_index(item)
+
+    def get_grid_item(self, item):
+        """Get grid item from cluster
+
+        :param item: index of item to get
+        :type item: int
+        """
+        return self.cluster.get_grid_item(item)
+
+    def get_patch_coordinates(self):
+        """Return min and max out of indices
+
+        :return: min and max
+        :rtype: tuple(int, int)
+        """
+        return self.cluster.get_patch_coordinates()
 
     def diameter(self):
-        pass
+        """Return the diameter
+
+        Diameter of the contained cluster
+
+        :return: diameter
+        :rtype: float
+        """
+        return self.cluster.diameter()
 
     def distance(self, other):
-        pass
+        """Distance to other balanced
+        
+        :param other: other balanced
+        :type other: Balanced
+        :return: distance
+        :rtype: float
+        """
+        return self.cluster.distance(other.cluster)
+
+    def split(self):
+        """Split in two
+        
+        distribute the first (smaller) half to the left and the rest to the right
+        
+        return itself if it has only one point
+        
+        :rtype: list(Balanced)
+        """
+        split = int(len(self)/2)
+        if split >= 1:
+            left_cluster = Cluster(self.cluster.grid, self.cluster.indices[:split])
+            right_cluster = Cluster(self.cluster.grid, self.cluster.indices[split:])
+            return [Balanced(left_cluster), Balanced(right_cluster)]
+        else:
+            return self
