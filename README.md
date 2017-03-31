@@ -3,6 +3,10 @@ Welcome to Hierarchical Matrices's documentation!
 
 This package is the result of my master thesis at the [Institute of Mathematics, University of Zurich](http://www.math.uzh.ch/index.php?&L=1)
 
+It provides an interface in python to the concept of hierarchical matrices as described by [Hackbusch](https://books.google.ch/books?id=LlNECwAAQBAJ)
+
+The main goal is, to provide an easy to use, yet performing alternative to existing implementations in C
+
 * Hosted on GitHub: [GitHub](https://github.com/maekke97/HierarchicalMatrices)
 * Documentation: [ReadTheDocs](http://hierarchicalmatrices.readthedocs.io/en/latest)
 * Code Coverage: [Coveralls](https://coveralls.io/github/maekke97/HierarchicalMatrices)
