@@ -21,7 +21,7 @@ addons:
   sonarqube:
     branches:
       - SonarQubeSmells
-
+    organization: "hierarchicalmatrices"
     token:
       secure: "LcfN7RBp3n6K4+UgSsJbh/CB0bdT/BFABDn5S9IUZJr4UNbJ/NhLUCtkSjN3sfbib08wBH+u2GcGy2c38Urk6mxMTPH3NYFBRav1fSWu8dPtkoQpCBkFixjVWT5/dVrcjZLNPJQu4J22f2IFtW2F+J4aw6XEUZAo5z6n8rvwdLC2pmp1VaHKbrn19n3USD84dZZ0ROWbl8/p3wM2SD671hOo5kG3YM8OjlehGeSMAHaCWRNtAoutSuJxlKVHj6tk+SXwhgu+kzT+Zwg1cHQSOMS9SnSwMIBFuVJk7YGuD8yAutmDxct1Q8Hv48OC/r1KEqI7JVkp2e1HVNgbozMIp3hP+Xc2R6rJidVLPZeFfHCJb/oyv0ATo8uVAy4m6MmuJRB7mAeVJ07/bw48vWzLMKddcLqPpmU9/n42wm9CZNzZrIHo6bs9NuZBL84xkMmaJgeQnC+Z20J64J75erTEUUA6EIuRUaqZEQ2TbS8aK2M0vhaWvMrZNn2FgkwrEf9itbXTQeJ+bd/2TeudLv5ZHX7NvQCbiXsr2wPXGJEJauFUXBEyxu500f36u7ZRoPz7EFJOGj+ABbhXZL6zFgke7dLYMbr3YhMuS1yCObZAdYirkZ5nelP2np1arPVcBN7cQYWY2RGKWG3sT2eNoTZ801az/YHsmaol7gnGeJYfccA="
 
