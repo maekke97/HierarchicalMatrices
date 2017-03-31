@@ -9,3 +9,4 @@ out
 !.idea/dictionaries
 !.idea/dictionaries/nem.xml
 build
+.coverage
