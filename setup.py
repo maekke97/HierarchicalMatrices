@@ -28,7 +28,7 @@ along with this package.  If not, see <http://www.gnu.org/licenses/>.
 # You should have received a copy of the GNU General Public License
 # along with HierMat.  If not, see <http://www.gnu.org/licenses/>.
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='HierMat',
