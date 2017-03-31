@@ -1,5 +1,5 @@
 language: python
-jdk: "oraclejdk8"
+jdk: oraclejdk8
 python: "2.7"
 install:
   - pip install coveralls
