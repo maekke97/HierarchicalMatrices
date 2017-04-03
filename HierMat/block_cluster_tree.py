@@ -105,6 +105,16 @@ class BlockClusterTree(object):
         else:
             self.draw(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
 
+    def to_xml(self):
+        """Return a string for xml representation"""
+        out_list = self.to_list()
+        return self._to_xml(out_list)
+
+    def to_dot(self):
+        """Return a string for .dot representation"""
+        out_list = self.to_list()
+        return self._to_dot(out_list)
+
     @staticmethod
     def _to_xml(lst, out_string=''):
         if len(lst[1]):

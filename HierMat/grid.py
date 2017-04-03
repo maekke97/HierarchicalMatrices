@@ -97,6 +97,7 @@ class Grid(object):
         :param filename: file to save the plot in. If not specified, the figure is returned
         :type filename: str
         """
+        # TODO: move plot to utils
         # check dimensions:
         d = self.dim()
         if d != 2:

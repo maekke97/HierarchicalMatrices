@@ -113,47 +113,6 @@ def plot(obj, filename=None, ticks=False, face_color='#133f52',
         plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None)
 
 
-def export(self, form='xml', out_file='bct_out'):
-    """Export obj in specified format.
-
-    :param form: format specifier
-    :type form: str
-    :param out_file: path to output file
-    :type out_file: str
-    :raises NotImplementedError: if form is not supported
-
-    .. note::
-
-        implemented so far:
-
-        - xml
-        - dot
-        - bin
-    """
-    if form == 'xml':
-        export_list = self.to_list()
-        head = '<?xml version="1.0" encoding="utf-8"?>\n'
-        output = self._to_xml(export_list)
-        output = head + output
-        with open(out_file, "w") as out:
-            out.write(output)
-    elif form == 'dot':
-        export_list = self.to_list()
-        head = 'graph {\n'
-        output = self._to_dot(export_list)
-        tail = '}'
-        output = head + output + tail
-        with open(out_file, "w") as out:
-            out.write(output)
-    elif form == 'bin':
-        import pickle
-        file_handle = open(out_file, "wb")
-        pickle.dump(self, file_handle, protocol=-1)
-        file_handle.close()
-    else:
-        raise NotImplementedError()
-
-
 def load(filename):
     """Load a :class:`ClusterTree` or :class:`BlockClusterTree` from file
 
