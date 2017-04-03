@@ -3,14 +3,11 @@ from unittest import TestCase
 import numpy
 import random
 import math
-import os
-import matplotlib.figure
 
 from HierMat.block_cluster_tree import BlockClusterTree, build_block_cluster_tree
 from HierMat.cluster import Cluster
 from HierMat.cluster_tree import build_cluster_tree, admissible
 from HierMat.cuboid import Cuboid
-from HierMat.utils import load
 from HierMat.grid import Grid
 from HierMat.splitable import RegularCuboid
 
@@ -103,15 +100,14 @@ class TestBlockClusterTree(TestCase):
         self.assertEqual(self.bct2.shape(), (self.lim2**2, self.lim2**2))
         self.assertEqual(self.bct3.shape(), (self.lim3**3, self.lim3**3))
 
-    @classmethod
-    def tearDownClass(cls):
-        out_string = 'test_EI_bct{0}.'
-        plot_out = 'test_plot_bct'
-        forms = ['xml', 'dot', 'bin']
-        try:
-            for i in xrange(3):
-                for form in forms:
-                    os.remove(out_string.format(i+1)+form)
-                os.remove(plot_out + str(i+1))
-        except OSError:
-            pass
+    def test_to_xml(self):
+        xml_string = self.bct1.to_xml()
+        out_list = self.bct1.to_list()
+        check = self.bct1._to_xml(out_list)
+        self.assertEqual(check, xml_string)
+
+    def test_to_dot(self):
+        dot_string = self.bct1.to_dot()
+        out_list = self.bct1.to_list()
+        check = self.bct1._to_dot(out_list)
+        self.assertEqual(check, dot_string)

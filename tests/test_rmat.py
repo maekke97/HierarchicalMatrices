@@ -16,6 +16,26 @@ class TestRMat(TestCase):
         rmat = RMat(left_block, right_block, 4)
         self.assertIsInstance(rmat, RMat)
 
+    def test_eq(self):
+        left_block = numpy.matrix([[1, 2, 3], [3, 2, 1], [2, 3, 1]])
+        right_block = numpy.matrix([[2, 3, 4], [4, 3, 2], [3, 4, 2]])
+        rmat1 = RMat(left_block, right_block)
+        left_block = numpy.matrix([[3, 2, 1], [3, 2, 1], [2, 3, 1]])
+        right_block = numpy.matrix([[2, 1, 4], [4, 3, 2], [3, 4, 2]])
+        rmat2 = RMat(left_block, right_block)
+        self.assertEqual(rmat1, rmat1)
+        self.assertFalse(rmat1 == rmat2)
+
+    def test_ne(self):
+        left_block = numpy.matrix([[1, 2, 3], [3, 2, 1], [2, 3, 1]])
+        right_block = numpy.matrix([[2, 3, 4], [4, 3, 2], [3, 4, 2]])
+        rmat1 = RMat(left_block, right_block)
+        left_block = numpy.matrix([[3, 2, 1], [3, 2, 1], [2, 3, 1]])
+        right_block = numpy.matrix([[2, 1, 4], [4, 3, 2], [3, 4, 2]])
+        rmat2 = RMat(left_block, right_block)
+        self.assertNotEqual(rmat1, rmat2)
+        self.assertFalse(rmat1 != rmat1)
+
     def test_initExceptions(self):
         left_block = numpy.matrix([[1, 2], [2, 3], [3, 4]])
         right_block = numpy.matrix([[1], [2], [3]])

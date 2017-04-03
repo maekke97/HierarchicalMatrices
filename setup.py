@@ -32,7 +32,7 @@ from setuptools import setup
 
 setup(
     name='HierMat',
-    version='0.01',
+    version='0.1',
     packages=['HierMat'],
     url='http://hierarchical-matrices.readthedocs.io/en/latest/HierMat.html',
     download_url='https://git.math.uzh.ch/markus.neumann/HMatrix',
