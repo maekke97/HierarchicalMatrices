@@ -22,6 +22,13 @@ Indices and tables
 Documentation
 =============
 
+:Author: `Markus Neumann`_
+
+:Date: |today|
+
+:Supervisor: `Prof. Dr. Stefan Sauter`_
+
+
 This package is the result of my master thesis at the `Institute of Mathematics, University of Zurich`_.
 
 It provides an interface in python to the concept of hierarchical matrices as described by :cite:`hackbusch2015hierarchical`.
@@ -41,12 +48,6 @@ The main goal is to provide an easy to use yet performing alternative to existin
 .. image:: https://coveralls.io/repos/github/maekke97/HierarchicalMatrices/badge.svg?branch=master
 
 .. image:: https://sonarqube.com/api/badges/gate?key=hierarchicalmatrices
-
-:Author: `Markus Neumann`_
-
-:Date: |today|
-
-:Supervisor: `Prof. Dr. Stefan Sauter`_
 
 Links and references
 --------------------
