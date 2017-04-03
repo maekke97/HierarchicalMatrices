@@ -9,7 +9,7 @@ The main goal is, to provide an easy to use, yet performing alternative to exist
 
 * Hosted on GitHub: [GitHub](https://github.com/maekke97/HierarchicalMatrices)
 * Documentation: [ReadTheDocs](http://hierarchicalmatrices.readthedocs.io/en/latest)
-* Continous Integration: [Travis CI](https://travis-ci.org/maekke97/HierarchicalMatrices)
+* Continuous Integration: [Travis CI](https://travis-ci.org/maekke97/HierarchicalMatrices)
 * Code Coverage: [Coveralls](https://coveralls.io/github/maekke97/HierarchicalMatrices)
 * Code Quality: [SonarQube](https://sonarqube.com/dashboard/index?id=hierarchicalmatrices)
 
