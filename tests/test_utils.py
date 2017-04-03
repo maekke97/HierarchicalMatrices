@@ -107,13 +107,15 @@ class TestUtils(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        out_string = 'test_EI_bct{0}.'
+        out_string_bct = 'test_EI_bct{0}.'
+        out_string_ct = 'test_EI_ct{0}.'
         plot_out = 'test_plot_bct'
         forms = ['xml', 'dot', 'bin']
         try:
             for i in xrange(3):
                 for form in forms:
-                    os.remove(out_string.format(i + 1) + form)
+                    os.remove(out_string_bct.format(i + 1) + form)
+                    os.remove(out_string_ct.format(i + 1) + form)
                 os.remove(plot_out + str(i + 1))
         except OSError:
             pass
