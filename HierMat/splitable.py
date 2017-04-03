@@ -13,9 +13,10 @@
 
     Distributes the points evenly on every level, depends solely on the order of the initial list
 """
-from cluster import Cluster
+import numpy
 
-from HierMat.utils import minimal_cuboid
+from HierMat.cuboid import Cuboid
+from HierMat.cluster import Cluster
 
 
 class Splitable(object):
@@ -329,3 +330,27 @@ class Balanced(Splitable):
             return [Balanced(left_cluster), Balanced(right_cluster)]
         else:
             return self
+
+
+def minimal_cuboid(cluster):
+    """Build minimal cuboid
+
+    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
+
+    :param cluster: cluster to build cuboid around
+    :type cluster: Cluster
+    :return: minimal cuboid
+    :rtype: Cuboid
+    """
+    points = cluster.grid.points
+    low_corner = numpy.array(points[0], float, ndmin=1)
+    high_corner = numpy.array(points[0], float, ndmin=1)
+    for p in points:
+        p = numpy.array(p, float, ndmin=1)
+        lowers = (p < low_corner).nonzero()
+        for l in lowers:
+            low_corner[l] = p[l]
+        highers = (p > high_corner).nonzero()
+        for h in highers:
+            high_corner[h] = p[h]
+    return Cuboid(low_corner, high_corner)

@@ -1,10 +1,157 @@
 """utils.py: Utilities for the :mod:`HMatrix` module
 """
 import math
-import numpy
-from HierMat.cluster import Cluster
-from HierMat.cuboid import Cuboid
+
+from HierMat.block_cluster_tree import BlockClusterTree
+from HierMat.cluster_tree import ClusterTree
+
+
 # TODO: write tests
+
+
+def export(obj, form='xml', out_file='out'):
+    """Export obj in specified format.
+    
+    :param obj: object to export
+    :type obj: BlockClusterTree or ClusterTree
+    :param form: format specifier
+    :type form: str
+    :param out_file: path to output file
+    :type out_file: str
+    :raises NotImplementedError: if form is not supported
+
+    .. note::
+
+        implemented so far:
+
+        - xml
+        - dot
+        - bin
+    """
+    if form == 'xml':
+        head = '<?xml version="1.0" encoding="utf-8"?>\n'
+        output = obj.to_xml()
+        output = head + output
+        with open(out_file, "w") as out:
+            out.write(output)
+    elif form == 'dot':
+        head = 'graph {\n'
+        output = obj.to_dot()
+        tail = '}'
+        output = head + output + tail
+        with open(out_file, "w") as out:
+            out.write(output)
+    elif form == 'bin':
+        import pickle
+        file_handle = open(out_file, "wb")
+        pickle.dump(obj, file_handle, protocol=-1)
+        file_handle.close()
+    else:
+        raise NotImplementedError()
+
+
+def plot(obj, filename=None, ticks=False, face_color='#133f52',
+         admissible_color='#76f7a8', inadmissible_color='#ff234b'):
+    """Plot the block cluster tree
+    
+    :param obj: block cluster tree to plot
+    :type obj: BlockClusterTree
+    :param filename: filename to save the plot. if omitted, the plot will be displayed
+    :type filename: str
+    :param ticks: show ticks in the plot
+    :type ticks: bool
+    :param face_color: background color (see matplotlib for color specs)
+    :param admissible_color: color for admissible patch
+    :type admissible_color: str
+    :param inadmissible_color: color for inadmissible patch
+    :type inadmissible_color: str
+
+    .. note::
+
+        depends on :mod:`matplotlib.pyplot`
+
+    """
+    import matplotlib.pyplot as plt
+
+    plt.rc('axes', linewidth=0.5, labelsize=4)
+    plt.rc('xtick', labelsize=4)
+    plt.rc('ytick', labelsize=4)
+    fig = plt.figure(figsize=(3, 3), dpi=400)
+    fig.patch.set_facecolor(face_color)
+    # get max of the ticks
+    x_min, x_max = obj.left_clustertree.get_patch_coordinates()
+    y_min, y_max = obj.right_clustertree.get_patch_coordinates()
+    axes = plt.axes()
+    axes.set_xlim(x_min, x_max + 1)
+    axes.set_ylim(y_min, y_max + 1)
+    if ticks:
+        x_divisors = list(divisor_generator(x_max + 1))
+        y_divisors = list(divisor_generator(y_max + 1))
+        if len(x_divisors) > 4:
+            x_ticks = x_divisors[-4]
+        else:
+            x_ticks = x_divisors[-1]
+        if len(y_divisors) > 4:
+            y_ticks = y_divisors[-4]
+        else:
+            y_ticks = y_divisors[-1]
+        axes.set_xticks(range(x_min, x_max + 2, x_ticks))
+        axes.set_yticks(range(y_min, y_max + 2, y_ticks))
+    else:
+        axes.set_xticks([])
+        axes.set_yticks([])
+    axes.tick_params(length=2, width=0.5)
+    axes.xaxis.tick_top()
+    axes.invert_yaxis()
+    obj.plot_recursion(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
+    fig.add_axes(axes)
+    if not filename:
+        return fig
+    else:
+        # remove whitespace around the plot
+        plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None)
+
+
+def export(self, form='xml', out_file='bct_out'):
+    """Export obj in specified format.
+
+    :param form: format specifier
+    :type form: str
+    :param out_file: path to output file
+    :type out_file: str
+    :raises NotImplementedError: if form is not supported
+
+    .. note::
+
+        implemented so far:
+
+        - xml
+        - dot
+        - bin
+    """
+    if form == 'xml':
+        export_list = self.to_list()
+        head = '<?xml version="1.0" encoding="utf-8"?>\n'
+        output = self._to_xml(export_list)
+        output = head + output
+        with open(out_file, "w") as out:
+            out.write(output)
+    elif form == 'dot':
+        export_list = self.to_list()
+        head = 'graph {\n'
+        output = self._to_dot(export_list)
+        tail = '}'
+        output = head + output + tail
+        with open(out_file, "w") as out:
+            out.write(output)
+    elif form == 'bin':
+        import pickle
+        file_handle = open(out_file, "wb")
+        pickle.dump(self, file_handle, protocol=-1)
+        file_handle.close()
+    else:
+        raise NotImplementedError()
 
 
 def load(filename):
@@ -21,23 +168,6 @@ def load(filename):
     with open(filename, 'rb') as infile:
         obj = pickle.load(infile)
     return obj
-
-
-def admissible(left_clustertree, right_clustertree):
-    """Default admissible condition for BlockClusterTree
-
-    True if the smaller diameter of the input is smaller or equal to the distance between the two ClusterTrees
-
-    :param left_clustertree: "Left-side" ClusterTree
-    :param right_clustertree: "Right-side" ClusterTree
-    :type left_clustertree: ClusterTree
-    :type right_clustertree: ClusterTree
-    :return: admissible
-    :rtype: bool
-    """
-    diam_min = min(left_clustertree.diameter(), right_clustertree.diameter())
-    distance = left_clustertree.distance(right_clustertree)
-    return diam_min <= distance
 
 
 def divisor_generator(n):
@@ -68,27 +198,3 @@ def divisor_generator(n):
                 large_divisors.append(n / i)
     for divisor in reversed(large_divisors):
         yield divisor
-
-
-def minimal_cuboid(cluster):
-    """Build minimal cuboid
-
-    Build minimal cuboid around cluster that is parallel to the axis in Cartesian coordinates
-
-    :param cluster: cluster to build cuboid around
-    :type cluster: Cluster
-    :return: minimal cuboid
-    :rtype: Cuboid
-    """
-    points = cluster.grid.points
-    low_corner = numpy.array(points[0], float, ndmin=1)
-    high_corner = numpy.array(points[0], float, ndmin=1)
-    for p in points:
-        p = numpy.array(p, float, ndmin=1)
-        lowers = (p < low_corner).nonzero()
-        for l in lowers:
-            low_corner[l] = p[l]
-        highers = (p > high_corner).nonzero()
-        for h in highers:
-            high_corner[h] = p[h]
-    return Cuboid(low_corner, high_corner)

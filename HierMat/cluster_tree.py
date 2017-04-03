@@ -95,45 +95,10 @@ class ClusterTree(object):
         else:
             return [self, []]
 
-    def export(self, form='xml', out_file='out'):
-        """Export obj in specified format.
-
-        :param form: format specifier
-        :type form: str
-        :param out_file: path to output file
-        :type out_file: str
-        :raises NotImplementedError: if form is not supported
-
-        .. note::
-
-            implemented so far:
-
-            - xml
-            - dot
-            - bin
-        """
-        if form == 'xml':
-            export_list = self.to_list()
-            head = '<?xml version="1.0" encoding="utf-8"?>\n'
-            output = self._to_xml(export_list)
-            output = head + output
-            with open(out_file, "w") as out:
-                out.write(output)
-        elif form == 'dot':
-            export_list = self.to_list()
-            head = 'graph {\n'
-            output = self._to_dot(export_list)
-            tail = '}'
-            output = head + output + tail
-            with open(out_file, "w") as out:
-                out.write(output)
-        elif form == 'bin':
-            import pickle
-            file_handle = open(out_file, "wb")
-            pickle.dump(self, file_handle, protocol=-1)
-            file_handle.close()
-        else:
-            raise NotImplementedError()
+    def to_xml(self):
+        """Return a string for xml representation"""
+        out_list = self.to_list()
+        return self._to_xml(out_list)
 
     @staticmethod
     def _to_xml(lst, out_string=''):
@@ -149,6 +114,11 @@ class ClusterTree(object):
                 out_string = ClusterTree._to_xml(item, out_string)
         out_string += "</node>\n"
         return out_string
+
+    def to_dot(self):
+        """Return a string for .dot representation"""
+        out_list = self.to_list()
+        return self._to_dot(out_list)
 
     @staticmethod
     def _to_dot(lst, out_string=''):
@@ -229,3 +199,20 @@ def recursion_build_cluster_tree(current_tree):
                                    level=current_tree.level + 1)
             current_tree.sons.append(new_tree)
             recursion_build_cluster_tree(new_tree)
+
+
+def admissible(left_clustertree, right_clustertree):
+    """Default admissible condition for BlockClusterTree
+
+    True if the smaller diameter of the input is smaller or equal to the distance between the two ClusterTrees
+
+    :param left_clustertree: "Left-side" ClusterTree
+    :param right_clustertree: "Right-side" ClusterTree
+    :type left_clustertree: ClusterTree
+    :type right_clustertree: ClusterTree
+    :return: admissible
+    :rtype: bool
+    """
+    diam_min = min(left_clustertree.diameter(), right_clustertree.diameter())
+    distance = left_clustertree.distance(right_clustertree)
+    return diam_min <= distance

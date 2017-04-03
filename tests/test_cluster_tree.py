@@ -3,13 +3,10 @@ from unittest import TestCase
 import numpy
 import math
 import random
-import os
 
 from HierMat.cluster import Cluster
-from HierMat.cluster_tree import ClusterTree, build_cluster_tree
+from HierMat.cluster_tree import ClusterTree, build_cluster_tree, admissible
 from HierMat.cuboid import Cuboid
-from HierMat.utils import load
-
 from HierMat.grid import Grid
 from HierMat.splitable import RegularCuboid
 
@@ -129,41 +126,17 @@ class TestClusterTree(TestCase):
         self.assertEqual(len(self.ct2.to_list()), 2)
         self.assertEqual(len(self.ct3.to_list()), 2)
 
-    def test_export(self):
-        out_file_xml = 'test_EI_1.xml'
-        out_file_dot = 'test_EI_1.dot'
-        out_file_bin = 'test_EI_1.bin'
-        self.ct1.export('xml', out_file_xml)
-        self.ct1.export('dot', out_file_dot)
-        self.ct1.export('bin', out_file_bin)
-        self.assertTrue(os.path.exists(out_file_xml))
-        self.assertTrue(os.path.exists(out_file_dot))
-        self.assertTrue(os.path.exists(out_file_bin))
-        test_ct = load(out_file_bin)
-        self.assertEqual(self.ct1, test_ct)
-        out_file_xml = 'test_EI_2.xml'
-        out_file_dot = 'test_EI_2.dot'
-        out_file_bin = 'test_EI_2.bin'
-        self.ct2.export('xml', out_file_xml)
-        self.ct2.export('dot', out_file_dot)
-        self.ct2.export('bin', out_file_bin)
-        self.assertTrue(os.path.exists(out_file_xml))
-        self.assertTrue(os.path.exists(out_file_dot))
-        self.assertTrue(os.path.exists(out_file_bin))
-        test_ct = load(out_file_bin)
-        self.assertEqual(self.ct2, test_ct)
-        out_file_xml = 'test_EI_3.xml'
-        out_file_dot = 'test_EI_3.dot'
-        out_file_bin = 'test_EI_3.bin'
-        self.ct3.export('xml', out_file_xml)
-        self.ct3.export('dot', out_file_dot)
-        self.ct3.export('bin', out_file_bin)
-        self.assertTrue(os.path.exists(out_file_xml))
-        self.assertTrue(os.path.exists(out_file_dot))
-        self.assertTrue(os.path.exists(out_file_bin))
-        test_ct = load(out_file_bin)
-        self.assertEqual(self.ct3, test_ct)
-        self.assertRaises(NotImplementedError, self.ct1.export, 'test', out_file_bin)
+    def test_to_xml(self):
+        xml_string = self.ct1.to_xml()
+        out_list = self.ct1.to_list()
+        check = self.ct1._to_xml(out_list)
+        self.assertEqual(check, xml_string)
+
+    def test_to_dot(self):
+        dot_string = self.ct1.to_dot()
+        out_list = self.ct1.to_list()
+        check = self.ct1._to_dot(out_list)
+        self.assertEqual(check, dot_string)
 
     def test_depth(self):
         self.assertEqual(self.ct1.depth(), math.log(self.lim1, 2))
@@ -215,11 +188,6 @@ class TestClusterTree(TestCase):
         dist_ct = ClusterTree(dist_rc, 1)
         self.assertEqual(self.ct3.distance(dist_ct), dist_check)
 
-    @classmethod
-    def tearDownClass(cls):
-        try:
-            for i in xrange(3):
-                for spec in ['bin', 'dot', 'xml']:
-                    os.remove('test_EI_{0}.{1}'.format(i+1, spec))
-        except OSError:
-            pass
+    def test_admissible(self):
+        self.assertFalse(admissible(self.ct1, self.ct1))
+        self.assertTrue(admissible(self.ct1.sons[0].sons[0].sons[0], self.ct1.sons[-1].sons[-1].sons[-1]))

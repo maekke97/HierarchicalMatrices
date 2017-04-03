@@ -2,7 +2,7 @@
 :func:`build_block_cluster_tree`,
 :func:`recursion_build_block_cluster_tree`
 """
-from utils import admissible, divisor_generator
+from HierMat.cluster_tree import admissible
 
 
 class BlockClusterTree(object):
@@ -98,112 +98,12 @@ class BlockClusterTree(object):
         color = admissible_color if self.admissible else inadmissible_color
         axes.fill(x, y, color, ec='k', lw=0.1)
 
-    def plot(self, filename=None, ticks=False, face_color='#133f52',
-             admissible_color='#76f7a8', inadmissible_color='#ff234b'):
-        """Plot the block cluster tree
-
-        :param filename: filename to save the plot. if omitted, the plot will be displayed
-        :type filename: str
-        :param ticks: show ticks in the plot
-        :type ticks: bool
-        :param face_color: background color (see matplotlib for color specs)
-        :param admissible_color: color for admissible patch
-        :type admissible_color: str
-        :param inadmissible_color: color for inadmissible patch
-        :type inadmissible_color: str
-
-        .. note::
-
-            depends on :mod:`matplotlib.pyplot`
-
-        """
-        import matplotlib.pyplot as plt
-
-        plt.rc('axes', linewidth=0.5, labelsize=4)
-        plt.rc('xtick', labelsize=4)
-        plt.rc('ytick', labelsize=4)
-        fig = plt.figure(figsize=(3, 3), dpi=400)
-        fig.patch.set_facecolor(face_color)
-        # get max of the ticks
-        x_min, x_max = self.left_clustertree.get_patch_coordinates()
-        y_min, y_max = self.right_clustertree.get_patch_coordinates()
-        axes = plt.axes()
-        axes.set_xlim(x_min, x_max + 1)
-        axes.set_ylim(y_min, y_max + 1)
-        if ticks:
-            x_divisors = list(divisor_generator(x_max + 1))
-            y_divisors = list(divisor_generator(y_max + 1))
-            if len(x_divisors) > 4:
-                x_ticks = x_divisors[-4]
-            else:
-                x_ticks = x_divisors[-1]
-            if len(y_divisors) > 4:
-                y_ticks = y_divisors[-4]
-            else:
-                y_ticks = y_divisors[-1]
-            axes.set_xticks(range(x_min, x_max + 2, x_ticks))
-            axes.set_yticks(range(y_min, y_max + 2, y_ticks))
-        else:
-            axes.set_xticks([])
-            axes.set_yticks([])
-        axes.tick_params(length=2, width=0.5)
-        axes.xaxis.tick_top()
-        axes.invert_yaxis()
-        self.plot_recursion(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
-        fig.add_axes(axes)
-        if not filename:
-            return fig
-        else:
-            # remove whitespace around the plot
-            plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
-            plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None)
-
     def plot_recursion(self, axes, admissible_color='#1e26bc', inadmissible_color='#bc1d38'):
         if self.sons:
             for son in self.sons:
                 son.plot_recursion(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
         else:
             self.draw(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
-
-    def export(self, form='xml', out_file='bct_out'):
-        """Export obj in specified format.
-
-        :param form: format specifier
-        :type form: str
-        :param out_file: path to output file
-        :type out_file: str
-        :raises NotImplementedError: if form is not supported
-
-        .. note::
-
-            implemented so far:
-
-            - xml
-            - dot
-            - bin
-        """
-        if form == 'xml':
-            export_list = self.to_list()
-            head = '<?xml version="1.0" encoding="utf-8"?>\n'
-            output = self._to_xml(export_list)
-            output = head + output
-            with open(out_file, "w") as out:
-                out.write(output)
-        elif form == 'dot':
-            export_list = self.to_list()
-            head = 'graph {\n'
-            output = self._to_dot(export_list)
-            tail = '}'
-            output = head + output + tail
-            with open(out_file, "w") as out:
-                out.write(output)
-        elif form == 'bin':
-            import pickle
-            file_handle = open(out_file, "wb")
-            pickle.dump(self, file_handle, protocol=-1)
-            file_handle.close()
-        else:
-            raise NotImplementedError()
 
     @staticmethod
     def _to_xml(lst, out_string=''):

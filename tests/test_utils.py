@@ -4,16 +4,52 @@ from unittest import TestCase
 import numpy
 from HierMat.block_cluster_tree import BlockClusterTree, build_block_cluster_tree
 from HierMat.cluster import Cluster
-from HierMat.cluster_tree import ClusterTree, build_cluster_tree
+from HierMat.cluster_tree import ClusterTree, build_cluster_tree, admissible
 from HierMat.cuboid import Cuboid
-from HierMat.utils import admissible, load
+from HierMat.utils import load
 from HierMat.grid import Grid
 from HierMat.splitable import RegularCuboid
 
 
 class TestUtils(TestCase):
     """This is a test for the webhook"""
-    pass
+    def test_load(self):
+        pass
+
+        def test_export(self):
+            out_string = 'test_EI_bct1.'
+            forms = ['xml', 'dot', 'bin']
+            for form in forms:
+                self.bct1.export(form, out_file=out_string + form)
+                self.assertTrue(os.path.exists(out_string + form))
+            check = load(out_string + 'bin')
+            self.assertEqual(check, self.bct1)
+            out_string = 'test_EI_bct2.'
+            for form in forms:
+                self.bct2.export(form, out_file=out_string + form)
+                self.assertTrue(os.path.exists(out_string + form))
+            check = load(out_string + 'bin')
+            self.assertEqual(check, self.bct2)
+            out_string = 'test_EI_bct3.'
+            for form in forms:
+                self.bct3.export(form, out_file=out_string + form)
+                self.assertTrue(os.path.exists(out_string + form))
+            check = load(out_string + 'bin')
+            self.assertEqual(check, self.bct3)
+            self.assertRaises(NotImplementedError, self.bct1.export, form='bla')
+
+        def test_plot(self):
+            out_string = 'test_plot_bct1'
+            self.bct1.plot(out_string)
+            self.assertTrue(os.path.exists(out_string))
+            out_string = 'test_plot_bct2'
+            self.bct2.plot(out_string, ticks=True)
+            self.assertTrue(os.path.exists(out_string))
+            out_string = 'test_plot_bct3'
+            self.bct3.plot(out_string)
+            self.assertTrue(os.path.exists(out_string))
+            fig = self.bct3.plot(ticks=True)
+            self.assertIsInstance(fig, matplotlib.figure.Figure)
     # @classmethod
     # def setUpClass(cls):
     #     cls.lim1 = 16
