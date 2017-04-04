@@ -79,7 +79,7 @@ class TestHmat(TestCase):
         self.assertTrue(numpy.array_equal(self.hmat_lvl2.to_matrix(), check_lvl2))
 
     def test_mul(self):
-        self.assertRaises(NotImplementedError, self.hmat_lvl2.__mul__, self.hmat_lvl2)
+        self.assertRaises(NotImplementedError, self.hmat_lvl2.__mul__, 'bla')
 
     def test_mul_with_vector(self):
         block1 = numpy.matrix([numpy.arange(i, i+5) for i in xrange(1, 6)])

@@ -1,6 +1,7 @@
 """hmat.py: :class:`HMat`
 """
 import numpy
+import numbers
 
 from HierMat.rmat import RMat
 
@@ -26,7 +27,7 @@ class HMat(object):
         :return: true on equal
         :rtype: bool
         """
-        if type(self) is not type(other):
+        if not isinstance(self, type(other)):
             return False
         length = len(self.blocks)
         if len(other.blocks) != length:
@@ -34,11 +35,11 @@ class HMat(object):
         block_checks = [self.blocks[i] == other.blocks[i] for i in xrange(length)]
         if not all(block_checks):
             return False
-        if type(self.content) is not type(other.content):
+        if not isinstance(self.content, type(other.content)):
             return False
-        if type(self.content) is RMat and self.content != other.content:
+        if isinstance(self.content, RMat) and self.content != other.content:
             return False
-        if type(self.content) is numpy.matrix and not numpy.array_equal(self.content, other.content):
+        if isinstance(self.content, numpy.matrix) and not numpy.array_equal(self.content, other.content):
             return False
         if self.shape != other.shape:
             return False
@@ -58,11 +59,17 @@ class HMat(object):
 
     def __add__(self, other):
         """Addiion with several types"""
-        if type(other) is HMat:
+        try:
+            if self.shape != other.shape:
+                raise ValueError("operands could not be broadcast together with shapes"
+                                 " {0.shape} {1.shape}".format(self, other))
+        except AttributeError:
+            raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
+        if isinstance(other, HMat):
             return self._add_hmat(other)
-        elif type(other) is RMat:
+        elif isinstance(other, RMat):
             return self._add_rmat(other)
-        elif type(other) is numpy.matrix:
+        elif isinstance(other, numpy.matrix):
             return self._add_matrix(other)
         else:
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
@@ -76,9 +83,6 @@ class HMat(object):
         :rtype: HMat
         """
         # check inputs
-        if self.shape != other.shape:
-            raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
-                             '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
         if self.root_index != other.root_index:
             raise ValueError('root indices {0.root_index} and {1.root_index} not the same'.format(self, other))
         if (self.content is None and other.blocks == ()) or (self.blocks == () and other.content is None):
@@ -97,14 +101,16 @@ class HMat(object):
         pass
 
     def __mul__(self, other):
-        if type(other) is numpy.ndarray:
+        if isinstance(other, numpy.ndarray):
             return self._mul_with_vector(other)
-        elif type(other) is numpy.matrix:
+        elif isinstance(other, numpy.matrix):
             return self._mul_with_matrix(other)
-        elif type(other) is int:
-            return self._mul_with_int(other)
-        elif type(other) is RMat:
+        elif isinstance(other, numbers.Number):
+            return self._mul_with_scalar(other)
+        elif isinstance(other, RMat):
             return self._mul_with_rmat(other)
+        elif isinstance(other, HMat):
+            return self._mul_with_hmat(other)
         else:
             raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
 
@@ -170,15 +176,18 @@ class HMat(object):
         :rtype: HMat
         """
         out = HMat(shape=self.shape, root_index=self.root_index)
-        if type(self.content) is RMat:
+        if isinstance(self.content, RMat):
             out.content = self.content * other
         elif self.content is not None:
             out.content = other.__rmul__(self.content)
         else:
-            raise TypeError("Encountered HMat * RMat! What should I do?!")
+            raise TypeError("Encountered HMat with blocks * RMat! What should I do?!")
         return out
 
-    def _mul_with_int(self, other):
+    def _mul_with_hmat(self, other):
+        pass
+
+    def _mul_with_scalar(self, other):
         """Multiplication with integer"""
         out = HMat(shape=self.shape, root_index=self.root_index)
         if self.content is not None:
@@ -206,7 +215,7 @@ class HMat(object):
                 # fill the block with recursive call
                 out_mat[vertical_start:vertical_end, horizontal_start:horizontal_end] = block.to_matrix()
             return out_mat
-        elif type(self.content) == RMat:  # We have an RMat in content, so return its full representation
+        elif isinstance(self.content, RMat):  # We have an RMat in content, so return its full representation
             return self.content.to_matrix()
         else:  # We have regular content, so we return it
             return self.content
