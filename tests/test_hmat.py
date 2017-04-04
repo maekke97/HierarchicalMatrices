@@ -57,6 +57,8 @@ class TestHmat(TestCase):
         self.assertRaises(ValueError, addend.__add__, addend2)
         addend = HMat(content=numpy.matrix(numpy.ones((7, 6))), shape=(7, 6), root_index=(0, 0))
         self.assertRaises(ValueError, addend.__add__, addend_hmat)
+        self.assertRaises(NotImplementedError, addend_hmat.__add__, 'bla')
+        self.assertRaises(NotImplementedError, addend_hmat.__add__, numpy.ones((7, 6)))
 
     def test_repr(self):
         check = '<HMat with {content}>'.format(content=self.hmat_lvl2.blocks)
@@ -107,8 +109,10 @@ class TestHmat(TestCase):
         check = numpy.matrix([[i]*10 for i in xrange(55, 150, 10)])
         res = hmat._mul_with_matrix(numpy.matrix(numpy.ones((10, 10))))
         self.assertTrue(numpy.array_equal(check, res))
-        res = hmat._mul_with_matrix(numpy.matrix(numpy.ones((10, 15))))
-        check = numpy.matrix([[i] * 15 for i in xrange(55, 150, 10)])
+        mult = numpy.matrix(numpy.ones((10, 10)))
+        res = hmat * mult
+        check = numpy.matrix([[i] * 10 for i in xrange(55, 150, 10)])
+        self.assertTrue(numpy.array_equal(res, check))
         self.assertRaises(ValueError, hmat._mul_with_matrix, numpy.ones((11, 10)))
         self.assertRaises(ValueError, hmat._mul_with_matrix, numpy.ones((9, 11)))
 

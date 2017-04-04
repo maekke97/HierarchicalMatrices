@@ -101,10 +101,10 @@ class HMat(object):
         pass
 
     def __mul__(self, other):
-        if isinstance(other, numpy.ndarray):
-            return self._mul_with_vector(other)
-        elif isinstance(other, numpy.matrix):
+        if isinstance(other, numpy.matrix):  # order is important here!
             return self._mul_with_matrix(other)
+        elif isinstance(other, numpy.ndarray):
+            return self._mul_with_vector(other)
         elif isinstance(other, numbers.Number):
             return self._mul_with_scalar(other)
         elif isinstance(other, RMat):
