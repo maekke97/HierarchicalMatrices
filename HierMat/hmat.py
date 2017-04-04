@@ -58,7 +58,7 @@ class HMat(object):
         return not self == other
 
     def __add__(self, other):
-        """Addiion with several types"""
+        """Addition with several types"""
         try:
             if self.shape != other.shape:
                 raise ValueError("operands could not be broadcast together with shapes"
@@ -75,7 +75,7 @@ class HMat(object):
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
 
     def _add_hmat(self, other):
-        """
+        """Add two hmat objects that have same structure
         
         :param other: HMat to add
         :type other: HMat
@@ -95,9 +95,11 @@ class HMat(object):
                         shape=self.shape, root_index=self.root_index)
 
     def _add_rmat(self, other):
+        # TODO: What here?
         pass
 
     def _add_matrix(self, other):
+        # TODO: What here?
         pass
 
     def __mul__(self, other):
@@ -150,6 +152,7 @@ class HMat(object):
         :return: result matrix
         :rtype: numpy.matrix
         """
+        # TODO: should this be a HMat?
         if self.content is not None:
             return self.content * other
         else:
@@ -181,10 +184,12 @@ class HMat(object):
         elif self.content is not None:
             out.content = other.__rmul__(self.content)
         else:
+            # TODO: Check this for correctness
             raise TypeError("Encountered HMat with blocks * RMat! What should I do?!")
         return out
 
     def _mul_with_hmat(self, other):
+        # TODO: implement this
         pass
 
     def _mul_with_scalar(self, other):
