@@ -3,6 +3,7 @@ from unittest import TestCase
 import numpy
 
 from HierMat.hmat import HMat
+from HierMat.rmat import RMat
 
 
 class TestHmat(TestCase):
@@ -32,6 +33,12 @@ class TestHmat(TestCase):
         self.assertFalse(HMat(content=self.content1, shape=(3, 4), root_index=(1, 0)) == self.hmat1)
         self.assertFalse(HMat(blocks=[self.hmat1], shape=(3, 4), root_index=(0, 0)) == self.hmat20)
         self.assertFalse(HMat(content=numpy.ones((3, 4)), shape=(3, 4), root_index=(0, 0)) == self.hmat1)
+        rmat = RMat(self.content1, self.content1)
+        hmat = HMat(content=rmat, shape=(3, 3), root_index=(0, 0))
+        rmat2 = RMat(self.content2, self.content2)
+        hmat2 = HMat(content=rmat2, shape=(3, 3), root_index=(0, 0))
+        self.assertFalse(hmat == hmat2)
+        self.assertFalse(hmat == rmat)
 
     def test_neq(self):
         self.assertNotEqual(self.hmat2, self.hmat1)
@@ -45,6 +52,11 @@ class TestHmat(TestCase):
         addend_hmat = HMat(blocks=[addend1, addend2, addend3, addend4], shape=(7, 6), root_index=(0, 0))
         res = addend_hmat + self.hmat
         self.assertEqual(res, addend_hmat)
+        self.assertRaises(ValueError, addend1.__add__, addend2)
+        addend = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 0))
+        self.assertRaises(ValueError, addend.__add__, addend2)
+        addend = HMat(content=numpy.matrix(numpy.ones((7, 6))), shape=(7, 6), root_index=(0, 0))
+        self.assertRaises(ValueError, addend.__add__, addend_hmat)
 
     def test_repr(self):
         check = '<HMat with {content}>'.format(content=self.hmat_lvl2.blocks)
@@ -115,3 +127,14 @@ class TestHmat(TestCase):
         check *= 2
         res = hmat * 2
         self.assertTrue(numpy.array_equal(res.to_matrix(), check))
+
+    def test_mul_with_rmat(self):
+        rmat = RMat(self.content1, self.content1)
+        hmat = HMat(content=rmat, shape=(3, 3), root_index=(0, 0))
+        prod = hmat * rmat
+        self.assertEqual(prod, hmat)
+        rmat = RMat(self.content3, self.content3)
+        prod = self.hmat1 * rmat
+        self.assertTrue(numpy.array_equal(prod.to_matrix(), self.hmat1.to_matrix()))
+        rmat = RMat(numpy.matrix(numpy.ones((7, 3))), numpy.matrix(numpy.ones((6, 3))))
+        self.assertRaises(TypeError, self.hmat_lvl2.__mul__, rmat)

@@ -2,7 +2,7 @@
 """
 import numpy
 
-from rmat import RMat
+from HierMat.rmat import RMat
 
 
 class HMat(object):
@@ -26,6 +26,8 @@ class HMat(object):
         :return: true on equal
         :rtype: bool
         """
+        if type(self) is not type(other):
+            return False
         length = len(self.blocks)
         if len(other.blocks) != length:
             return False
@@ -79,7 +81,7 @@ class HMat(object):
                              '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
         if self.root_index != other.root_index:
             raise ValueError('root indices {0.root_index} and {1.root_index} not the same'.format(self, other))
-        if (self.content is None and other.blocks is None) or (self.blocks is None and other.content is None):
+        if (self.content is None and other.blocks == ()) or (self.blocks == () and other.content is None):
             raise ValueError('block structure is not the same for {0} and {1}'.format(self, other))
         if self.content is not None:  # both have content
             return HMat(content=self.content + other.content, shape=self.shape, root_index=self.root_index)
@@ -87,7 +89,6 @@ class HMat(object):
             blocks = len(self.blocks)
             return HMat(blocks=[self.blocks[i] + other.blocks[i] for i in xrange(blocks)],
                         shape=self.shape, root_index=self.root_index)
-        return None
 
     def _add_rmat(self, other):
         pass
@@ -102,6 +103,8 @@ class HMat(object):
             return self._mul_with_matrix(other)
         elif type(other) is int:
             return self._mul_with_int(other)
+        elif type(other) is RMat:
+            return self._mul_with_rmat(other)
         else:
             raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
 
@@ -163,15 +166,17 @@ class HMat(object):
 
         :param other: rmatrix.RMat to multiply
         :type other: RMat
-        :return:
+        :return: Hmat containing the product
+        :rtype: HMat
         """
         out = HMat(shape=self.shape, root_index=self.root_index)
-        if type(self.content) == RMat:
+        if type(self.content) is RMat:
             out.content = self.content * other
         elif self.content is not None:
-            return other.__rmul__(self.content)
+            out.content = other.__rmul__(self.content)
         else:
             raise TypeError("Encountered HMat * RMat! What should I do?!")
+        return out
 
     def _mul_with_int(self, other):
         """Multiplication with integer"""
