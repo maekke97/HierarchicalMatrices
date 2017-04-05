@@ -20,7 +20,7 @@ class RMat(object):
         # check for wrong input
         if right_mat is None and max_rank is None:
             raise ValueError('Not enough input arguments. At least one of right_mat and max_rank has to be specified')
-        if max_rank == 0:
+        if max_rank <= 0:
             raise ValueError('max_rank must be a positive integer')
 
         # check for direct conversion
@@ -32,15 +32,12 @@ class RMat(object):
             if left_shape[1] != right_shape[1]:
                 raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
                                  '{0.shape[1]} (dim 1) != {1.shape[1]} (dim 1)'.format(left_mat, right_mat))
-            if not max_rank:
-                self.max_rank = left_shape[1]
-            else:
-                self.max_rank = max_rank
+            self.max_rank = max_rank if max_rank is not None else 0
             self.left_mat = left_mat
             self.right_mat = right_mat
             self.shape = (left_shape[0], right_shape[0])
             # check if we have to reduce
-            if self.max_rank < left_shape[1]:
+            if self.max_rank and self.max_rank < left_shape[1]:
                 self._reduce(self.max_rank)
 
     def from_matrix(self, matrix, max_rank):
@@ -53,11 +50,7 @@ class RMat(object):
         :return: Best approximation of matrix in RMat format
         :rtype: RMat
         """
-        # check dimension
-        if max_rank > min(matrix.shape):
-            self.max_rank = min(matrix.shape)
-        else:
-            self.max_rank = max_rank
+        self.max_rank = max_rank
         u, s, v = numpy.linalg.svd(matrix)
         self.left_mat = u[:, 0: self.max_rank] * numpy.diag(s[0: self.max_rank])
         self.right_mat = v[0: self.max_rank, :].T
@@ -95,8 +88,8 @@ class RMat(object):
         except AttributeError:
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
         if type(other) is RMat:
-            # if ranks are equal, do formatted addition, else do exact
-            if self.max_rank == other.max_rank:
+            # if max_rank is defined do exact, else do exact
+            if self.max_rank:
                 return self.form_add(other, self.max_rank)
             else:
                 return self._add_rmat(other)
@@ -110,8 +103,7 @@ class RMat(object):
         """
         new_left = numpy.concatenate([self.left_mat, other.left_mat], axis=1)
         new_right = numpy.concatenate([self.right_mat, other.right_mat], axis=1)
-        new_k = self.max_rank + other.max_rank
-        return RMat(new_left, new_right, new_k)
+        return RMat(new_left, new_right, self.max_rank)
 
     def __sub__(self, other):
         """Subtract two Rank-k-matrices"""

@@ -2,6 +2,7 @@
 """
 import numpy
 import numbers
+import operator
 
 from HierMat.rmat import RMat
 
@@ -84,15 +85,19 @@ class HMat(object):
         """
         # check inputs
         if self.root_index != other.root_index:
-            raise ValueError('root indices {0.root_index} and {1.root_index} not the same'.format(self, other))
+            raise ValueError('can not add {0} and {1}. root indices {0.root_index} '
+                             'and {1.root_index} not the same'.format(self, other))
         if (self.content is None and other.blocks == ()) or (self.blocks == () and other.content is None):
-            raise ValueError('block structure is not the same for {0} and {1}'.format(self, other))
+            raise ValueError('can not add {0} and {1}. block structure is not the same '
+                             'for {0} and {1}'.format(self, other))
         if self.content is not None:  # both have content
             return HMat(content=self.content + other.content, shape=self.shape, root_index=self.root_index)
-        if self.blocks is not None:  # both have children
-            blocks = len(self.blocks)
-            return HMat(blocks=[self.blocks[i] + other.blocks[i] for i in xrange(blocks)],
-                        shape=self.shape, root_index=self.root_index)
+        # if we get here, both have children
+        if len(self.blocks) == len(other.blocks):
+            blocks = map(operator.add, self.blocks, other.blocks)
+            return HMat(blocks=blocks, shape=self.shape, root_index=self.root_index)
+        else:
+            raise ValueError('can not add {0} and {1}. number of blocks is different'.format(self, other))
 
     def _add_rmat(self, other):
         # TODO: What here?
