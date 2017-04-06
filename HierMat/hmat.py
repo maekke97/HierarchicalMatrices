@@ -263,7 +263,7 @@ def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate
     :param generate_full_matrix_function: function taking an inadmissible block cluster tree and returning
         a numpy.matrix
     :return: hmatrix
-    :rtype: RMat
+    :rtype: HMat
     :raises: ValueError if root of BlockClusterTree is admissible
     """
     if block_cluster_tree.admissible:
