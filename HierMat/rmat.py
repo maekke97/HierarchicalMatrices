@@ -1,6 +1,7 @@
 """rmat.py: :class:`RMat`
 """
 import numpy
+import numbers
 
 
 class RMat(object):
@@ -20,7 +21,7 @@ class RMat(object):
         # check for wrong input
         if right_mat is None and max_rank is None:
             raise ValueError('Not enough input arguments. At least one of right_mat and max_rank has to be specified')
-        if max_rank <= 0:
+        if max_rank is not None and max_rank <= 0:
             raise ValueError('max_rank must be a positive integer')
 
         # check for direct conversion
@@ -32,7 +33,7 @@ class RMat(object):
             if left_shape[1] != right_shape[1]:
                 raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
                                  '{0.shape[1]} (dim 1) != {1.shape[1]} (dim 1)'.format(left_mat, right_mat))
-            self.max_rank = max_rank if max_rank is not None else 0
+            self.max_rank = max_rank
             self.left_mat = left_mat
             self.right_mat = right_mat
             self.shape = (left_shape[0], right_shape[0])
@@ -87,7 +88,7 @@ class RMat(object):
                                  '{0.shape} {1.shape}'.format(self, other))
         except AttributeError:
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
-        if type(other) is RMat:
+        if isinstance(other, RMat):
             # if max_rank is defined do exact, else do exact
             if self.max_rank:
                 return self.form_add(other, self.max_rank)
@@ -103,7 +104,7 @@ class RMat(object):
         """
         new_left = numpy.concatenate([self.left_mat, other.left_mat], axis=1)
         new_right = numpy.concatenate([self.right_mat, other.right_mat], axis=1)
-        return RMat(new_left, new_right, self.max_rank)
+        return RMat(new_left, new_right)
 
     def __sub__(self, other):
         """Subtract two Rank-k-matrices"""
@@ -131,13 +132,13 @@ class RMat(object):
 
     def __mul__(self, other):
         """Multiplication of self and other"""
-        if type(other) is RMat:
+        if isinstance(other, RMat):
             return self._mul_with_rmat(other)
-        elif type(other) is numpy.matrix:
+        elif isinstance(other, numpy.matrix):
             return self._mul_with_mat(other)
-        elif type(other) is numpy.ndarray:
+        elif isinstance(other, numpy.ndarray):
             return self._mul_with_vector(other)
-        elif type(other) is int:
+        elif isinstance(other, numbers.Number):
             return self._mul_with_int(other)
         else:
             raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
@@ -177,9 +178,9 @@ class RMat(object):
 
     def __rmul__(self, other):
         """Multiplication numpy.matrix * RMat"""
-        if type(other) is numpy.matrix:
+        if isinstance(other, numpy.matrix):
             return RMat(other * self.left_mat, self.right_mat, self.max_rank)
-        elif type(other) is int:
+        elif isinstance(other, numbers.Number):
             return self._mul_with_int(other)
         else:
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
