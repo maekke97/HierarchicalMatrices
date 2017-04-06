@@ -64,6 +64,17 @@ class TestHmat(TestCase):
         check = HMat(content=numpy.matrix(2 * numpy.ones((3, 4))), shape=(3, 4), root_index=(0, 0))
         res = addend1 + numpy.matrix(numpy.ones((3, 4)))
         self.assertEqual(res, check)
+        self.assertRaises(ValueError, addend1._add_matrix, numpy.matrix(numpy.ones((3, 2))))
+        rmat = RMat(numpy.matrix(numpy.ones((3, 2))), numpy.matrix(numpy.ones((3, 2))), 2)
+        hmat = HMat(content=rmat, shape=(3, 3), root_index=(0, 0))
+        self.assertRaises(NotImplementedError, hmat.__add__, rmat)
+        mat = numpy.matrix(numpy.zeros((7, 6)))
+        res = addend_hmat + mat
+        self.assertEqual(addend_hmat, res)
+        mat = numpy.matrix(numpy.ones((7, 6)))
+        res = addend_hmat + mat
+        check = 2 * addend_hmat
+        self.assertEqual(check, res)
 
     def test_repr(self):
         check = '<HMat with {content}>'.format(content=self.hmat_lvl2.blocks)
@@ -87,6 +98,10 @@ class TestHmat(TestCase):
 
     def test_mul(self):
         self.assertRaises(NotImplementedError, self.hmat_lvl2.__mul__, 'bla')
+
+    def test_rmul(self):
+        self.assertRaises(NotImplementedError, self.hmat.__rmul__, self.hmat)
+        self.assertEqual(2 * self.hmat, self.hmat * 2)
 
     def test_mul_with_vector(self):
         block1 = numpy.matrix([numpy.arange(i, i+5) for i in xrange(1, 6)])
@@ -147,3 +162,6 @@ class TestHmat(TestCase):
         self.assertTrue(numpy.array_equal(prod.to_matrix(), self.hmat1.to_matrix()))
         rmat = RMat(numpy.matrix(numpy.ones((7, 3))), numpy.matrix(numpy.ones((6, 3))))
         self.assertRaises(TypeError, self.hmat_lvl2.__mul__, rmat)
+
+    def test_mul_with_hmat(self):
+        self.assertIs(self.hmat * self.hmat, None)

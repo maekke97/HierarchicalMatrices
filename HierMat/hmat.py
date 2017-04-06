@@ -118,8 +118,8 @@ class HMat(object):
         if self.blocks != ():
             out.blocks = []
             for block in self.blocks:
-                start_x = self.root_index[0] - block.root_index[0]
-                start_y = self.root_index[1] - block.root_index[1]
+                start_x = block.root_index[0] - self.root_index[0]
+                start_y = block.root_index[1] - self.root_index[1]
                 out.blocks.append(block + other[start_x: start_x + block.shape[0], start_y: start_y + block.shape[1]])
         else:
             out.content = self.content + other
@@ -138,6 +138,11 @@ class HMat(object):
             return self._mul_with_hmat(other)
         else:
             raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
+
+    def __rmul__(self, other):
+        if not isinstance(other, numbers.Number):
+            raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
+        return self * other
 
     def _mul_with_vector(self, other):
         """Multiply with a vector
