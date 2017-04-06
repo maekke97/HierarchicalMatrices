@@ -164,4 +164,14 @@ class TestHmat(TestCase):
         self.assertRaises(TypeError, self.hmat_lvl2.__mul__, rmat)
 
     def test_mul_with_hmat(self):
-        self.assertIs(self.hmat * self.hmat, None)
+        self.assertRaises(ValueError, self.hmat.__mul__, self.hmat)
+        self.assertRaises(ValueError, self.hmat1.__mul__, self.hmat3)
+        hmat = HMat(content=self.content3, shape=(4, 2), root_index=(0, 0))
+        check = HMat(content=numpy.matrix(numpy.zeros((3, 2))), shape=(3, 2), root_index=(0, 0))
+        self.assertEqual(self.hmat1 * hmat, check)
+        rmat = RMat(numpy.matrix(numpy.ones((3, 1))), right_mat=numpy.matrix(numpy.ones((3, 1))))
+        hmat = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), root_index=(0, 3))
+        hmat1 = HMat(content=rmat, shape=(3, 3), root_index=(3, 0))
+        check_rmat = RMat(numpy.matrix(3*numpy.ones((3, 1))), right_mat=numpy.matrix(numpy.ones((3, 1))))
+        check = HMat(content=check_rmat, shape=(3, 3), root_index=(0, 0))
+        self.assertEqual(hmat * hmat1, check)

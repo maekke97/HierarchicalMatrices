@@ -217,8 +217,22 @@ class HMat(object):
         return out
 
     def _mul_with_hmat(self, other):
-        # TODO: implement this
-        pass
+        """try to implement block wise
+        
+        :type other: HMat
+        """
+        if self.shape[1] != other.shape[0]:
+            raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
+                             '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
+        out_shape = (self.shape[0], other.shape[1])
+        if self.root_index[1] != other.root_index[0]:
+            raise ValueError('root indices {0.root_index} and {1.root_index} not aligned: '
+                             '{0.root_index[1]} (dim 1) != {1.root_index[0]} (dim 0)'.format(self, other))
+            # maybe return None
+        out_root_index = (self.root_index[0], other.root_index[1])
+        if self.content is not None and other.content is not None:  # simplest case, both have content
+            out_content = self.content * other.content
+            return HMat(content=out_content, shape=out_shape, root_index=out_root_index)
 
     def _mul_with_scalar(self, other):
         """Multiplication with integer"""

@@ -184,7 +184,7 @@ class RMat(object):
         elif isinstance(other, numbers.Number):
             return self._mul_with_int(other)
         else:
-            raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
+            raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
 
     def form_add(self, other, rank=None):
         """Formatted addition of self and other, i.e. addition and reduction to rank::
