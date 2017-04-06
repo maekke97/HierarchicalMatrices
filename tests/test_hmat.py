@@ -61,6 +61,9 @@ class TestHmat(TestCase):
         self.assertRaises(NotImplementedError, addend_hmat.__add__, numpy.ones((7, 6)))
         addend_hmat = HMat(blocks=[addend1, addend2, addend3], shape=(7, 6), root_index=(0, 0))
         self.assertRaises(ValueError, self.hmat.__add__, addend_hmat)
+        check = HMat(content=numpy.matrix(2 * numpy.ones((3, 4))), shape=(3, 4), root_index=(0, 0))
+        res = addend1 + numpy.matrix(numpy.ones((3, 4)))
+        self.assertEqual(res, check)
 
     def test_repr(self):
         check = '<HMat with {content}>'.format(content=self.hmat_lvl2.blocks)

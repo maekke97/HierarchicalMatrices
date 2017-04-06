@@ -101,11 +101,29 @@ class HMat(object):
 
     def _add_rmat(self, other):
         # TODO: What here?
-        pass
+        raise NotImplementedError()
 
     def _add_matrix(self, other):
-        # TODO: What here?
-        pass
+        """Add full matrix to hmat
+        
+        :param other: matrix to add
+        :type other: numpy.matrix
+        :return: sum
+        :rtype: HMat
+        """
+        if self.shape != other.shape:
+            raise ValueError('operands could not be broadcast together with shapes'
+                             ' {0.shape} {1.shape}'.format(self, other))
+        out = HMat(shape=self.shape, root_index=self.root_index)
+        if self.blocks != ():
+            out.blocks = []
+            for block in self.blocks:
+                start_x = self.root_index[0] - block.root_index[0]
+                start_y = self.root_index[1] - block.root_index[1]
+                out.blocks.append(block + other[start_x: start_x + block.shape[0], start_y: start_y + block.shape[1]])
+        else:
+            out.content = self.content + other
+        return out
 
     def __mul__(self, other):
         if isinstance(other, numpy.matrix):  # order is important here!
@@ -178,7 +196,7 @@ class HMat(object):
     def _mul_with_rmat(self, other):
         """Multiplication with an RMat
 
-        :param other: rmatrix.RMat to multiply
+        :param other: rmat to multiply
         :type other: RMat
         :return: Hmat containing the product
         :rtype: HMat
