@@ -31,7 +31,7 @@ class HMat(object):
         
         only for consistent matrices
         
-        :return: list of rows in first column
+        :return: list of columns in first row
         :rtype: list(int)
         """
         if not self.is_consistent():
