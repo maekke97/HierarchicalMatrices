@@ -49,27 +49,33 @@ class TestHmat(TestCase):
         check = {(0, 0): (3, 4), (0, 4): (3, 2), (3, 0): (4, 2), (3, 2): (4, 4)}
         self.assertEqual(check, self.hmat.block_structure)
 
-    def test_check_consistency(self):
-        self.assertFalse(self.hmat.check_consistency())
-        self.assertTrue(self.hmat1.check_consistency())
-        self.assertTrue(self.consistent1.check_consistency())
-        self.assertTrue(self.consistent2.check_consistency())
+    def test_is_consistent(self):
+        self.assertFalse(self.hmat.is_consistent())
+        self.assertTrue(self.hmat1.is_consistent())
+        self.assertTrue(self.consistent1.is_consistent())
+        self.assertTrue(self.consistent2.is_consistent())
         fail1 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(1, 1))
         fail = HMat(blocks=[fail1], shape=(3, 2), root_index=(0, 0))
-        self.assertFalse(fail.check_consistency())
+        self.assertFalse(fail.is_consistent())
         fail1 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(1, 1))
         fail2 = HMat(content=numpy.matrix(numpy.ones((2, 3))), shape=(2, 3), root_index=(1, 3))
         fail = HMat(blocks=[fail1, fail2], shape=(3, 5), root_index=(1, 1))
-        self.assertFalse(fail.check_consistency())
+        self.assertFalse(fail.is_consistent())
         fail1 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 0))
         fail = HMat(blocks=[fail1], shape=(2, 2), root_index=(0, 0))
-        self.assertFalse(fail.check_consistency())
+        self.assertFalse(fail.is_consistent())
 
     def test_column_sequence(self):
         check = [2, 1, 3]
         self.assertEqual(self.consistent1.column_sequence(), check)
         self.assertRaises(Warning, self.hmat.column_sequence)
         self.assertEqual(self.hmat1.column_sequence(), [4])
+
+    def test_row_sequence(self):
+        check = [3, 2]
+        self.assertEqual(self.consistent1.row_sequence(), check)
+        self.assertRaises(Warning, self.hmat.row_sequence)
+        self.assertEqual(self.hmat1.row_sequence(), [3])
 
     def test_eq(self):
         self.assertEqual(self.hmat1, self.hmat1)

@@ -1,8 +1,9 @@
 """hmat.py: :class:`HMat`
 """
-import numpy
 import numbers
 import operator
+
+import numpy
 
 from HierMat.rmat import RMat
 
@@ -26,14 +27,14 @@ class HMat(object):
         return structure
 
     def column_sequence(self):
-        """Return the sequence of row groups, as in thm. 1.9.4. in :cite:`eves1966elementary`
+        """Return the sequence of column groups, as in thm. 1.9.4. in :cite:`eves1966elementary`
         
         only for consistent matrices
         
         :return: list of rows in first column
         :rtype: list(int)
         """
-        if not self.check_consistency():
+        if not self.is_consistent():
             raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
         if self.block_structure is None:
             return [self.shape[1]]
@@ -49,7 +50,31 @@ class HMat(object):
             if current_col == max_cols:  # end of column, return list
                 return col_seq
 
-    def check_consistency(self):
+    def row_sequence(self):
+        """Return the sequence of row groups, as in thm. 1.9.4. in :cite:`eves1966elementary`
+
+        only for consistent matrices
+
+        :return: list of rows in first column
+        :rtype: list(int)
+        """
+        if not self.is_consistent():
+            raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
+        if self.block_structure is None:
+            return [self.shape[0]]
+        sorted_indices = sorted(self.block_structure, key=lambda item: item[1])
+        start_row = self.root_index[0]
+        current_row = start_row
+        max_rows = start_row + self.shape[0]
+        row_seq = []
+        for index in sorted_indices:
+            rows, cols = self.block_structure[index]
+            current_row += rows
+            row_seq.append(rows)
+            if current_row == max_rows:  # end of column, return list
+                return row_seq
+
+    def is_consistent(self):
         """Check if the blocks are aligned, i.e. we have consistent rows and columns
         
         :return: True on consistency, false otherwise
@@ -68,15 +93,15 @@ class HMat(object):
         current_col_seq = []
         for index in sorted_indices:
             # iterate over the index list to check each block column by column
+            rows, cols = self.block_structure[index]
             if index != (current_row, current_col):  # starting point of block is not where it should be
                 return False
-            rows, cols = self.block_structure[index]
+            current_col += cols
+            current_col_seq.append(cols)
             if col_rows == 0:  # first block in a column
                 col_rows = rows
             if rows != col_rows:  # this block has different height than the others in this column
                 return False
-            current_col += cols
-            current_col_seq.append(cols)
             if current_col == max_cols:  # end of column, check against previous and go to next column
                 if not col_seq:  # first column, so store for comparison
                     col_seq = current_col_seq
