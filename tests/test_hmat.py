@@ -65,6 +65,12 @@ class TestHmat(TestCase):
         fail = HMat(blocks=[fail1], shape=(2, 2), root_index=(0, 0))
         self.assertFalse(fail.check_consistency())
 
+    def test_column_sequence(self):
+        check = [2, 1, 3]
+        self.assertEqual(self.consistent1.column_sequence(), check)
+        self.assertRaises(Warning, self.hmat.column_sequence)
+        self.assertEqual(self.hmat1.column_sequence(), [4])
+
     def test_eq(self):
         self.assertEqual(self.hmat1, self.hmat1)
         self.assertEqual(self.hmat, self.hmat)
@@ -217,3 +223,4 @@ class TestHmat(TestCase):
         check_rmat = RMat(numpy.matrix(3*numpy.ones((3, 1))), right_mat=numpy.matrix(numpy.ones((3, 1))))
         check = HMat(content=check_rmat, shape=(3, 3), root_index=(0, 0))
         self.assertEqual(hmat * hmat1, check)
+        self.assertEqual(self.consistent1 * self.consistent2, None)
