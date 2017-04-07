@@ -62,7 +62,8 @@ class HMat(object):
             raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
         if self.block_structure is None:
             return [self.shape[0]]
-        sorted_indices = sorted(self.block_structure, key=lambda item: item[1])
+        pre_sort = sorted(self.block_structure)
+        sorted_indices = sorted(pre_sort, key=lambda item: item[1])
         start_row = self.root_index[0]
         current_row = start_row
         max_rows = start_row + self.shape[0]
@@ -71,7 +72,7 @@ class HMat(object):
             rows, cols = self.block_structure[index]
             current_row += rows
             row_seq.append(rows)
-            if current_row == max_rows:  # end of column, return list
+            if current_row == max_rows:  # end of row, return list
                 return row_seq
 
     def is_consistent(self):
@@ -322,16 +323,19 @@ class HMat(object):
         """
         if self.shape[1] != other.shape[0]:
             raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
-                                      '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
+                             '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
         out_shape = (self.shape[0], other.shape[1])
         if self.root_index[1] != other.root_index[0]:
             raise ValueError('root indices {0.root_index} and {1.root_index} not aligned: '
-                                      '{0.root_index[1]} (dim 1) != {1.root_index[0]} (dim 0)'.format(self, other))
+                             '{0.root_index[1]} (dim 1) != {1.root_index[0]} (dim 0)'.format(self, other))
         out_root_index = (self.root_index[0], other.root_index[1])
         if self.content is not None and other.content is not None:  # simplest case, both have content
             out_content = self.content * other.content
             return HMat(content=out_content, shape=out_shape, root_index=out_root_index)
-        elif self.content is None and other.content is None:
+        elif self.content is None and other.content is None:  # both have blocks
+            if self.column_sequence() != other.row_sequence():
+                raise ValueError('structures are not aligned. '
+                                 '{0} != {1}'.format(self.column_sequence(), other.row_sequence()))
             return None
 
     def _mul_with_scalar(self, other):

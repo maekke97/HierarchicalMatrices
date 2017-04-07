@@ -70,12 +70,16 @@ class TestHmat(TestCase):
         self.assertEqual(self.consistent1.column_sequence(), check)
         self.assertRaises(Warning, self.hmat.column_sequence)
         self.assertEqual(self.hmat1.column_sequence(), [4])
+        check = [3, 2]
+        self.assertEqual(self.consistent2.column_sequence(), check)
 
     def test_row_sequence(self):
         check = [3, 2]
         self.assertEqual(self.consistent1.row_sequence(), check)
         self.assertRaises(Warning, self.hmat.row_sequence)
         self.assertEqual(self.hmat1.row_sequence(), [3])
+        check = [2, 1, 3]
+        self.assertEqual(self.consistent2.row_sequence(), check)
 
     def test_eq(self):
         self.assertEqual(self.hmat1, self.hmat1)
@@ -230,3 +234,10 @@ class TestHmat(TestCase):
         check = HMat(content=check_rmat, shape=(3, 3), root_index=(0, 0))
         self.assertEqual(hmat * hmat1, check)
         self.assertEqual(self.consistent1 * self.consistent2, None)
+        hmat = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), root_index=(0, 0))
+        hmat2 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 3))
+        hmat_1 = HMat(blocks=[hmat, hmat2], shape=(3, 5), root_index=(0, 0))
+        hmat3 = HMat(content=numpy.matrix(numpy.ones((2, 3))), shape=(2, 3), root_index=(0, 0))
+        hmat4 = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), root_index=(2, 0))
+        hmat_2 = HMat(blocks=[hmat3, hmat4], shape=(5, 3), root_index=(0, 0))
+        self.assertRaises(ValueError, hmat_1.__mul__, hmat_2)
