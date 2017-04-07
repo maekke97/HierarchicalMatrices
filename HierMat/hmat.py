@@ -16,6 +16,62 @@ class HMat(object):
         self.content = content  # If not empty, this is either a full matrix or a RMat
         self.shape = shape  # Tuple of dimensions, i.e. size of index sets
         self.root_index = root_index  # Tuple of coordinates for the top-left corner in the root matrix
+        self.block_structure = self._determine_block_structure()
+
+    def _determine_block_structure(self):
+        """Find out, what blocks in what alignment we have"""
+        if self.blocks == ():  # No blocks => no structure
+            return None
+        structure = {block.root_index: block.shape for block in self.blocks}
+        return structure
+
+    # def row_sequence(self):
+    #     """Return the sequence of row groups, as in thm. 1.9.4. in :cite:`eves1966elementary`
+    #     """
+    #     pass
+
+    def check_consistency(self):
+        """Check if the blocks are aligned, i.e. we have consistent rows and columns
+        
+        :return: True on consistency, false otherwise
+        :rtype: bool
+        """
+        if self.block_structure is None:  # if we have no blocks, we are always consistent
+            return True
+        sorted_indices = sorted(self.block_structure)
+        start_row, start_col = sorted_indices[0]
+        current_row = start_row
+        current_col = start_col
+        total_rows, total_cols = self.shape
+        max_rows = start_row + total_rows
+        max_cols = start_col + total_cols
+        current_index = (current_row, current_col)
+        col_rows = 0  # to keep track of the height of each block
+        col_seq = []  # sequence of sub-column lengths to compare
+        current_col_seq = []
+        for index in sorted_indices:
+            if index != current_index:
+                return False
+            rows, cols = self.block_structure[index]
+            if col_rows == 0:  # first block in a column
+                col_rows = rows
+            if rows != col_rows:
+                return False
+            current_col += cols
+            current_col_seq.append(cols)
+            if current_col == max_cols:  # end of column, check against previous and go to next column
+                if not col_seq:
+                    col_seq = current_col_seq
+                if col_seq != current_col_seq:
+                    return False
+                current_col = start_col
+                current_row += col_rows
+                col_rows = 0
+                current_col_seq = []
+            current_index = (current_row, current_col)
+        if current_index[0] == max_rows:
+            return True
+        return False
 
     def __repr__(self):
         return '<HMat with {content}>'.format(content=self.blocks if self.blocks else self.content)
@@ -222,17 +278,19 @@ class HMat(object):
         :type other: HMat
         """
         if self.shape[1] != other.shape[0]:
-            raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
-                             '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
+            raise MultiplicationError('shapes {0.shape} and {1.shape} not aligned: '
+                                      '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
         out_shape = (self.shape[0], other.shape[1])
         if self.root_index[1] != other.root_index[0]:
-            raise ValueError('root indices {0.root_index} and {1.root_index} not aligned: '
-                             '{0.root_index[1]} (dim 1) != {1.root_index[0]} (dim 0)'.format(self, other))
-            # maybe return None
+            raise MultiplicationError('root indices {0.root_index} and {1.root_index} not aligned: '
+                                      '{0.root_index[1]} (dim 1) != {1.root_index[0]} (dim 0)'.format(self, other))
         out_root_index = (self.root_index[0], other.root_index[1])
         if self.content is not None and other.content is not None:  # simplest case, both have content
             out_content = self.content * other.content
             return HMat(content=out_content, shape=out_shape, root_index=out_root_index)
+        elif self.content is None and other.content is None:  # neither have content, so do all cross products and merge
+            # build the product between all blocks, except raising
+            return None
 
     def _mul_with_scalar(self, other):
         """Multiplication with integer"""
@@ -302,3 +360,8 @@ def recursion_build_hmatrix(current_hmat, block_cluster_tree, generate_rmat, gen
             new_hmat = HMat(blocks=[], shape=son.shape(), root_index=son.plot_info)
             current_hmat.blocks.append(new_hmat)
             recursion_build_hmatrix(new_hmat, son, generate_rmat, generate_full_mat)
+
+
+class MultiplicationError(ValueError):
+    """Special type of ValueError used in this module"""
+    pass

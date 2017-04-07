@@ -22,6 +22,37 @@ class TestHmat(TestCase):
         cls.hmat21 = HMat(content=cls.content21, shape=(3, 4), root_index=(0, 0))
         cls.hmat20 = HMat(blocks=[cls.hmat21], shape=(3, 4), root_index=(0, 0))
         cls.hmat_lvl2 = HMat(blocks=[cls.hmat20, cls.hmat2, cls.hmat3, cls.hmat4], shape=(7, 6), root_index=(0, 0))
+        cls.cblock1 = numpy.matrix(numpy.ones((3, 2)))
+        cls.cblock2 = numpy.matrix(numpy.ones((3, 1)))
+        cls.cblock3 = numpy.matrix(numpy.ones((3, 3)))
+        cls.cblock4 = numpy.matrix(numpy.ones((2, 2)))
+        cls.cblock5 = numpy.matrix(numpy.ones((2, 1)))
+        cls.cblock6 = numpy.matrix(numpy.ones((2, 3)))
+        cls.cmat1 = HMat(content=cls.cblock1, shape=(3, 2), root_index=(0, 0))
+        cls.cmat2 = HMat(content=cls.cblock2, shape=(3, 1), root_index=(0, 2))
+        cls.cmat3 = HMat(content=cls.cblock3, shape=(3, 3), root_index=(0, 3))
+        cls.cmat4 = HMat(content=cls.cblock4, shape=(2, 2), root_index=(3, 0))
+        cls.cmat5 = HMat(content=cls.cblock5, shape=(2, 1), root_index=(3, 2))
+        cls.cmat6 = HMat(content=cls.cblock6, shape=(2, 3), root_index=(3, 3))
+        cls.consistent1 = HMat(blocks=[cls.cmat1, cls.cmat2, cls.cmat3, cls.cmat4, cls.cmat5, cls.cmat6], shape=(5, 6))
+        cls.cmat1T = HMat(content=cls.cblock1.T, shape=(2, 3), root_index=(0, 0))
+        cls.cmat2T = HMat(content=cls.cblock2.T, shape=(1, 3), root_index=(2, 0))
+        cls.cmat3T = HMat(content=cls.cblock3.T, shape=(3, 3), root_index=(3, 0))
+        cls.cmat4T = HMat(content=cls.cblock4.T, shape=(2, 2), root_index=(0, 3))
+        cls.cmat5T = HMat(content=cls.cblock5.T, shape=(1, 2), root_index=(2, 3))
+        cls.cmat6T = HMat(content=cls.cblock6.T, shape=(3, 2), root_index=(3, 3))
+        cls.consistent2 = HMat(blocks=[cls.cmat1T, cls.cmat2T, cls.cmat3T, cls.cmat4T, cls.cmat5T, cls.cmat6T],
+                               shape=(6, 5))
+
+    def test_determine_block_structure(self):
+        check = {(0, 0): (3, 4), (0, 4): (3, 2), (3, 0): (4, 2), (3, 2): (4, 4)}
+        self.assertEqual(check, self.hmat.block_structure)
+
+    def test_check_consistency(self):
+        self.assertFalse(self.hmat.check_consistency())
+        self.assertTrue(self.hmat1.check_consistency())
+        self.assertTrue(self.consistent1.check_consistency())
+        self.assertTrue(self.consistent2.check_consistency())
 
     def test_eq(self):
         self.assertEqual(self.hmat1, self.hmat1)
