@@ -39,38 +39,37 @@ class HMat(object):
         if self.block_structure is None:  # if we have no blocks, we are always consistent
             return True
         sorted_indices = sorted(self.block_structure)
-        start_row, start_col = sorted_indices[0]
+        start_row, start_col = self.root_index
         current_row = start_row
         current_col = start_col
         total_rows, total_cols = self.shape
         max_rows = start_row + total_rows
         max_cols = start_col + total_cols
-        current_index = (current_row, current_col)
         col_rows = 0  # to keep track of the height of each block
         col_seq = []  # sequence of sub-column lengths to compare
         current_col_seq = []
         for index in sorted_indices:
-            if index != current_index:
+            if index != (current_row, current_col):  # starting point of block is not where it should be
                 return False
             rows, cols = self.block_structure[index]
             if col_rows == 0:  # first block in a column
                 col_rows = rows
-            if rows != col_rows:
+            if rows != col_rows:  # this block has different height than the others in this column
                 return False
             current_col += cols
             current_col_seq.append(cols)
             if current_col == max_cols:  # end of column, check against previous and go to next column
-                if not col_seq:
+                if not col_seq:  # first column, so store for comparison
                     col_seq = current_col_seq
-                if col_seq != current_col_seq:
+                if col_seq != current_col_seq:  # this column has a different partition than the previous
                     return False
                 current_col = start_col
                 current_row += col_rows
                 col_rows = 0
                 current_col_seq = []
-            current_index = (current_row, current_col)
-        if current_index[0] == max_rows:
+        if current_row == max_rows:  # end of row, all fine
             return True
+        # if we get to here, the shape of self is exceeded by its blocks in at least one dimension
         return False
 
     def __repr__(self):

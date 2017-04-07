@@ -34,7 +34,8 @@ class TestHmat(TestCase):
         cls.cmat4 = HMat(content=cls.cblock4, shape=(2, 2), root_index=(3, 0))
         cls.cmat5 = HMat(content=cls.cblock5, shape=(2, 1), root_index=(3, 2))
         cls.cmat6 = HMat(content=cls.cblock6, shape=(2, 3), root_index=(3, 3))
-        cls.consistent1 = HMat(blocks=[cls.cmat1, cls.cmat2, cls.cmat3, cls.cmat4, cls.cmat5, cls.cmat6], shape=(5, 6))
+        cls.consistent1 = HMat(blocks=[cls.cmat1, cls.cmat2, cls.cmat3, cls.cmat4, cls.cmat5, cls.cmat6],
+                               shape=(5, 6), root_index=(0, 0))
         cls.cmat1T = HMat(content=cls.cblock1.T, shape=(2, 3), root_index=(0, 0))
         cls.cmat2T = HMat(content=cls.cblock2.T, shape=(1, 3), root_index=(2, 0))
         cls.cmat3T = HMat(content=cls.cblock3.T, shape=(3, 3), root_index=(3, 0))
@@ -42,7 +43,7 @@ class TestHmat(TestCase):
         cls.cmat5T = HMat(content=cls.cblock5.T, shape=(1, 2), root_index=(2, 3))
         cls.cmat6T = HMat(content=cls.cblock6.T, shape=(3, 2), root_index=(3, 3))
         cls.consistent2 = HMat(blocks=[cls.cmat1T, cls.cmat2T, cls.cmat3T, cls.cmat4T, cls.cmat5T, cls.cmat6T],
-                               shape=(6, 5))
+                               shape=(6, 5), root_index=(0, 0))
 
     def test_determine_block_structure(self):
         check = {(0, 0): (3, 4), (0, 4): (3, 2), (3, 0): (4, 2), (3, 2): (4, 4)}
@@ -53,6 +54,16 @@ class TestHmat(TestCase):
         self.assertTrue(self.hmat1.check_consistency())
         self.assertTrue(self.consistent1.check_consistency())
         self.assertTrue(self.consistent2.check_consistency())
+        fail1 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(1, 1))
+        fail = HMat(blocks=[fail1], shape=(3, 2), root_index=(0, 0))
+        self.assertFalse(fail.check_consistency())
+        fail1 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(1, 1))
+        fail2 = HMat(content=numpy.matrix(numpy.ones((2, 3))), shape=(2, 3), root_index=(1, 3))
+        fail = HMat(blocks=[fail1, fail2], shape=(3, 5), root_index=(1, 1))
+        self.assertFalse(fail.check_consistency())
+        fail1 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 0))
+        fail = HMat(blocks=[fail1], shape=(2, 2), root_index=(0, 0))
+        self.assertFalse(fail.check_consistency())
 
     def test_eq(self):
         self.assertEqual(self.hmat1, self.hmat1)
