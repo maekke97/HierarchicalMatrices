@@ -17,23 +17,17 @@ class HMat(object):
         self.content = content  # If not empty, this is either a full matrix or a RMat
         self.shape = shape  # Tuple of dimensions, i.e. size of index sets
         self.root_index = root_index  # Tuple of coordinates for the top-left corner in the root matrix
-        self.block_structure = self._determine_block_structure()
-        if self.block_structure is not None:
-            self.structured_blocks = {block.root_index: block for block in self.blocks}
-        else:
-            self.structured_blocks = None
 
     def __getitem__(self, item):
         """Get block at position i, j from root-index"""
-        if len(item) == 1:
+        if isinstance(item, int):
             return self.blocks[item]
         else:
-            return self.structured_blocks[item]
+            structured_blocks = {block.root_index: block for block in self.blocks}
+            return structured_blocks[item]
 
-    def _determine_block_structure(self):
+    def _block_structure(self):
         """Find out, what blocks in what alignment we have"""
-        if self.blocks == ():  # No blocks => no structure
-            return None
         structure = {block.root_index: block.shape for block in self.blocks}
         return structure
 
@@ -47,15 +41,16 @@ class HMat(object):
         """
         if not self.is_consistent():
             raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
-        if self.block_structure is None:
+        pre_sort = sorted(self._block_structure(), key=lambda item: item[1])
+        sorted_indices = sorted(pre_sort)
+        if not sorted_indices:
             return [self.shape[1]]
-        sorted_indices = sorted(self.block_structure)
         start_col = self.root_index[1]
         current_col = start_col
         max_cols = start_col + self.shape[1]
         col_seq = []
         for index in sorted_indices:
-            rows, cols = self.block_structure[index]
+            rows, cols = self._block_structure()[index]
             current_col += cols
             col_seq.append(cols)
             if current_col == max_cols:  # end of column, return list
@@ -71,16 +66,16 @@ class HMat(object):
         """
         if not self.is_consistent():
             raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
-        if self.block_structure is None:
-            return [self.shape[0]]
-        pre_sort = sorted(self.block_structure)
+        pre_sort = sorted(self._block_structure())
         sorted_indices = sorted(pre_sort, key=lambda item: item[1])
+        if not sorted_indices:
+            return [self.shape[0]]
         start_row = self.root_index[0]
         current_row = start_row
         max_rows = start_row + self.shape[0]
         row_seq = []
         for index in sorted_indices:
-            rows, cols = self.block_structure[index]
+            rows, cols = self._block_structure()[index]
             current_row += rows
             row_seq.append(rows)
             if current_row == max_rows:  # end of row, return list
@@ -92,9 +87,10 @@ class HMat(object):
         :return: True on consistency, false otherwise
         :rtype: bool
         """
-        if self.block_structure is None:  # if we have no blocks, we just have to check the shape
+        if self._block_structure() == {}:  # if we have no blocks, we just have to check the shape
             return self.content.shape == self.shape
-        sorted_indices = sorted(self.block_structure)
+        pre_sort = sorted(self._block_structure(), key=lambda item: item[1])
+        sorted_indices = sorted(pre_sort)
         start_row, start_col = self.root_index
         current_row = start_row
         current_col = start_col
@@ -105,7 +101,7 @@ class HMat(object):
         current_col_seq = []
         for index in sorted_indices:
             # iterate over the index list to check each block column by column
-            rows, cols = self.block_structure[index]
+            rows, cols = self._block_structure()[index]
             if index != (current_row, current_col):  # starting point of block is not where it should be
                 return False
             current_col += cols
@@ -144,9 +140,6 @@ class HMat(object):
         length = len(self.blocks)
         if len(other.blocks) != length:
             return False
-        # block_checks = [self.blocks[i] == other.blocks[i] for i in xrange(length)]
-        # if not all(block_checks):
-        #     return False
         if self.blocks != other.blocks:
             return False
         if not isinstance(self.content, type(other.content)):
@@ -352,10 +345,10 @@ class HMat(object):
             out_blocks = []
             #  formula from Howard Eves: Theorem 1.9.6
 
-            for i in list(set([k[0] for k in self.block_structure])):
-                for j in list(set([k[1] for k in other.block_structure])):
+            for i in list(set([k[0] for k in self._block_structure()])):
+                for j in list(set([k[1] for k in other._block_structure()])):
                     out_block = None
-                    for k in list(set([l[1] for l in self.block_structure])):
+                    for k in list(set([l[1] for l in self._block_structure()])):
                         if out_block is None:
                             out_block = self[i, k] * other[k, j]
                         else:
