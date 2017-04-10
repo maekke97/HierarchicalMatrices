@@ -13,11 +13,22 @@ class HMat(object):
     """
 
     def __init__(self, blocks=(), content=None, shape=(), root_index=()):
-        self.blocks = blocks  # This list contains the lower level HMat
+        self.blocks = blocks  # This list contains the lower level HMats
         self.content = content  # If not empty, this is either a full matrix or a RMat
         self.shape = shape  # Tuple of dimensions, i.e. size of index sets
         self.root_index = root_index  # Tuple of coordinates for the top-left corner in the root matrix
         self.block_structure = self._determine_block_structure()
+        if self.block_structure is not None:
+            self.structured_blocks = {block.root_index: block for block in self.blocks}
+        else:
+            self.structured_blocks = None
+
+    def __getitem__(self, item):
+        """Get block at position i, j from root-index"""
+        if len(item) == 1:
+            return self.blocks[item]
+        else:
+            return self.structured_blocks[item]
 
     def _determine_block_structure(self):
         """Find out, what blocks in what alignment we have"""
@@ -133,8 +144,10 @@ class HMat(object):
         length = len(self.blocks)
         if len(other.blocks) != length:
             return False
-        block_checks = [self.blocks[i] == other.blocks[i] for i in xrange(length)]
-        if not all(block_checks):
+        # block_checks = [self.blocks[i] == other.blocks[i] for i in xrange(length)]
+        # if not all(block_checks):
+        #     return False
+        if self.blocks != other.blocks:
             return False
         if not isinstance(self.content, type(other.content)):
             return False
@@ -336,7 +349,19 @@ class HMat(object):
             if self.column_sequence() != other.row_sequence():
                 raise ValueError('structures are not aligned. '
                                  '{0} != {1}'.format(self.column_sequence(), other.row_sequence()))
-            return None
+            out_blocks = []
+            #  formula from Howard Eves: Theorem 1.9.6
+
+            for i in list(set([k[0] for k in self.block_structure])):
+                for j in list(set([k[1] for k in other.block_structure])):
+                    out_block = None
+                    for k in list(set([l[1] for l in self.block_structure])):
+                        if out_block is None:
+                            out_block = self[i, k] * other[k, j]
+                        else:
+                            out_block = out_block + self[i, k] * other[k, j]
+                    out_blocks.append(out_block)
+            return HMat(blocks=out_blocks, shape=out_shape, root_index=out_root_index)
 
     def _mul_with_scalar(self, other):
         """Multiplication with integer"""
