@@ -53,7 +53,7 @@ class TestHmat(TestCase):
 
     def test_determine_block_structure(self):
         check = {(0, 0): (3, 4), (0, 4): (3, 2), (3, 0): (4, 2), (3, 2): (4, 4)}
-        self.assertEqual(check, self.hmat._block_structure())
+        self.assertEqual(check, self.hmat.block_structure())
 
     def test_is_consistent(self):
         self.assertFalse(self.hmat.is_consistent())

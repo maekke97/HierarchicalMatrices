@@ -26,8 +26,9 @@ class HMat(object):
             structured_blocks = {block.root_index: block for block in self.blocks}
             return structured_blocks[item]
 
-    def _block_structure(self):
+    def block_structure(self):
         """Find out, what blocks in what alignment we have"""
+        # TODO: proper docstring
         structure = {block.root_index: block.shape for block in self.blocks}
         return structure
 
@@ -41,7 +42,7 @@ class HMat(object):
         """
         if not self.is_consistent():
             raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
-        pre_sort = sorted(self._block_structure(), key=lambda item: item[1])
+        pre_sort = sorted(self.block_structure(), key=lambda item: item[1])
         sorted_indices = sorted(pre_sort)
         if not sorted_indices:
             return [self.shape[1]]
@@ -50,7 +51,7 @@ class HMat(object):
         max_cols = start_col + self.shape[1]
         col_seq = []
         for index in sorted_indices:
-            rows, cols = self._block_structure()[index]
+            rows, cols = self.block_structure()[index]
             current_col += cols
             col_seq.append(cols)
             if current_col == max_cols:  # end of column, return list
@@ -66,7 +67,7 @@ class HMat(object):
         """
         if not self.is_consistent():
             raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
-        pre_sort = sorted(self._block_structure())
+        pre_sort = sorted(self.block_structure())
         sorted_indices = sorted(pre_sort, key=lambda item: item[1])
         if not sorted_indices:
             return [self.shape[0]]
@@ -75,7 +76,7 @@ class HMat(object):
         max_rows = start_row + self.shape[0]
         row_seq = []
         for index in sorted_indices:
-            rows, cols = self._block_structure()[index]
+            rows, cols = self.block_structure()[index]
             current_row += rows
             row_seq.append(rows)
             if current_row == max_rows:  # end of row, return list
@@ -87,9 +88,9 @@ class HMat(object):
         :return: True on consistency, false otherwise
         :rtype: bool
         """
-        if self._block_structure() == {}:  # if we have no blocks, we just have to check the shape
+        if self.block_structure() == {}:  # if we have no blocks, we just have to check the shape
             return self.content.shape == self.shape
-        pre_sort = sorted(self._block_structure(), key=lambda item: item[1])
+        pre_sort = sorted(self.block_structure(), key=lambda item: item[1])
         sorted_indices = sorted(pre_sort)
         start_row, start_col = self.root_index
         current_row = start_row
@@ -101,7 +102,7 @@ class HMat(object):
         current_col_seq = []
         for index in sorted_indices:
             # iterate over the index list to check each block column by column
-            rows, cols = self._block_structure()[index]
+            rows, cols = self.block_structure()[index]
             if index != (current_row, current_col):  # starting point of block is not where it should be
                 return False
             current_col += cols
@@ -339,22 +340,27 @@ class HMat(object):
             out_content = self.content * other.content
             return HMat(content=out_content, shape=out_shape, root_index=out_root_index)
         elif self.content is None and other.content is None:  # both have blocks
-            if self.column_sequence() != other.row_sequence():
-                raise ValueError('structures are not aligned. '
-                                 '{0} != {1}'.format(self.column_sequence(), other.row_sequence()))
-            out_blocks = []
-            #  formula from Howard Eves: Theorem 1.9.6
+            return self._mul_with_hmat_blocks(other)
 
-            for i in list(set([k[0] for k in self._block_structure()])):
-                for j in list(set([k[1] for k in other._block_structure()])):
-                    out_block = None
-                    for k in list(set([l[1] for l in self._block_structure()])):
-                        if out_block is None:
-                            out_block = self[i, k] * other[k, j]
-                        else:
-                            out_block = out_block + self[i, k] * other[k, j]
-                    out_blocks.append(out_block)
-            return HMat(blocks=out_blocks, shape=out_shape, root_index=out_root_index)
+    def _mul_with_hmat_blocks(self, other):
+        # TODO: docstring
+        out_shape = (self.shape[0], other.shape[1])
+        out_root_index = (self.root_index[0], other.root_index[1])
+        if self.column_sequence() != other.row_sequence():
+            raise ValueError('structures are not aligned. '
+                             '{0} != {1}'.format(self.column_sequence(), other.row_sequence()))
+        out_blocks = []
+        #  formula from Howard Eves: Theorem 1.9.6
+        for i in list(set([k[0] for k in self.block_structure()])):
+            for j in list(set([k[1] for k in other.block_structure()])):
+                out_block = None
+                for k in list(set([l[1] for l in self.block_structure()])):
+                    if out_block is None:
+                        out_block = self[i, k] * other[k, j]
+                    else:
+                        out_block = out_block + self[i, k] * other[k, j]
+                out_blocks.append(out_block)
+        return HMat(blocks=out_blocks, shape=out_shape, root_index=out_root_index)
 
     def _mul_with_scalar(self, other):
         """Multiplication with integer"""
