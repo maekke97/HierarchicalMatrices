@@ -1,9 +1,15 @@
+import random
 from unittest import TestCase
 
 import numpy
 
-from HierMat.hmat import HMat
+from HierMat.block_cluster_tree import build_block_cluster_tree
+from HierMat.cluster import Cluster
+from HierMat.cluster_tree import build_cluster_tree, admissible
+from HierMat.grid import Grid
+from HierMat.hmat import HMat, build_hmatrix
 from HierMat.rmat import RMat
+from HierMat.splitable import RegularCuboid
 
 
 class TestHmat(TestCase):
@@ -253,3 +259,39 @@ class TestHmat(TestCase):
         hmat4 = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), root_index=(2, 0))
         hmat_2 = HMat(blocks=[hmat3, hmat4], shape=(5, 3), root_index=(0, 0))
         self.assertRaises(ValueError, hmat_1.__mul__, hmat_2)
+
+    def test_build_hmatrix(self):
+        full_func = lambda x: numpy.matrix(numpy.ones(x.shape()))
+        block_func = lambda x: RMat(numpy.matrix(numpy.ones((x.shape()[0], 1))),
+                                    numpy.matrix(numpy.ones((x.shape()[1], 1))),
+                                    max_rank=1)
+        lim1 = 2
+        link_num = 4
+        points1 = [numpy.array([float(i) / lim1]) for i in xrange(lim1)]
+        links1 = [[points1[l] for l in [random.randint(0, lim1 - 1) for x in xrange(link_num)]] for i in xrange(lim1)]
+        grid1 = Grid(points1, links1)
+        cluster1 = Cluster(grid1)
+        rc1 = RegularCuboid(cluster1)
+        ct1 = build_cluster_tree(rc1, max_leaf_size=4)
+        bct1 = build_block_cluster_tree(ct1, right_cluster_tree=ct1, admissible_function=admissible)
+        hmat = build_hmatrix(bct1, generate_rmat_function=block_func, generate_full_matrix_function=block_func)
+        check_rmat = RMat(numpy.matrix(numpy.ones((2, 1))), numpy.matrix(numpy.ones((2, 1))), max_rank=1)
+        check = HMat(content=check_rmat, shape=(2, 2), root_index=(0, 0))
+        self.assertEqual(hmat, check)
+        lim1 = 8
+        link_num = 4
+        points1 = [numpy.array([float(i) / lim1]) for i in xrange(lim1)]
+        links1 = [[points1[l] for l in [random.randint(0, lim1 - 1) for x in xrange(link_num)]] for i in xrange(lim1)]
+        grid1 = Grid(points1, links1)
+        cluster1 = Cluster(grid1)
+        rc1 = RegularCuboid(cluster1)
+        ct1 = build_cluster_tree(rc1, max_leaf_size=4)
+        bct1 = build_block_cluster_tree(ct1, right_cluster_tree=ct1, admissible_function=admissible)
+        hmat = build_hmatrix(bct1, generate_rmat_function=block_func, generate_full_matrix_function=block_func)
+        check_rmat = RMat(numpy.matrix(numpy.ones((4, 1))), numpy.matrix(numpy.ones((4, 1))), max_rank=1)
+        check1 = HMat(content=check_rmat, shape=(4, 4), root_index=(0, 0))
+        check2 = HMat(content=check_rmat, shape=(4, 4), root_index=(0, 4))
+        check3 = HMat(content=check_rmat, shape=(4, 4), root_index=(4, 0))
+        check4 = HMat(content=check_rmat, shape=(4, 4), root_index=(4, 4))
+        check = HMat(blocks=[check1, check2, check3, check4], shape=(8, 8), root_index=(0, 0))
+        self.assertEqual(hmat, check)

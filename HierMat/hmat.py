@@ -1,4 +1,4 @@
-"""hmat.py: :class:`HMat`
+"""hmat.py: :class:`HMat`, :func:`build_hmatrix`, :func:`recursion_build_hmatrix`, :class:`StructureWarning`
 """
 import numbers
 import operator
@@ -19,7 +19,7 @@ class HMat(object):
         self.root_index = root_index  # Tuple of coordinates for the top-left corner in the root matrix
 
     def __getitem__(self, item):
-        """Get block at position i, j from root-index"""
+        """Get block at position i, j from root-index or ith block from blocks"""
         if isinstance(item, int):
             return self.blocks[item]
         else:
@@ -27,18 +27,23 @@ class HMat(object):
             return structured_blocks[item]
 
     def block_structure(self):
-        """Find out, what blocks in what alignment we have"""
-        # TODO: proper docstring
+        """Return a dict with root_index: block paris
+        
+        :rtype: dict
+        :returns: dict with index: HMatrix pairs
+        """
         structure = {block.root_index: block.shape for block in self.blocks}
         return structure
 
     def column_sequence(self):
-        """Return the sequence of column groups, as in thm. 1.9.4. in :cite:`eves1966elementary`
+        """Return the sequence of column groups
+        as in thm. 1.9.4. in :cite:`eves1966elementary`
         
         only for consistent matrices
         
         :return: list of columns in first row
         :rtype: list(int)
+        :raises: :class:`StructureWarning` if the matrix is not consistent
         """
         if not self.is_consistent():
             raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
@@ -58,12 +63,14 @@ class HMat(object):
                 return col_seq
 
     def row_sequence(self):
-        """Return the sequence of row groups, as in thm. 1.9.4. in :cite:`eves1966elementary`
+        """Return the sequence of row groups
+        as in thm. 1.9.4. in :cite:`eves1966elementary`
 
-        only for consistent matrices
+        defined only for consistent matrices
 
         :return: list of rows in first column
         :rtype: list(int)
+        :raises: :class:`StructureWarning` if the matrix is not consistent
         """
         if not self.is_consistent():
             raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
@@ -83,9 +90,9 @@ class HMat(object):
                 return row_seq
 
     def is_consistent(self):
-        """Check if the blocks are aligned, i.e. we have consistent rows and columns
+        """check if the blocks are aligned, i.e. we have consistent rows and columns
         
-        :return: True on consistency, false otherwise
+        :return: True on consistency, False otherwise
         :rtype: bool
         """
         if self.block_structure() == {}:  # if we have no blocks, we just have to check the shape
@@ -129,7 +136,7 @@ class HMat(object):
         return '<HMat with {content}>'.format(content=self.blocks if self.blocks else self.content)
 
     def __eq__(self, other):
-        """Test for equality
+        """test for equality
         
         :param other: other HMat
         :type other: HMat
@@ -156,7 +163,7 @@ class HMat(object):
         return True
 
     def __ne__(self, other):
-        """Test for inequality
+        """test for inequality
         
         :param other: other HMat
         :type other: HMat
@@ -166,7 +173,7 @@ class HMat(object):
         return not self == other
 
     def __add__(self, other):
-        """Addition with several types"""
+        """addition with several types"""
         try:
             if self.shape != other.shape:
                 raise ValueError("operands could not be broadcast together with shapes"
@@ -183,7 +190,7 @@ class HMat(object):
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
 
     def _add_hmat(self, other):
-        """Add two hmat objects that have same structure
+        """add two hmat objects that have same structure
         
         :param other: HMat to add
         :type other: HMat
@@ -211,7 +218,7 @@ class HMat(object):
         raise NotImplementedError()
 
     def _add_matrix(self, other):
-        """Add full matrix to hmat
+        """add full matrix to hmat
         
         :param other: matrix to add
         :type other: numpy.matrix
@@ -247,12 +254,16 @@ class HMat(object):
             raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
 
     def __rmul__(self, other):
+        """multiply from the right
+        
+        only supported for scalars
+        """
         if not isinstance(other, numbers.Number):
             raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
         return self * other
 
     def _mul_with_vector(self, other):
-        """Multiply with a vector
+        """multiply with a vector
 
         :param other: vector
         :type other: numpy.array
@@ -280,7 +291,7 @@ class HMat(object):
             return res
 
     def _mul_with_matrix(self, other):
-        """Multiply with a matrix
+        """multiply with a numpy.matrix
 
         :param other: matrix
         :type other: numpy.matrix
@@ -306,7 +317,7 @@ class HMat(object):
             return res
 
     def _mul_with_rmat(self, other):
-        """Multiplication with an RMat
+        """multiplication with an rmat
 
         :param other: rmat to multiply
         :type other: RMat
@@ -324,7 +335,7 @@ class HMat(object):
         return out
 
     def _mul_with_hmat(self, other):
-        """try to implement block wise
+        """multiplication with other hmat
         
         :type other: HMat
         """
@@ -343,7 +354,10 @@ class HMat(object):
             return self._mul_with_hmat_blocks(other)
 
     def _mul_with_hmat_blocks(self, other):
-        # TODO: docstring
+        """multiplication when self and other have blocks
+        
+        :type other: HMat
+        """
         out_shape = (self.shape[0], other.shape[1])
         out_root_index = (self.root_index[0], other.root_index[1])
         if self.column_sequence() != other.row_sequence():
@@ -363,7 +377,10 @@ class HMat(object):
         return HMat(blocks=out_blocks, shape=out_shape, root_index=out_root_index)
 
     def _mul_with_scalar(self, other):
-        """Multiplication with integer"""
+        """multiplication with integer
+        
+        :type other: Number.number
+        """
         out = HMat(shape=self.shape, root_index=self.root_index)
         if self.content is not None:
             out.content = self.content * other
@@ -409,8 +426,9 @@ def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate
     :raises: ValueError if root of BlockClusterTree is admissible
     """
     if block_cluster_tree.admissible:
-        raise ValueError("Root of the block cluster tree is admissible, can't generate HMat from that.")
-    root = HMat(blocks=[], shape=block_cluster_tree.shape(), root_index=(0, 0))
+        return HMat(content=generate_full_matrix_function(block_cluster_tree), shape=block_cluster_tree.shape(),
+                    root_index=(0, 0))
+    root = HMat(blocks=[], shape=tuple(block_cluster_tree.shape()), root_index=(0, 0))
     recursion_build_hmatrix(root, block_cluster_tree, generate_rmat_function, generate_full_matrix_function)
     return root
 
@@ -421,13 +439,15 @@ def recursion_build_hmatrix(current_hmat, block_cluster_tree, generate_rmat, gen
     if block_cluster_tree.admissible:
         # admissible level found, so fill content with rank-k matrix and stop
         current_hmat.content = generate_rmat(block_cluster_tree)
+        current_hmat.blocks = ()
     elif not block_cluster_tree.sons:
         # no sons and not admissible, so fill content with full matrix and stop
         current_hmat.content = generate_full_mat(block_cluster_tree)
+        current_hmat.blocks = ()
     else:
         # recursion: generate new hmatrix for every son in block cluster tree
         for son in block_cluster_tree.sons:
-            new_hmat = HMat(blocks=[], shape=son.shape(), root_index=son.plot_info)
+            new_hmat = HMat(blocks=[], shape=son.shape(), root_index=tuple(son.plot_info))
             current_hmat.blocks.append(new_hmat)
             recursion_build_hmatrix(new_hmat, son, generate_rmat, generate_full_mat)
 

@@ -165,7 +165,7 @@ def build_block_cluster_tree(left_cluster_tree, right_cluster_tree=None, start_l
     is_admissible = admissible_function(left_cluster_tree, right_cluster_tree)
     x_min, x_max = left_cluster_tree.get_patch_coordinates()
     y_min, y_max = right_cluster_tree.get_patch_coordinates()
-    plot_info = [x_min, y_min]
+    plot_info = (x_min, y_min)
     root = BlockClusterTree(left_cluster_tree, right_cluster_tree,
                             level=start_level, is_admissible=is_admissible, plot_info=plot_info)
     recursion_build_block_cluster_tree(root, admissible_function)
@@ -185,7 +185,7 @@ def recursion_build_block_cluster_tree(current_tree, admissible_function):
                 new_tree = BlockClusterTree(left_son, right_son,
                                             level=current_tree.level + 1,
                                             is_admissible=False,
-                                            plot_info=[x_current, y_current]
+                                            plot_info=(x_current, y_current)
                                             )
                 current_tree.sons.append(new_tree)
                 recursion_build_block_cluster_tree(new_tree, admissible_function)
