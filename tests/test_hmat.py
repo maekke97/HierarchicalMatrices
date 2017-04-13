@@ -182,6 +182,27 @@ class TestHmat(TestCase):
         check_lvl2 = numpy.zeros((7, 6))
         check_lvl2[0:3, 0:4] = 1
         self.assertTrue(numpy.array_equal(self.hmat_lvl2.to_matrix(), check_lvl2))
+        rmat = RMat(numpy.matrix(numpy.ones((3, 1))), numpy.matrix(numpy.ones((3, 1))))
+        hmat1 = HMat(content=rmat, shape=(3, 3), root_index=(0, 0))
+        hmat2 = HMat(content=rmat, shape=(3, 3), root_index=(0, 3))
+        hmat3 = HMat(content=rmat, shape=(3, 3), root_index=(3, 0))
+        hmat4 = HMat(content=rmat, shape=(3, 3), root_index=(3, 3))
+        hmat = HMat(blocks=[hmat1, hmat2, hmat3, hmat4], shape=(6, 6), root_index=(0, 0))
+        self.assertTrue(numpy.array_equal(hmat.to_matrix(), numpy.matrix(numpy.ones((6, 6)))))
+        blocks1 = [HMat(content=rmat, shape=(3, 3), root_index=(i, j))
+                   for i in xrange(0, 4, 3) for j in xrange(0, 4, 3)]
+        blocks2 = [HMat(content=rmat, shape=(3, 3), root_index=(i, j))
+                   for i in xrange(6, 10, 3) for j in xrange(0, 4, 3)]
+        blocks3 = [HMat(content=rmat, shape=(3, 3), root_index=(i, j))
+                   for i in xrange(0, 4, 3) for j in xrange(6, 10, 3)]
+        blocks4 = [HMat(content=rmat, shape=(3, 3), root_index=(i, j))
+                   for i in xrange(6, 10, 3) for j in xrange(6, 10, 3)]
+        block_mat1 = HMat(blocks=blocks1, shape=(6, 6), root_index=(0, 0))
+        block_mat2 = HMat(blocks=blocks2, shape=(6, 6), root_index=(6, 0))
+        block_mat3 = HMat(blocks=blocks3, shape=(6, 6), root_index=(0, 6))
+        block_mat4 = HMat(blocks=blocks4, shape=(6, 6), root_index=(6, 6))
+        outer_block = HMat(blocks=[block_mat1, block_mat2, block_mat3, block_mat4], shape=(12, 12), root_index=(0, 0))
+        self.assertTrue(numpy.array_equal(outer_block.to_matrix(), numpy.matrix(numpy.ones((12, 12)))))
 
     def test_mul(self):
         self.assertRaises(NotImplementedError, self.hmat_lvl2.__mul__, 'bla')

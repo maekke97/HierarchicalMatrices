@@ -448,9 +448,9 @@ class HMat(object):
             out_mat = numpy.matrix(numpy.zeros(self.shape))
             for block in self.blocks:
                 # determine the position of the current block
-                vertical_start = block.root_index[0]
+                vertical_start = block.root_index[0] - self.root_index[0]
                 vertical_end = vertical_start + block.shape[0]
-                horizontal_start = block.root_index[1]
+                horizontal_start = block.root_index[1] - self.root_index[1]
                 horizontal_end = horizontal_start + block.shape[1]
 
                 # fill the block with recursive call
