@@ -6,9 +6,6 @@ from HierMat.block_cluster_tree import BlockClusterTree
 from HierMat.cluster_tree import ClusterTree
 
 
-# TODO: write tests
-
-
 def export(obj, form='xml', out_file='out'):
     """Export obj in specified format.
     

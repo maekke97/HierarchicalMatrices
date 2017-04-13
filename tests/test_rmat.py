@@ -81,9 +81,21 @@ and right block:
         self.assertEqual(res, add_mat)
         self.assertAlmostEqual(abs(rmat1 + rmat2), abs(rmat2 + rmat1), 6)
         self.assertRaises(ValueError, rmat1.__add__, numpy.ones((2, 4)))
-        self.assertRaises(NotImplementedError, rmat1.__add__, 1)
+        self.assertRaises(ValueError, rmat1.__add__, 1)
+        res = rmat1 + numpy.matrix(numpy.ones((3, 3)))
+        check = rmat1.to_matrix() + numpy.matrix(numpy.ones((3, 3)))
+        self.assertEqual(res.norm(), numpy.linalg.norm(check))
+        self.assertRaises(NotImplementedError, rmat1.__add__, 'bla')
         self.assertRaises(NotImplementedError, rmat1.__add__, numpy.ones((3, 3)))
-        self.assertRaises(NotImplementedError, rmat1.__add__, numpy.matrix(numpy.ones((3, 3))))
+
+    def test_radd_(self):
+        left1 = numpy.matrix([[1], [2], [3]])
+        right1 = numpy.matrix([[5], [6], [7]])
+        rmat1 = RMat(left1, right1)
+        addend = numpy.matrix(numpy.ones((3, 3)))
+        res = rmat1.__radd__(addend)
+        check = rmat1.to_matrix() + numpy.matrix(numpy.ones((3, 3)))
+        self.assertEqual(res.norm(), numpy.linalg.norm(check))
 
     def test_neg(self):
         left1 = numpy.matrix([[1], [2], [3]])
@@ -202,3 +214,14 @@ and right block:
         right1 = numpy.matrix([[2, 3], [1, 5], [5, 1]])
         rmat1 = RMat(left1, right1, 2)
         self.assertEqual(type(rmat1), RMat)
+
+    def test_split(self):
+        left_block = numpy.matrix([[1, 2, 3], [3, 2, 1], [2, 3, 1]])
+        right_block = numpy.matrix([[2, 3, 4], [4, 3, 2], [3, 4, 2]])
+        rmat = RMat(left_block, right_block)
+        check1 = RMat(numpy.matrix([[1, 2, 3]]), numpy.matrix([[2, 3, 4]]))
+        check2 = RMat(numpy.matrix([[3, 2, 1], [2, 3, 1]]), numpy.matrix([[4, 3, 2], [3, 4, 2]]))
+        check3 = RMat(numpy.matrix([[1, 2, 3], [3, 2, 1]]), numpy.matrix([[4, 3, 2], [3, 4, 2]]))
+        self.assertEqual(rmat.split(0, 0, 1, 1), check1)
+        self.assertEqual(rmat.split(1, 1, 3, 3), check2)
+        self.assertEqual(rmat.split(0, 1, 2, 3), check3)

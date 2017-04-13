@@ -1,13 +1,17 @@
 """rmat.py: :class:`RMat`
 """
-import numpy
 import numbers
+
+import numpy
 
 
 class RMat(object):
     """Rank-k matrix
 
     Implementation of the low rank matrix as described in [HB2015]
+    
+    .. note:
+        There is still an issue with __radd__, when the left operand is a numpy.ndarray object
     """
 
     def __init__(self, left_mat, right_mat=None, max_rank=None):
@@ -26,7 +30,7 @@ class RMat(object):
 
         # check for direct conversion
         if right_mat is None:
-            self.from_matrix(left_mat, max_rank)
+            self._from_matrix(left_mat, max_rank)
         else:  # default constructor
             left_shape = left_mat.shape
             right_shape = right_mat.shape
@@ -41,7 +45,8 @@ class RMat(object):
             if self.max_rank and self.max_rank < left_shape[1]:
                 self._reduce(self.max_rank)
 
-    def from_matrix(self, matrix, max_rank):
+    @staticmethod
+    def from_matrix(matrix, max_rank):
         """Convert a full matrix to the rank k format 
         
         :param matrix: Matrix to convert to RMat
@@ -50,6 +55,19 @@ class RMat(object):
         :type max_rank: int
         :return: Best approximation of matrix in RMat format
         :rtype: RMat
+        """
+        u, s, v = numpy.linalg.svd(matrix)
+        left_mat = u[:, 0: max_rank] * numpy.diag(s[0: max_rank])
+        right_mat = v[0: max_rank, :].T
+        return RMat(left_mat, right_mat, max_rank)
+
+    def _from_matrix(self, matrix, max_rank):
+        """Convert a full matrix to the rank k format 
+
+        :param matrix: Matrix to convert to RMat
+        :type matrix: numpy.matrix
+        :param max_rank: maximum rank
+        :type max_rank: int
         """
         self.max_rank = max_rank
         u, s, v = numpy.linalg.svd(matrix)
@@ -87,13 +105,19 @@ class RMat(object):
                 raise ValueError('operands could not be broadcast together with shapes '
                                  '{0.shape} {1.shape}'.format(self, other))
         except AttributeError:
-            raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
+            if not isinstance(other, numbers.Number):
+                raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self),
+                                                                                                  type(other)))
+            else:
+                return self + numpy.matrix(other)
         if isinstance(other, RMat):
             # if max_rank is defined do exact, else do exact
             if self.max_rank:
                 return self.form_add(other, self.max_rank)
             else:
                 return self._add_rmat(other)
+        elif isinstance(other, numpy.matrix):
+            return self._add_matrix(other)
         else:
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
 
@@ -105,6 +129,19 @@ class RMat(object):
         new_left = numpy.concatenate([self.left_mat, other.left_mat], axis=1)
         new_right = numpy.concatenate([self.right_mat, other.right_mat], axis=1)
         return RMat(new_left, new_right)
+
+    def _add_matrix(self, other):
+        """Add full matrix
+        
+        :type other: numpy.matrix
+        """
+        # TODO: check if suitable
+        addend = self.from_matrix(other, self.max_rank)
+        return self + addend
+
+    def __radd__(self, other):
+        """Should be commutative so just switch"""
+        return self + other
 
     def __sub__(self, other):
         """Subtract two Rank-k-matrices"""
@@ -129,6 +166,24 @@ class RMat(object):
         :rtype: float
         """
         return numpy.linalg.norm(self.left_mat * self.right_mat.T, ord=order)
+
+    def split(self, start_x, start_y, end_x, end_y):
+        """Return the block of self that matches the supplied indices
+        
+        :param start_x: x start index
+        :type start_x: int
+        :param start_y: y start index
+        :type start_y: int
+        :param end_x: x end index
+        :type end_x: int
+        :param end_y: y end index
+        :type end_y: int
+        :return: rmat that represents the corresponding block
+        :rtype: RMat
+        """
+        return RMat(left_mat=self.left_mat[start_x: end_x, :],
+                    right_mat=self.right_mat[start_y: end_y, :],
+                    max_rank=self.max_rank)
 
     def __mul__(self, other):
         """Multiplication of self and other"""

@@ -179,13 +179,19 @@ class HMat(object):
                 raise ValueError("operands could not be broadcast together with shapes"
                                  " {0.shape} {1.shape}".format(self, other))
         except AttributeError:
-            raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
+            if not isinstance(other, numbers.Number):
+                raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self),
+                                                                                                  type(other)))
+            else:
+                return self._add_matrix(numpy.matrix(other))
         if isinstance(other, HMat):
             return self._add_hmat(other)
         elif isinstance(other, RMat):
             return self._add_rmat(other)
         elif isinstance(other, numpy.matrix):
             return self._add_matrix(other)
+        elif isinstance(other, numbers.Number):
+            return self._add_matrix(numpy.matrix(other))
         else:
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
 
@@ -201,9 +207,14 @@ class HMat(object):
         if self.root_index != other.root_index:
             raise ValueError('can not add {0} and {1}. root indices {0.root_index} '
                              'and {1.root_index} not the same'.format(self, other))
-        if (self.content is None and other.blocks == ()) or (self.blocks == () and other.content is None):
-            raise ValueError('can not add {0} and {1}. block structure is not the same '
-                             'for {0} and {1}'.format(self, other))
+        if self.content is None and other.blocks == ():
+            # only other has content, so split other to match structure
+            addend = other.split(self.block_structure())
+            return self + addend
+        elif self.blocks == () and other.content is None:
+            # only self has content, so split self to match structure
+            addend = self.split(other.block_structure())
+            return addend + other
         if self.content is not None:  # both have content
             return HMat(content=self.content + other.content, shape=self.shape, root_index=self.root_index)
         # if we get here, both have children
@@ -238,6 +249,10 @@ class HMat(object):
         else:
             out.content = self.content + other
         return out
+
+    def __radd__(self, other):
+        """Should be commutative so just switch"""
+        return self + other
 
     def __mul__(self, other):
         if isinstance(other, numpy.matrix):  # order is important here!
@@ -324,7 +339,7 @@ class HMat(object):
         :return: Hmat containing the product
         :rtype: HMat
         """
-        out = HMat(shape=self.shape, root_index=self.root_index)
+        out = HMat(shape=(self.shape[0], other.shape[1]), root_index=self.root_index)
         if isinstance(self.content, RMat):
             out.content = self.content * other
         elif self.content is not None:
@@ -351,22 +366,24 @@ class HMat(object):
             out_content = self.content * other.content
             return HMat(content=out_content, shape=out_shape, root_index=out_root_index)
         elif self.content is None and other.content is None:  # both have blocks
-            return self._mul_with_hmat_blocks(other)
+            return self._mul_with_hmat_blocks(other, out_shape, out_root_index)
+        elif isinstance(self.content, RMat):  # other has blocks, self has RMat. Collect other to full matrix
+            return HMat(content=self.content * other.to_matrix(), shape=out_shape, root_index=out_root_index)
+        else:
+            raise NotImplementedError('Not done yet!')
 
-    def _mul_with_hmat_blocks(self, other):
+    def _mul_with_hmat_blocks(self, other, out_shape, out_root_index):
         """multiplication when self and other have blocks
         
         :type other: HMat
         """
-        out_shape = (self.shape[0], other.shape[1])
-        out_root_index = (self.root_index[0], other.root_index[1])
         if self.column_sequence() != other.row_sequence():
             raise ValueError('structures are not aligned. '
                              '{0} != {1}'.format(self.column_sequence(), other.row_sequence()))
         out_blocks = []
         #  formula from Howard Eves: Theorem 1.9.6
-        for i in list(set([k[0] for k in self.block_structure()])):
-            for j in list(set([k[1] for k in other.block_structure()])):
+        for i in list(set([b[0] for b in self.block_structure()])):
+            for j in list(set([b[1] for b in other.block_structure()])):
                 out_block = None
                 for k in list(set([l[1] for l in self.block_structure()])):
                     if out_block is None:
@@ -388,6 +405,34 @@ class HMat(object):
         else:
             out.blocks = [block * other for block in self.blocks]
             return out
+
+    def split(self, structure):
+        """Split self into blocks to match structure"""
+        if self.blocks != ():
+            raise NotImplementedError('Only implemented for hmat without blocks')
+        out_blocks = []
+        for index in structure:
+            start_x = index[0] - self.root_index[0]
+            start_y = index[1] - self.root_index[1]
+            end_x = start_x + structure[index][0]
+            end_y = start_y + structure[index][1]
+            if isinstance(self.content, RMat):
+                out_blocks.append(HMat(content=self.split_rmat(start_x, start_y, end_x, end_y),
+                                  shape=structure[index], root_index=index))
+            elif isinstance(self.content, numpy.matrix):
+                out_blocks.append(HMat(content=self.split_hmat(start_x, start_y, end_x, end_y),
+                                  shape=structure[index], root_index=index))
+            else:
+                raise NotImplementedError('Illegal structure found in split')
+        return HMat(blocks=out_blocks, shape=self.shape, root_index=self.root_index)
+
+    def split_rmat(self, start_x, start_y, end_x, end_y):
+        """Split a rmat to match structure"""
+        return self.content.split(start_x, start_y, end_x, end_y)
+
+    def split_hmat(self, start_x, start_y, end_x, end_y):
+        """Split a numpy.matrix to match structure"""
+        return self.content[start_x: end_x, start_y: end_y]
 
     def to_matrix(self):
         """Full matrix representation
@@ -414,7 +459,11 @@ class HMat(object):
 
 
 def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate_full_matrix_function=None):
-    """Factory to build an HMat instance
+    """Factory to build an hierarchical matrix
+    
+    Takes a block cluster tree and generating functions for full matrices and low rank matrices respectively
+    
+    The generating functions take a block cluster tree as input and return a RMat or numpy.matrix respectively
 
     :param block_cluster_tree: block cluster tree giving the structure
     :type block_cluster_tree: BlockClusterTree
@@ -423,7 +472,6 @@ def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate
         a numpy.matrix
     :return: hmatrix
     :rtype: HMat
-    :raises: ValueError if root of BlockClusterTree is admissible
     """
     if block_cluster_tree.admissible:
         return HMat(content=generate_full_matrix_function(block_cluster_tree), shape=block_cluster_tree.shape(),

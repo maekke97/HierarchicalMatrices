@@ -260,6 +260,9 @@ class TestHmat(TestCase):
         hmat_2 = HMat(blocks=[hmat3, hmat4], shape=(5, 3), root_index=(0, 0))
         self.assertRaises(ValueError, hmat_1.__mul__, hmat_2)
 
+    def test_split(self):
+        self.assertRaises(NotImplementedError, self.hmat.split, self.hmat.block_structure())
+
     def test_build_hmatrix(self):
         full_func = lambda x: numpy.matrix(numpy.ones(x.shape()))
         block_func = lambda x: RMat(numpy.matrix(numpy.ones((x.shape()[0], 1))),
