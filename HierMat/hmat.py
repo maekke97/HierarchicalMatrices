@@ -35,6 +35,17 @@ class HMat(object):
     """
 
     def __init__(self, blocks=(), content=None, shape=(), root_index=()):
+        """Implement a hierarchical Matrix
+    
+        :param blocks: list of HMat instances the children (optional)
+        :type blocks: list(HMat)
+        :param content: the content if the matrix has no children (optional)
+        :type content: RMat or numpy.matrix
+        :param shape: the shape of the matrix (same as for numpy matrices)
+        :type shape: tuple(int, int)
+        :param root_index: the index of this matrix with respect to its containing *root*-matrix, zero based
+        :type root_index: tuple(int, int)
+        """
         self.blocks = blocks  # This list contains the lower level HMats
         self.content = content  # If not empty, this is either a full matrix or a RMat
         self.shape = shape  # Tuple of dimensions, i.e. size of index sets
@@ -111,7 +122,9 @@ class HMat(object):
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
 
     def _add_hmat(self, other):
-        """add two hmat objects that have same structure
+        """add two hmat objects
+        
+        if structures do not match refine to finer structure
         
         :param other: HMat to add
         :type other: HMat
@@ -123,12 +136,12 @@ class HMat(object):
             raise ValueError('can not add {0} and {1}. root indices {0.root_index} '
                              'and {1.root_index} not the same'.format(self, other))
         if self.content is None and other.blocks == ():
-            # only other has content, so split other to match structure
-            addend = other.split(self.block_structure())
+            # only other has content, so restructure other to match structure
+            addend = other.restructure(self.block_structure())
             return self + addend
         elif self.blocks == () and other.content is None:
-            # only self has content, so split self to match structure
-            addend = self.split(other.block_structure())
+            # only self has content, so restructure self to match structure
+            addend = self.restructure(other.block_structure())
             return addend + other
         # both have content
         elif isinstance(self.content, numpy.matrix) and isinstance(other.content, RMat):
@@ -174,6 +187,7 @@ class HMat(object):
         return self + other
 
     def __mul__(self, other):
+        """multiplication with several types"""
         if isinstance(other, numpy.matrix):  # order is important here!
             return self._mul_with_matrix(other)
         elif isinstance(other, numpy.ndarray):
@@ -191,6 +205,7 @@ class HMat(object):
         """multiply from the right
         
         only supported for scalars
+        enables to write ``a * H``
         """
         if not isinstance(other, numbers.Number):
             raise NotImplementedError('unsupported operand type(s) for *: {0} and {1}'.format(type(self), type(other)))
@@ -328,7 +343,9 @@ class HMat(object):
             return out
 
     def block_structure(self):
-        """Return a dict with root_index: block paris
+        """return the block structure of self
+        
+        produce a dict with root_index: block paris
 
         :rtype: dict
         :returns: dict with index: HMatrix pairs
@@ -342,7 +359,7 @@ class HMat(object):
 
         only for consistent matrices
 
-        :return: list of columns in first row
+        :return: list of column-sizes in first row
         :rtype: list(int)
         :raises: :class:`StructureWarning` if the matrix is not consistent
         """
@@ -369,7 +386,7 @@ class HMat(object):
 
         defined only for consistent matrices
 
-        :return: list of rows in first column
+        :return: list of row-sizes in first column
         :rtype: list(int)
         :raises: :class:`StructureWarning` if the matrix is not consistent
         """
@@ -391,7 +408,8 @@ class HMat(object):
                 return row_seq
 
     def is_consistent(self):
-        """check if the blocks are aligned, i.e. we have consistent rows and columns
+        """check if the blocks are aligned, 
+        i.e. we have consistent rows and columns as in def. 1.9.5 in :cite:`eves1966elementary`
 
         :return: True on consistency, False otherwise
         :rtype: bool
@@ -433,8 +451,15 @@ class HMat(object):
         # if we get to here, the shape of self is exceeded by its blocks in at least one direction
         return False
 
-    def split(self, structure):
-        """Split self into blocks to match structure"""
+    def restructure(self, structure):
+        """Restructure self into blocks to match structure
+        
+        :param structure: a dict as returned by HMat.block_structure
+        :type structure: dict(index: size)
+        :returns: HMat that has the specified structure
+        :rtype: HMat
+        :raises: :class:`NotImplementedError` if self has blocks or if self contains unknown content
+        """
         if self.blocks != ():
             raise NotImplementedError('Only implemented for hmat without blocks')
         out_blocks = []
@@ -450,15 +475,48 @@ class HMat(object):
                 out_blocks.append(HMat(content=self.split_hmat(start_x, start_y, end_x, end_y),
                                   shape=structure[index], root_index=index))
             else:
-                raise NotImplementedError('Illegal structure found in split')
+                raise NotImplementedError('Illegal structure found in restructure')
         return HMat(blocks=out_blocks, shape=self.shape, root_index=self.root_index)
 
     def split_rmat(self, start_x, start_y, end_x, end_y):
-        """Split a rmat to match structure"""
+        """Fetch the block specified by indices from a rmat
+        
+        **Example**::
+        
+            r = RMat(numpy.matrix([[2], [2], [2]]),
+                     numpy.matrix([[3], [3], [3]]))
+            h = HMat(content=r, shape=(3, 3), root_index=(0, 0))
+            res = h.split_rmat(0, 2, 1, 3)
+            res
+            <RMat with left_mat: matrix([[2]]), right_mat: matrix([[3]]) and max_rank: None> 
+        
+        :param start_x: vertical start index
+        :type start_x: int
+        :param start_y: horizontal start index
+        :type start_y: int
+        :param end_x: vertical end index
+        :type end_x: int
+        :param end_y: horizontal end index
+        :type end_y: int
+        :returns: rmat with corresponding block
+        :rtype: RMat
+        """
         return self.content.split(start_x, start_y, end_x, end_y)
 
     def split_hmat(self, start_x, start_y, end_x, end_y):
-        """Split a numpy.matrix to match structure"""
+        """Fetch the block specified by indices from a numpy.matrix
+        
+        :param start_x: vertical start index
+        :type start_x: int
+        :param start_y: horizontal start index
+        :type start_y: int
+        :param end_x: vertical end index
+        :type end_x: int
+        :param end_y: horizontal end index
+        :type end_y: int
+        :returns: numpy.matrix with corresponding block
+        :rtype: numpy.matrix
+        """
         return self.content[start_x: end_x, start_y: end_y]
 
     def to_matrix(self):

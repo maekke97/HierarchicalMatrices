@@ -306,15 +306,15 @@ class TestHmat(TestCase):
         self.assertRaises(ValueError, hmat_1.__mul__, hmat_2)
 
     def test_split(self):
-        self.assertRaises(NotImplementedError, self.hmat.split, self.hmat.block_structure())
+        self.assertRaises(NotImplementedError, self.hmat.restructure, self.hmat.block_structure())
         check = HMat(content='bla', shape=(2, 2), root_index=(0, 0))
-        self.assertRaises(NotImplementedError, check.split, {(0, 0): (1, 1)})
+        self.assertRaises(NotImplementedError, check.restructure, {(0, 0): (1, 1)})
         splitter = HMat(content=RMat(numpy.matrix(numpy.ones((2, 1))), numpy.matrix(numpy.ones((2, 1)))),
                         shape=(2, 2), root_index=(0, 0))
         check_blocks = [HMat(content=RMat(numpy.matrix(numpy.ones((1, 1))), numpy.matrix(numpy.ones((1, 1)))),
                         shape=(1, 1), root_index=(i, j)) for i in xrange(2) for j in xrange(2)]
         check = HMat(blocks=check_blocks, shape=(2, 2), root_index=(0, 0))
-        self.assertEqual(splitter.split(check.block_structure()), check)
+        self.assertEqual(splitter.restructure(check.block_structure()), check)
 
     def test_build_hmatrix(self):
         full_func = lambda x: numpy.matrix(numpy.ones(x.shape()))

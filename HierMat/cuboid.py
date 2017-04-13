@@ -87,9 +87,9 @@ class Cuboid(object):
     def split(self, axis=None):
         """Split the cuboid in half
 
-        If axis is specified, the cuboid is split along the given axis, else the maximal axis is chosen.
+        If axis is specified, the cuboid is restructure along the given axis, else the maximal axis is chosen.
 
-        :param axis: axis along which to split (optional)
+        :param axis: axis along which to restructure (optional)
         :type axis: int
         :return: cuboid1, cuboid2
         :rtype: tuple(Cuboid, Cuboid)
@@ -97,7 +97,7 @@ class Cuboid(object):
         if axis:
             index = axis
         else:
-            # determine dimension in which to split
+            # determine dimension in which to restructure
             index = numpy.argmax(abs(self.high_corner - self.low_corner))
         # determine value at splitting point
         split = (self.high_corner[index] + self.low_corner[index]) / 2

@@ -15,12 +15,12 @@
 """
 import numpy
 
-from HierMat.cuboid import Cuboid
 from HierMat.cluster import Cluster
+from HierMat.cuboid import Cuboid
 
 
 class Splitable(object):
-    """Interface to the different strategies that can be used to split a cluster in two or more.
+    """Interface to the different strategies that can be used to restructure a cluster in two or more.
 
     .. note::
 
@@ -34,7 +34,7 @@ class Splitable(object):
         - get_index: return index from inner cluster
         - get_grid_item: return grid item from inner cluster
         - get_patch_coordinates: return min and max of index list of cluster
-        - split: split the object in two or more, return new instances
+        - restructure: restructure the object in two or more, return new instances
         - diameter: return the diameter of the object
         - distance: return the distance to other object
 
@@ -230,7 +230,7 @@ class MinimalCuboid(RegularCuboid):
         return "<MinimalCuboid with cluster {0} and cuboid {1}>".format(self.cluster, self.cuboid)
 
     def split(self):
-        """Split the cuboid and distribute items in cluster according to the cuboid they belong to. Reduce every split
+        """Split the cuboid and distribute items in cluster according to the cuboid they belong to. Reduce every restructure
         to minimal size
 
         :return: list of minimal cuboids of smaller size
@@ -242,7 +242,7 @@ class MinimalCuboid(RegularCuboid):
 
 
 class Balanced(Splitable):
-    """Balanced strategy, where a cluster is always split in half only according to its size, without regarding the
+    """Balanced strategy, where a cluster is always restructure in half only according to its size, without regarding the
     geometry
     
     Gives a binary tree
