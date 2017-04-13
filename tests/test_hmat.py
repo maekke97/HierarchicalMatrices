@@ -148,8 +148,12 @@ class TestHmat(TestCase):
         res = addend_hmat + mat
         check = 2 * addend_hmat
         self.assertEqual(check, res)
+        left = RMat(numpy.matrix(numpy.zeros((3, 1))), numpy.matrix(numpy.zeros((3, 1))), max_rank=1)
+        left_mat = HMat(content=left, shape=(3, 3), root_index=(0, 0))
+        addend = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), root_index=(0, 0))
+        self.assertAlmostEqual(numpy.linalg.norm((addend + left_mat).to_matrix()), numpy.linalg.norm(addend.to_matrix()))
 
-    def test_rmat(self):
+    def test_radd(self):
         addend1 = HMat(content=numpy.matrix(numpy.ones((3, 4))), shape=(3, 4), root_index=(0, 0))
         addend2 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 4))
         addend3 = HMat(content=numpy.matrix(numpy.ones((4, 2))), shape=(4, 2), root_index=(3, 0))
@@ -263,7 +267,8 @@ class TestHmat(TestCase):
         hmat = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), root_index=(0, 0))
         hmat1 = HMat(content=rmat, shape=(3, 3), root_index=(0, 0))
         self.assertRaises(NotImplementedError, hmat.__mul__, block_mat)
-        self.assertEqual(hmat1 * block_mat, 3*hmat)
+        self.assertTrue(numpy.array_equal((hmat1 * block_mat).to_matrix(), (3*hmat1).to_matrix()))
+        self.assertTrue(numpy.array_equal((block_mat * hmat1).to_matrix(), (3 * hmat1).to_matrix()))
         res1 = HMat(content=numpy.matrix(6 * numpy.ones((3, 3))), shape=(3, 3), root_index=(0, 0))
         res2 = HMat(content=numpy.matrix(6 * numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 3))
         res3 = HMat(content=numpy.matrix(6 * numpy.ones((2, 3))), shape=(2, 3), root_index=(3, 0))

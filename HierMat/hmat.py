@@ -213,10 +213,14 @@ class HMat(object):
             # only self has content, so split self to match structure
             addend = self.split(other.block_structure())
             return addend + other
-        if self.content is not None:  # both have content
+        # both have content
+        elif isinstance(self.content, numpy.matrix) and isinstance(other.content, RMat):
+            # take other first to avoid numpy broadcast
+            return HMat(content=other.content + self.content, shape=self.shape, root_index=self.root_index)
+        elif self.content is not None:  # both have content, that can be added left to right
             return HMat(content=self.content + other.content, shape=self.shape, root_index=self.root_index)
         # if we get here, both have children
-        if len(self.blocks) == len(other.blocks):
+        elif len(self.blocks) == len(other.blocks):
             blocks = [self[index] + other[index] for index in self.block_structure()]
             return HMat(blocks=blocks, shape=self.shape, root_index=self.root_index)
         else:
@@ -367,8 +371,10 @@ class HMat(object):
             return self._mul_with_hmat_blocks(other, out_shape, out_root_index)
         elif isinstance(self.content, RMat):  # other has blocks, self has RMat. Collect other to full matrix
             return HMat(content=self.content * other.to_matrix(), shape=out_shape, root_index=out_root_index)
+        elif isinstance(other.content, RMat):  # other has RMat, self has blocks. Collect self to full
+            return HMat(content=self.to_matrix() * other.content, shape=out_shape, root_index=out_root_index)
         else:
-            raise NotImplementedError('Not done yet!')
+            raise NotImplementedError('Not done yet! Blocks * full matrix should not occur')
 
     def _mul_with_hmat_blocks(self, other, out_shape, out_root_index):
         """multiplication when self and other have blocks
@@ -439,7 +445,7 @@ class HMat(object):
         :rtype: numpy.matrix
         """
         if self.blocks:  # The matrix has children so fill recursive
-            out_mat = numpy.empty(self.shape)
+            out_mat = numpy.matrix(numpy.zeros(self.shape))
             for block in self.blocks:
                 # determine the position of the current block
                 vertical_start = block.root_index[0]
