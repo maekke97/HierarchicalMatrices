@@ -1,7 +1,6 @@
 """hmat.py: :class:`HMat`, :func:`build_hmatrix`, :func:`recursion_build_hmatrix`, :class:`StructureWarning`
 """
 import numbers
-import operator
 
 import numpy
 
@@ -148,7 +147,8 @@ class HMat(object):
         length = len(self.blocks)
         if len(other.blocks) != length:
             return False
-        if self.blocks != other.blocks:
+        eqs = [a == b for a in self.blocks for b in other.blocks]
+        if sum(eqs) != length:  # ignore order of blocks
             return False
         if not isinstance(self.content, type(other.content)):
             return False
@@ -190,8 +190,6 @@ class HMat(object):
             return self._add_rmat(other)
         elif isinstance(other, numpy.matrix):
             return self._add_matrix(other)
-        elif isinstance(other, numbers.Number):
-            return self._add_matrix(numpy.matrix(other))
         else:
             raise NotImplementedError('unsupported operand type(s) for +: {0} and {1}'.format(type(self), type(other)))
 
@@ -219,7 +217,7 @@ class HMat(object):
             return HMat(content=self.content + other.content, shape=self.shape, root_index=self.root_index)
         # if we get here, both have children
         if len(self.blocks) == len(other.blocks):
-            blocks = map(operator.add, self.blocks, other.blocks)
+            blocks = [self[index] + other[index] for index in self.block_structure()]
             return HMat(blocks=blocks, shape=self.shape, root_index=self.root_index)
         else:
             raise ValueError('can not add {0} and {1}. number of blocks is different'.format(self, other))

@@ -120,15 +120,18 @@ class TestHmat(TestCase):
         addend3 = HMat(content=numpy.matrix(numpy.ones((4, 2))), shape=(4, 2), root_index=(3, 0))
         addend4 = HMat(content=numpy.matrix(numpy.ones((4, 4))), shape=(4, 4), root_index=(3, 2))
         addend_hmat = HMat(blocks=[addend1, addend2, addend3, addend4], shape=(7, 6), root_index=(0, 0))
+        splitter_mat = HMat(content=numpy.matrix(numpy.zeros((7, 6))), shape=(7, 6), root_index=(0, 0))
+        self.assertEqual(addend_hmat + splitter_mat, addend_hmat)
+        self.assertEqual(splitter_mat + addend_hmat, addend_hmat)
         res = addend_hmat + self.hmat
         self.assertEqual(res, addend_hmat)
         self.assertRaises(ValueError, addend1.__add__, addend2)
         addend = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 0))
         self.assertRaises(ValueError, addend.__add__, addend2)
-        addend = HMat(content=numpy.matrix(numpy.ones((7, 6))), shape=(7, 6), root_index=(0, 0))
-        self.assertRaises(ValueError, addend.__add__, addend_hmat)
         self.assertRaises(NotImplementedError, addend_hmat.__add__, 'bla')
         self.assertRaises(NotImplementedError, addend_hmat.__add__, numpy.ones((7, 6)))
+        addend_hmat = HMat(content=numpy.matrix(1), shape=(1, 1), root_index=(0, 0))
+        self.assertEqual(addend_hmat + 0, addend_hmat)
         addend_hmat = HMat(blocks=[addend1, addend2, addend3], shape=(7, 6), root_index=(0, 0))
         self.assertRaises(ValueError, self.hmat.__add__, addend_hmat)
         check = HMat(content=numpy.matrix(2 * numpy.ones((3, 4))), shape=(3, 4), root_index=(0, 0))
@@ -145,6 +148,16 @@ class TestHmat(TestCase):
         res = addend_hmat + mat
         check = 2 * addend_hmat
         self.assertEqual(check, res)
+
+    def test_rmat(self):
+        addend1 = HMat(content=numpy.matrix(numpy.ones((3, 4))), shape=(3, 4), root_index=(0, 0))
+        addend2 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 4))
+        addend3 = HMat(content=numpy.matrix(numpy.ones((4, 2))), shape=(4, 2), root_index=(3, 0))
+        addend4 = HMat(content=numpy.matrix(numpy.ones((4, 4))), shape=(4, 4), root_index=(3, 2))
+        addend_hmat = HMat(blocks=[addend1, addend2, addend3, addend4], shape=(7, 6), root_index=(0, 0))
+        mat = numpy.matrix(numpy.zeros((7, 6)))
+        res = addend_hmat.__radd__(mat)
+        self.assertEqual(addend_hmat, res)
 
     def test_repr(self):
         check = '<HMat with {content}>'.format(content=self.hmat_lvl2.blocks)
@@ -245,6 +258,12 @@ class TestHmat(TestCase):
         check_rmat = RMat(numpy.matrix(3*numpy.ones((3, 1))), right_mat=numpy.matrix(numpy.ones((3, 1))))
         check = HMat(content=check_rmat, shape=(3, 3), root_index=(0, 0))
         self.assertEqual(hmat * hmat1, check)
+        blocks = [HMat(content=numpy.matrix(1), shape=(1, 1), root_index=(i, j)) for i in xrange(3) for j in xrange(3)]
+        block_mat = HMat(blocks=blocks, shape=(3, 3), root_index=(0, 0))
+        hmat = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), root_index=(0, 0))
+        hmat1 = HMat(content=rmat, shape=(3, 3), root_index=(0, 0))
+        self.assertRaises(NotImplementedError, hmat.__mul__, block_mat)
+        self.assertEqual(hmat1 * block_mat, 3*hmat)
         res1 = HMat(content=numpy.matrix(6 * numpy.ones((3, 3))), shape=(3, 3), root_index=(0, 0))
         res2 = HMat(content=numpy.matrix(6 * numpy.ones((3, 2))), shape=(3, 2), root_index=(0, 3))
         res3 = HMat(content=numpy.matrix(6 * numpy.ones((2, 3))), shape=(2, 3), root_index=(3, 0))
@@ -262,6 +281,14 @@ class TestHmat(TestCase):
 
     def test_split(self):
         self.assertRaises(NotImplementedError, self.hmat.split, self.hmat.block_structure())
+        check = HMat(content='bla', shape=(2, 2), root_index=(0, 0))
+        self.assertRaises(NotImplementedError, check.split, {(0, 0): (1, 1)})
+        splitter = HMat(content=RMat(numpy.matrix(numpy.ones((2, 1))), numpy.matrix(numpy.ones((2, 1)))),
+                        shape=(2, 2), root_index=(0, 0))
+        check_blocks = [HMat(content=RMat(numpy.matrix(numpy.ones((1, 1))), numpy.matrix(numpy.ones((1, 1)))),
+                        shape=(1, 1), root_index=(i, j)) for i in xrange(2) for j in xrange(2)]
+        check = HMat(blocks=check_blocks, shape=(2, 2), root_index=(0, 0))
+        self.assertEqual(splitter.split(check.block_structure()), check)
 
     def test_build_hmatrix(self):
         full_func = lambda x: numpy.matrix(numpy.ones(x.shape()))
