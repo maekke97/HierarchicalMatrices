@@ -9,6 +9,29 @@ from HierMat.rmat import RMat
 
 class HMat(object):
     """Implement a hierarchical Matrix
+    
+    :param blocks: list of HMat instances the children (optional)
+    :type blocks: list(HMat)
+    :param content: the content if the matrix has no children (optional)
+    :type content: RMat or numpy.matrix
+    :param shape: the shape of the matrix (same as for numpy matrices)
+    :type shape: tuple(int, int)
+    :param root_index: the index of this matrix with respect to its containing *root*-matrix, zero based
+    :type root_index: tuple(int, int)
+    
+    .. note::
+        Supported operations:
+        
+        * ``+`` (formatted addition)
+        
+        * ``*`` (formatted multiplication)
+        
+        * ``==`` (equal)
+        
+        * ``!=`` (not equal)
+    
+    .. todo::
+        implement ``-``
     """
 
     def __init__(self, blocks=(), content=None, shape=(), root_index=()):
@@ -24,112 +47,6 @@ class HMat(object):
         else:
             structured_blocks = {block.root_index: block for block in self.blocks}
             return structured_blocks[item]
-
-    def block_structure(self):
-        """Return a dict with root_index: block paris
-        
-        :rtype: dict
-        :returns: dict with index: HMatrix pairs
-        """
-        structure = {block.root_index: block.shape for block in self.blocks}
-        return structure
-
-    def column_sequence(self):
-        """Return the sequence of column groups
-        as in thm. 1.9.4. in :cite:`eves1966elementary`
-        
-        only for consistent matrices
-        
-        :return: list of columns in first row
-        :rtype: list(int)
-        :raises: :class:`StructureWarning` if the matrix is not consistent
-        """
-        if not self.is_consistent():
-            raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
-        pre_sort = sorted(self.block_structure(), key=lambda item: item[1])
-        sorted_indices = sorted(pre_sort)
-        if not sorted_indices:
-            return [self.shape[1]]
-        start_col = self.root_index[1]
-        current_col = start_col
-        max_cols = start_col + self.shape[1]
-        col_seq = []
-        for index in sorted_indices:
-            rows, cols = self.block_structure()[index]
-            current_col += cols
-            col_seq.append(cols)
-            if current_col == max_cols:  # end of column, return list
-                return col_seq
-
-    def row_sequence(self):
-        """Return the sequence of row groups
-        as in thm. 1.9.4. in :cite:`eves1966elementary`
-
-        defined only for consistent matrices
-
-        :return: list of rows in first column
-        :rtype: list(int)
-        :raises: :class:`StructureWarning` if the matrix is not consistent
-        """
-        if not self.is_consistent():
-            raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
-        pre_sort = sorted(self.block_structure())
-        sorted_indices = sorted(pre_sort, key=lambda item: item[1])
-        if not sorted_indices:
-            return [self.shape[0]]
-        start_row = self.root_index[0]
-        current_row = start_row
-        max_rows = start_row + self.shape[0]
-        row_seq = []
-        for index in sorted_indices:
-            rows, cols = self.block_structure()[index]
-            current_row += rows
-            row_seq.append(rows)
-            if current_row == max_rows:  # end of row, return list
-                return row_seq
-
-    def is_consistent(self):
-        """check if the blocks are aligned, i.e. we have consistent rows and columns
-        
-        :return: True on consistency, False otherwise
-        :rtype: bool
-        """
-        if self.block_structure() == {}:  # if we have no blocks, we just have to check the shape
-            return self.content.shape == self.shape
-        pre_sort = sorted(self.block_structure(), key=lambda item: item[1])
-        sorted_indices = sorted(pre_sort)
-        start_row, start_col = self.root_index
-        current_row = start_row
-        current_col = start_col
-        max_rows = start_row + self.shape[0]
-        max_cols = start_col + self.shape[1]
-        col_rows = 0  # to keep track of the height of each block
-        col_seq = []  # sequence of sub-column lengths to compare
-        current_col_seq = []
-        for index in sorted_indices:
-            # iterate over the index list to check each block column by column
-            rows, cols = self.block_structure()[index]
-            if index != (current_row, current_col):  # starting point of block is not where it should be
-                return False
-            current_col += cols
-            current_col_seq.append(cols)
-            if col_rows == 0:  # first block in a column
-                col_rows = rows
-            if rows != col_rows:  # this block has different height than the others in this column
-                return False
-            if current_col == max_cols:  # end of column, check against previous and go to next column
-                if not col_seq:  # first column, so store for comparison
-                    col_seq = current_col_seq
-                if col_seq != current_col_seq:  # this column has a different partition than the previous
-                    return False
-                current_col = start_col
-                current_row += col_rows
-                col_rows = 0
-                current_col_seq = []
-        if current_row == max_rows:  # end of row, all fine
-            return True
-        # if we get to here, the shape of self is exceeded by its blocks in at least one direction
-        return False
 
     def __repr__(self):
         return '<HMat with {content}>'.format(content=self.blocks if self.blocks else self.content)
@@ -409,6 +326,112 @@ class HMat(object):
         else:
             out.blocks = [block * other for block in self.blocks]
             return out
+
+    def block_structure(self):
+        """Return a dict with root_index: block paris
+
+        :rtype: dict
+        :returns: dict with index: HMatrix pairs
+        """
+        structure = {block.root_index: block.shape for block in self.blocks}
+        return structure
+
+    def column_sequence(self):
+        """Return the sequence of column groups
+        as in thm. 1.9.4. in :cite:`eves1966elementary`
+
+        only for consistent matrices
+
+        :return: list of columns in first row
+        :rtype: list(int)
+        :raises: :class:`StructureWarning` if the matrix is not consistent
+        """
+        if not self.is_consistent():
+            raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
+        pre_sort = sorted(self.block_structure(), key=lambda item: item[1])
+        sorted_indices = sorted(pre_sort)
+        if not sorted_indices:
+            return [self.shape[1]]
+        start_col = self.root_index[1]
+        current_col = start_col
+        max_cols = start_col + self.shape[1]
+        col_seq = []
+        for index in sorted_indices:
+            rows, cols = self.block_structure()[index]
+            current_col += cols
+            col_seq.append(cols)
+            if current_col == max_cols:  # end of column, return list
+                return col_seq
+
+    def row_sequence(self):
+        """Return the sequence of row groups
+        as in thm. 1.9.4. in :cite:`eves1966elementary`
+
+        defined only for consistent matrices
+
+        :return: list of rows in first column
+        :rtype: list(int)
+        :raises: :class:`StructureWarning` if the matrix is not consistent
+        """
+        if not self.is_consistent():
+            raise StructureWarning('Warning, block structure is not consistent! Results may be wrong')
+        pre_sort = sorted(self.block_structure())
+        sorted_indices = sorted(pre_sort, key=lambda item: item[1])
+        if not sorted_indices:
+            return [self.shape[0]]
+        start_row = self.root_index[0]
+        current_row = start_row
+        max_rows = start_row + self.shape[0]
+        row_seq = []
+        for index in sorted_indices:
+            rows, cols = self.block_structure()[index]
+            current_row += rows
+            row_seq.append(rows)
+            if current_row == max_rows:  # end of row, return list
+                return row_seq
+
+    def is_consistent(self):
+        """check if the blocks are aligned, i.e. we have consistent rows and columns
+
+        :return: True on consistency, False otherwise
+        :rtype: bool
+        """
+        if self.block_structure() == {}:  # if we have no blocks, we just have to check the shape
+            return self.content.shape == self.shape
+        pre_sort = sorted(self.block_structure(), key=lambda item: item[1])
+        sorted_indices = sorted(pre_sort)
+        start_row, start_col = self.root_index
+        current_row = start_row
+        current_col = start_col
+        max_rows = start_row + self.shape[0]
+        max_cols = start_col + self.shape[1]
+        col_rows = 0  # to keep track of the height of each block
+        col_seq = []  # sequence of sub-column lengths to compare
+        current_col_seq = []
+        for index in sorted_indices:
+            # iterate over the index list to check each block column by column
+            rows, cols = self.block_structure()[index]
+            if index != (current_row, current_col):  # starting point of block is not where it should be
+                return False
+            current_col += cols
+            current_col_seq.append(cols)
+            if col_rows == 0:  # first block in a column
+                col_rows = rows
+            if rows != col_rows:  # this block has different height than the others in this column
+                return False
+            if current_col == max_cols:  # end of column, check against previous and go to next column
+                if not col_seq:  # first column, so store for comparison
+                    col_seq = current_col_seq
+                if col_seq != current_col_seq:  # this column has a different partition than the previous
+                    return False
+                current_col = start_col
+                current_row += col_rows
+                col_rows = 0
+                current_col_seq = []
+        if current_row == max_rows:  # end of row, all fine
+            return True
+        # if we get to here, the shape of self is exceeded by its blocks in at least one direction
+        return False
 
     def split(self, structure):
         """Split self into blocks to match structure"""
