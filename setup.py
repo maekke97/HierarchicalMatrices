@@ -30,9 +30,12 @@ along with this package.  If not, see <http://www.gnu.org/licenses/>.
 
 from setuptools import setup
 
+with open('REAMDE', 'r') as readme:
+    long_desc = readme.read()
+
 setup(
     name='HierMat',
-    version='0.3',
+    version='0.3.1',
     packages=['HierMat'],
     url='http://hierarchicalmatrices.readthedocs.io/en/latest/index.html',
     download_url='https://github.com/maekke97/HierarchicalMatrices',
@@ -41,6 +44,5 @@ setup(
     author_email='markus.neumann@math.uzh.ch',
     requires=['numpy', 'matplotlib'],
     description='Framework for Hierarchical Matrices',
-    long_description='''This package is the result of my master thesis at the Institute of Mathematics, University of Zurich.
-It provides a framework for the concept of hierarchical matrices and is manly based on the book by W. Hackbusch.'''
+    long_description=long_desc
 )
