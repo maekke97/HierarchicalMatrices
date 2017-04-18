@@ -30,7 +30,7 @@ along with this package.  If not, see <http://www.gnu.org/licenses/>.
 
 from setuptools import setup
 
-with open('REAMDE', 'r') as readme:
+with open('README', 'r') as readme:
     long_desc = readme.read()
 
 setup(

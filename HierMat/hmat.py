@@ -21,7 +21,8 @@ class HMat(object):
     :type root_index: tuple(int, int)
     
     .. note::
-        Supported operations:
+    
+        **Supported operations:**
         
         * ``+`` (formatted addition)
         
