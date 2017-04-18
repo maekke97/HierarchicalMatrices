@@ -31,7 +31,12 @@ class HMat(object):
         * ``!=`` (not equal)
     
     .. todo::
-        implement ``-``
+    
+        * implement ``-``
+        
+        * implement ``norm`` and ``__abs__``
+        
+        * implement ``inv``
     """
 
     def __init__(self, blocks=(), content=None, shape=(), root_index=()):
