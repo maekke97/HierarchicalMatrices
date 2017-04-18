@@ -26,14 +26,16 @@ class HMat(object):
         
         * ``*`` (formatted multiplication)
         
+        * ``-a`` (unary minus)
+        
+        * ``-`` (formatted subtraction)
+        
         * ``==`` (equal)
         
         * ``!=`` (not equal)
     
     .. todo::
     
-        * implement ``-``
-        
         * implement ``norm`` and ``__abs__``
         
         * implement ``inv``
@@ -182,7 +184,9 @@ class HMat(object):
             for block in self.blocks:
                 start_x = block.root_index[0] - self.root_index[0]
                 start_y = block.root_index[1] - self.root_index[1]
-                out.blocks.append(block + other[start_x: start_x + block.shape[0], start_y: start_y + block.shape[1]])
+                end_x = start_x + block.shape[0]
+                end_y = start_y + block.shape[1]
+                out.blocks.append(block + other[start_x: end_x, start_y: end_y])
         else:
             out.content = self.content + other
         return out
@@ -190,6 +194,24 @@ class HMat(object):
     def __radd__(self, other):
         """Should be commutative so just switch"""
         return self + other
+
+    def __neg__(self):
+        """Unary minus"""
+        out = HMat(shape=self.shape, root_index=self.root_index)
+        if self.content is not None:
+            out.content = -self.content
+        else:
+            out.blocks = []
+            for block in self.blocks:
+                out.blocks.append(-block)
+        return out
+
+    def __sub__(self, other):
+        """Subtract other
+        
+        :type other: HMat
+        """
+        return self + (-other)
 
     def __mul__(self, other):
         """multiplication with several types"""

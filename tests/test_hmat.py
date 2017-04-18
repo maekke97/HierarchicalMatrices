@@ -163,6 +163,30 @@ class TestHmat(TestCase):
         res = addend_hmat.__radd__(mat)
         self.assertEqual(addend_hmat, res)
 
+    def test_neg(self):
+        negcmat1 = HMat(content=-self.cblock1, shape=(3, 2), root_index=(0, 0))
+        negcmat2 = HMat(content=-self.cblock2, shape=(3, 1), root_index=(0, 2))
+        negcmat3 = HMat(content=-self.cblock3, shape=(3, 3), root_index=(0, 3))
+        negcmat4 = HMat(content=-self.cblock4, shape=(2, 2), root_index=(3, 0))
+        negcmat5 = HMat(content=-self.cblock5, shape=(2, 1), root_index=(3, 2))
+        negcmat6 = HMat(content=-self.cblock6, shape=(2, 3), root_index=(3, 3))
+        negconsistent1 = HMat(blocks=[negcmat1, negcmat2, negcmat3, negcmat4, negcmat5, negcmat6],
+                              shape=(5, 6), root_index=(0, 0))
+        self.assertEqual(-self.cmat1, negcmat1)
+        self.assertEqual(-self.consistent1, negconsistent1)
+
+    def test_minus(self):
+        zercmat1 = HMat(content=numpy.matrix(numpy.zeros((3, 2))), shape=(3, 2), root_index=(0, 0))
+        zercmat2 = HMat(content=numpy.matrix(numpy.zeros((3, 1))), shape=(3, 1), root_index=(0, 2))
+        zercmat3 = HMat(content=numpy.matrix(numpy.zeros((3, 3))), shape=(3, 3), root_index=(0, 3))
+        zercmat4 = HMat(content=numpy.matrix(numpy.zeros((2, 2))), shape=(2, 2), root_index=(3, 0))
+        zercmat5 = HMat(content=numpy.matrix(numpy.zeros((2, 1))), shape=(2, 1), root_index=(3, 2))
+        zercmat6 = HMat(content=numpy.matrix(numpy.zeros((2, 3))), shape=(2, 3), root_index=(3, 3))
+        zerconsistent1 = HMat(blocks=[zercmat1, zercmat2, zercmat3, zercmat4, zercmat5, zercmat6],
+                              shape=(5, 6), root_index=(0, 0))
+        self.assertEqual(self.cmat1 - self.cmat1, zercmat1)
+        self.assertEqual(self.consistent1 - self.consistent1, zerconsistent1)
+
     def test_repr(self):
         check = '<HMat with {content}>'.format(content=self.hmat_lvl2.blocks)
         self.assertEqual(self.hmat_lvl2.__repr__(), check)
