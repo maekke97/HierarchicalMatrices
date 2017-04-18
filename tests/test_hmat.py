@@ -51,6 +51,21 @@ class TestHmat(TestCase):
         cls.consistent2 = HMat(blocks=[cls.cmat1T, cls.cmat2T, cls.cmat3T, cls.cmat4T, cls.cmat5T, cls.cmat6T],
                                shape=(6, 5), root_index=(0, 0))
 
+    def test_abs_norm(self):
+        self.assertEqual(abs(self.cmat3), 3.0)
+        self.assertEqual(abs(self.cmat4), 2.0)
+        self.assertEqual(abs(self.consistent1), 5.4772255750516612)
+        rmat1 = RMat(numpy.matrix(numpy.ones((3, 1))), numpy.matrix(numpy.ones((3, 1))), max_rank=1)
+        hmat1 = HMat(content=rmat1, shape=(3, 3), root_index=(0, 0))
+        hmat2 = HMat(content=rmat1, shape=(3, 3), root_index=(0, 3))
+        hmat3 = HMat(content=rmat1, shape=(3, 3), root_index=(3, 0))
+        hmat4 = HMat(content=rmat1, shape=(3, 3), root_index=(3, 3))
+        hmat = HMat(blocks=[hmat1, hmat2, hmat3, hmat4], shape=(6, 6), root_index=(0, 0))
+        self.assertEqual(abs(hmat), 6.0)
+        self.assertEqual(abs(hmat), hmat.norm())
+        self.assertEqual(abs(hmat), hmat.norm('fro'))
+        self.assertRaises(NotImplementedError, hmat.norm, 2)
+
     def test_get_item(self):
         self.assertEqual(self.consistent1[0], self.cmat1)
         self.assertEqual(self.consistent1[0, 0], self.cmat1)

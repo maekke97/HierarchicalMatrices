@@ -1,5 +1,6 @@
 """hmat.py: :class:`HMat`, :func:`build_hmatrix`, :func:`recursion_build_hmatrix`, :class:`StructureWarning`
 """
+import math
 import numbers
 
 import numpy
@@ -33,10 +34,10 @@ class HMat(object):
         * ``==`` (equal)
         
         * ``!=`` (not equal)
+        
+        * ``abs`` (frobenius norm)
     
     .. todo::
-    
-        * implement ``norm`` and ``__abs__``
         
         * implement ``inv``
     """
@@ -106,6 +107,30 @@ class HMat(object):
         :rtype: bool
         """
         return not self == other
+
+    def __abs__(self):
+        """Frobenius norm"""
+        if isinstance(self.content, RMat):
+            return self.content.norm()
+        elif isinstance(self.content, numpy.matrix):
+            return numpy.linalg.norm(self.content)
+        else:
+            total = 0
+            for block in self.blocks:
+                total += abs(block)**2
+            return math.sqrt(total)
+
+    def norm(self, order=None):
+        """Norm of the matrix
+
+        :param order: order of the norm (see in :func:`numpy.linalg.norm`)
+        :return: norm
+        :rtype: float
+        """
+        if order is None or order == 'fro':
+            return abs(self)
+        else:
+            raise NotImplementedError('Only Frobenius implemented so far')
 
     def __add__(self, other):
         """addition with several types"""
