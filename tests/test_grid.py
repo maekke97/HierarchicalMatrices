@@ -1,9 +1,9 @@
+import os
+import random
 from unittest import TestCase
 
-import numpy
-import random
-import os
 import matplotlib.figure
+import numpy
 
 from HierMat.grid import Grid
 
@@ -44,7 +44,7 @@ class TestGrid(TestCase):
     def test_getitem(self):
         self.assertEqual(self.grid1[0], self.points1[0])
         self.assertTrue(numpy.array_equal(self.grid2[-1], self.points2[-1]))
-        check = random.randint(0, self.lim3 ** 3)
+        check = random.randint(0, self.lim3 ** 3 - 1)
         self.assertTrue(numpy.array_equal(self.grid3[check], self.points3[check]))
 
     def test_get_point(self):

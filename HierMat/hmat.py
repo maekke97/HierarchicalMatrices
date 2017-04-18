@@ -17,8 +17,8 @@ class HMat(object):
     :type content: RMat or numpy.matrix
     :param shape: the shape of the matrix (same as for numpy matrices)
     :type shape: tuple(int, int)
-    :param root_index: the index of this matrix with respect to its containing *root*-matrix, zero based
-    :type root_index: tuple(int, int)
+    :param parent_index: the index of this matrix with respect to its containing *root*-matrix, zero based
+    :type parent_index: tuple(int, int)
     
     .. note::
     
@@ -43,7 +43,7 @@ class HMat(object):
         * implement ``inv``
     """
 
-    def __init__(self, blocks=(), content=None, shape=(), root_index=()):
+    def __init__(self, blocks=(), content=None, shape=(), parent_index=()):
         """Implement a hierarchical Matrix
     
         :param blocks: list of HMat instances the children (optional)
@@ -52,20 +52,20 @@ class HMat(object):
         :type content: RMat or numpy.matrix
         :param shape: the shape of the matrix (same as for numpy matrices)
         :type shape: tuple(int, int)
-        :param root_index: the index of this matrix with respect to its containing *root*-matrix, zero based
-        :type root_index: tuple(int, int)
+        :param parent_index: the index of this matrix with respect to its containing *parent*-matrix, zero based
+        :type parent_index: tuple(int, int)
         """
         self.blocks = blocks  # This list contains the lower level HMats
         self.content = content  # If not empty, this is either a full matrix or a RMat
         self.shape = shape  # Tuple of dimensions, i.e. size of index sets
-        self.root_index = root_index  # Tuple of coordinates for the top-left corner in the root matrix
+        self.parent_index = parent_index  # Tuple of coordinates for the top-left corner in the root matrix
 
     def __getitem__(self, item):
         """Get block at position i, j from root-index or ith block from blocks"""
         if isinstance(item, int):
             return self.blocks[item]
         else:
-            structured_blocks = {block.root_index: block for block in self.blocks}
+            structured_blocks = {block.parent_index: block for block in self.blocks}
             return structured_blocks[item]
 
     def __repr__(self):
@@ -95,7 +95,7 @@ class HMat(object):
             return False
         if self.shape != other.shape:
             return False
-        if self.root_index != other.root_index:
+        if self.parent_index != other.parent_index:
             return False
         return True
 
@@ -165,9 +165,9 @@ class HMat(object):
         :rtype: HMat
         """
         # check inputs
-        if self.root_index != other.root_index:
-            raise ValueError('can not add {0} and {1}. root indices {0.root_index} '
-                             'and {1.root_index} not the same'.format(self, other))
+        if self.parent_index != other.parent_index:
+            raise ValueError('can not add {0} and {1}. root indices {0.parent_index} '
+                             'and {1.parent_index} not the same'.format(self, other))
         if self.content is None and other.blocks == ():
             # only other has content, so restructure other to match structure
             addend = other.restructure(self.block_structure())
@@ -179,13 +179,13 @@ class HMat(object):
         # both have content
         elif isinstance(self.content, numpy.matrix) and isinstance(other.content, RMat):
             # take other first to avoid numpy broadcast
-            return HMat(content=other.content + self.content, shape=self.shape, root_index=self.root_index)
+            return HMat(content=other.content + self.content, shape=self.shape, parent_index=self.parent_index)
         elif self.content is not None:  # both have content, that can be added left to right
-            return HMat(content=self.content + other.content, shape=self.shape, root_index=self.root_index)
+            return HMat(content=self.content + other.content, shape=self.shape, parent_index=self.parent_index)
         # if we get here, both have children
         elif len(self.blocks) == len(other.blocks):
             blocks = [self[index] + other[index] for index in self.block_structure()]
-            return HMat(blocks=blocks, shape=self.shape, root_index=self.root_index)
+            return HMat(blocks=blocks, shape=self.shape, parent_index=self.parent_index)
         else:
             raise ValueError('can not add {0} and {1}. number of blocks is different'.format(self, other))
 
@@ -204,12 +204,12 @@ class HMat(object):
         if self.shape != other.shape:
             raise ValueError('operands could not be broadcast together with shapes'
                              ' {0.shape} {1.shape}'.format(self, other))
-        out = HMat(shape=self.shape, root_index=self.root_index)
+        out = HMat(shape=self.shape, parent_index=self.parent_index)
         if self.blocks != ():
             out.blocks = []
             for block in self.blocks:
-                start_x = block.root_index[0] - self.root_index[0]
-                start_y = block.root_index[1] - self.root_index[1]
+                start_x = block.parent_index[0]
+                start_y = block.parent_index[1]
                 end_x = start_x + block.shape[0]
                 end_y = start_y + block.shape[1]
                 out.blocks.append(block + other[start_x: end_x, start_y: end_y])
@@ -223,7 +223,7 @@ class HMat(object):
 
     def __neg__(self):
         """Unary minus"""
-        out = HMat(shape=self.shape, root_index=self.root_index)
+        out = HMat(shape=self.shape, parent_index=self.parent_index)
         if self.content is not None:
             out.content = -self.content
         else:
@@ -279,15 +279,13 @@ class HMat(object):
             if self.shape[1] != other.shape[0]:
                 raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
                                  '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
-            x_start, y_start = self.root_index
+            x_start, y_start = self.parent_index
             res_length = self.shape[0]
             res = numpy.zeros((res_length, 1))
             for block in self.blocks:
-                x_current, y_current = block.root_index
+                in_index_start, res_index_start = block.parent_index
                 x_length, y_length = block.shape
-                in_index_start = x_current - x_start
                 in_index_end = in_index_start + x_length
-                res_index_start = y_current - y_start
                 res_index_end = res_index_start + y_length
                 res[res_index_start: res_index_end] += block * other[in_index_start: in_index_end]
             return res
@@ -309,11 +307,9 @@ class HMat(object):
                                  '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
             res_shape = (self.shape[0], other.shape[1])
             res = numpy.zeros(res_shape)
-            row_base, col_base = self.root_index
             for block in self.blocks:
                 row_count, col_count = block.shape
-                row_current, col_current = block.root_index
-                row_start = row_current - row_base
+                row_start, col_current = block.parent_index
                 row_end = row_start + row_count
                 res[row_start:row_end, :] += block * other[row_start:row_end, :]
             return res
@@ -326,7 +322,7 @@ class HMat(object):
         :return: Hmat containing the product
         :rtype: HMat
         """
-        out = HMat(shape=(self.shape[0], other.shape[1]), root_index=self.root_index)
+        out = HMat(shape=(self.shape[0], other.shape[1]), parent_index=self.parent_index)
         if isinstance(self.content, RMat):
             out.content = self.content * other
         elif self.content is not None:
@@ -345,23 +341,23 @@ class HMat(object):
             raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
                              '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
         out_shape = (self.shape[0], other.shape[1])
-        if self.root_index[1] != other.root_index[0]:
-            raise ValueError('root indices {0.root_index} and {1.root_index} not aligned: '
-                             '{0.root_index[1]} (dim 1) != {1.root_index[0]} (dim 0)'.format(self, other))
-        out_root_index = (self.root_index[0], other.root_index[1])
+        if self.parent_index[1] != other.parent_index[0]:
+            raise ValueError('root indices {0.parent_index} and {1.parent_index} not aligned: '
+                             '{0.parent_index[1]} (dim 1) != {1.parent_index[0]} (dim 0)'.format(self, other))
+        out_parent_index = (self.parent_index[0], other.parent_index[1])
         if self.content is not None and other.content is not None:  # simplest case, both have content
             out_content = self.content * other.content
-            return HMat(content=out_content, shape=out_shape, root_index=out_root_index)
+            return HMat(content=out_content, shape=out_shape, parent_index=out_parent_index)
         elif self.content is None and other.content is None:  # both have blocks
-            return self._mul_with_hmat_blocks(other, out_shape, out_root_index)
+            return self._mul_with_hmat_blocks(other, out_shape, out_parent_index)
         elif isinstance(self.content, RMat):  # other has blocks, self has RMat. Collect other to full matrix
-            return HMat(content=self.content * other.to_matrix(), shape=out_shape, root_index=out_root_index)
+            return HMat(content=self.content * other.to_matrix(), shape=out_shape, parent_index=out_parent_index)
         elif isinstance(other.content, RMat):  # other has RMat, self has blocks. Collect self to full
-            return HMat(content=self.to_matrix() * other.content, shape=out_shape, root_index=out_root_index)
+            return HMat(content=self.to_matrix() * other.content, shape=out_shape, parent_index=out_parent_index)
         else:
             raise NotImplementedError('Not done yet! Blocks * full matrix should not occur')
 
-    def _mul_with_hmat_blocks(self, other, out_shape, out_root_index):
+    def _mul_with_hmat_blocks(self, other, out_shape, out_parent_index):
         """multiplication when self and other have blocks
         
         :type other: HMat
@@ -380,14 +376,14 @@ class HMat(object):
                     else:
                         out_block = out_block + self[i, k] * other[k, j]
                 out_blocks.append(out_block)
-        return HMat(blocks=out_blocks, shape=out_shape, root_index=out_root_index)
+        return HMat(blocks=out_blocks, shape=out_shape, parent_index=out_parent_index)
 
     def _mul_with_scalar(self, other):
         """multiplication with integer
         
         :type other: Number.number
         """
-        out = HMat(shape=self.shape, root_index=self.root_index)
+        out = HMat(shape=self.shape, parent_index=self.parent_index)
         if self.content is not None:
             out.content = self.content * other
             return out
@@ -398,12 +394,12 @@ class HMat(object):
     def block_structure(self):
         """return the block structure of self
         
-        produce a dict with root_index: block paris
+        produce a dict with parent_index: block paris
 
         :rtype: dict
         :returns: dict with index: HMatrix pairs
         """
-        structure = {block.root_index: block.shape for block in self.blocks}
+        structure = {block.parent_index: block.shape for block in self.blocks}
         return structure
 
     def column_sequence(self):
@@ -422,7 +418,7 @@ class HMat(object):
         sorted_indices = sorted(pre_sort)
         if not sorted_indices:
             return [self.shape[1]]
-        start_col = self.root_index[1]
+        start_col = self.parent_index[1]
         current_col = start_col
         max_cols = start_col + self.shape[1]
         col_seq = []
@@ -449,7 +445,7 @@ class HMat(object):
         sorted_indices = sorted(pre_sort, key=lambda item: item[1])
         if not sorted_indices:
             return [self.shape[0]]
-        start_row = self.root_index[0]
+        start_row = self.parent_index[0]
         current_row = start_row
         max_rows = start_row + self.shape[0]
         row_seq = []
@@ -471,7 +467,7 @@ class HMat(object):
             return self.content.shape == self.shape
         pre_sort = sorted(self.block_structure(), key=lambda item: item[1])
         sorted_indices = sorted(pre_sort)
-        start_row, start_col = self.root_index
+        start_row, start_col = (0, 0)
         current_row = start_row
         current_col = start_col
         max_rows = start_row + self.shape[0]
@@ -517,19 +513,19 @@ class HMat(object):
             raise NotImplementedError('Only implemented for hmat without blocks')
         out_blocks = []
         for index in structure:
-            start_x = index[0] - self.root_index[0]
-            start_y = index[1] - self.root_index[1]
+            start_x = index[0]
+            start_y = index[1]
             end_x = start_x + structure[index][0]
             end_y = start_y + structure[index][1]
             if isinstance(self.content, RMat):
                 out_blocks.append(HMat(content=self.split_rmat(start_x, start_y, end_x, end_y),
-                                  shape=structure[index], root_index=index))
+                                       shape=structure[index], parent_index=index))
             elif isinstance(self.content, numpy.matrix):
                 out_blocks.append(HMat(content=self.split_hmat(start_x, start_y, end_x, end_y),
-                                  shape=structure[index], root_index=index))
+                                       shape=structure[index], parent_index=index))
             else:
                 raise NotImplementedError('Illegal structure found in restructure')
-        return HMat(blocks=out_blocks, shape=self.shape, root_index=self.root_index)
+        return HMat(blocks=out_blocks, shape=self.shape, parent_index=self.parent_index)
 
     def split_rmat(self, start_x, start_y, end_x, end_y):
         """Fetch the block specified by indices from a rmat
@@ -538,7 +534,7 @@ class HMat(object):
         
             r = RMat(numpy.matrix([[2], [2], [2]]),
                      numpy.matrix([[3], [3], [3]]))
-            h = HMat(content=r, shape=(3, 3), root_index=(0, 0))
+            h = HMat(content=r, shape=(3, 3), parent_index=(0, 0))
             res = h.split_rmat(0, 2, 1, 3)
             res
             <RMat with left_mat: matrix([[2]]), right_mat: matrix([[3]]) and max_rank: None> 
@@ -582,9 +578,9 @@ class HMat(object):
             out_mat = numpy.matrix(numpy.zeros(self.shape))
             for block in self.blocks:
                 # determine the position of the current block
-                vertical_start = block.root_index[0] - self.root_index[0]
+                vertical_start = block.parent_index[0]
                 vertical_end = vertical_start + block.shape[0]
-                horizontal_start = block.root_index[1] - self.root_index[1]
+                horizontal_start = block.parent_index[1]
                 horizontal_end = horizontal_start + block.shape[1]
 
                 # fill the block with recursive call
@@ -613,8 +609,8 @@ def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate
     """
     if block_cluster_tree.admissible:
         return HMat(content=generate_full_matrix_function(block_cluster_tree), shape=block_cluster_tree.shape(),
-                    root_index=(0, 0))
-    root = HMat(blocks=[], shape=tuple(block_cluster_tree.shape()), root_index=(0, 0))
+                    parent_index=(0, 0))
+    root = HMat(blocks=[], shape=tuple(block_cluster_tree.shape()), parent_index=(0, 0))
     recursion_build_hmatrix(root, block_cluster_tree, generate_rmat_function, generate_full_matrix_function)
     return root
 
@@ -632,8 +628,11 @@ def recursion_build_hmatrix(current_hmat, block_cluster_tree, generate_rmat, gen
         current_hmat.blocks = ()
     else:
         # recursion: generate new hmatrix for every son in block cluster tree
+        x_parent, y_parent = block_cluster_tree.plot_info
         for son in block_cluster_tree.sons:
-            new_hmat = HMat(blocks=[], shape=son.shape(), root_index=tuple(son.plot_info))
+            x_current, y_current = son.plot_info
+            parent_index = (x_current - x_parent, y_current - y_parent)
+            new_hmat = HMat(blocks=[], shape=son.shape(), parent_index=parent_index)
             current_hmat.blocks.append(new_hmat)
             recursion_build_hmatrix(new_hmat, son, generate_rmat, generate_full_mat)
 
