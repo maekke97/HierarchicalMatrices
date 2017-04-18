@@ -1,6 +1,7 @@
 tests/*.png
 source_old
 out
+dist
 *.dot
 *.xml
 *.bin
@@ -10,3 +11,4 @@ out
 !.idea/dictionaries/nem.xml
 build
 .coverage
+HierMat.egg-info

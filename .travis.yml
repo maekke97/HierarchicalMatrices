@@ -1,37 +1,36 @@
 language: python
 python: '2.7'
-
 sudo: required
 dist: trusty
-
 addons:
   sonarqube:
     branches:
-      - master
-      - SonarQubeSmells
-    organization: "hierarchicalmatrices"
+    - master
+    - SonarQubeSmells
+    organization: hierarchicalmatrices
     token:
-      secure: "LcfN7RBp3n6K4+UgSsJbh/CB0bdT/BFABDn5S9IUZJr4UNbJ/NhLUCtkSjN3sfbib08wBH+u2GcGy2c38Urk6mxMTPH3NYFBRav1fSWu8dPtkoQpCBkFixjVWT5/dVrcjZLNPJQu4J22f2IFtW2F+J4aw6XEUZAo5z6n8rvwdLC2pmp1VaHKbrn19n3USD84dZZ0ROWbl8/p3wM2SD671hOo5kG3YM8OjlehGeSMAHaCWRNtAoutSuJxlKVHj6tk+SXwhgu+kzT+Zwg1cHQSOMS9SnSwMIBFuVJk7YGuD8yAutmDxct1Q8Hv48OC/r1KEqI7JVkp2e1HVNgbozMIp3hP+Xc2R6rJidVLPZeFfHCJb/oyv0ATo8uVAy4m6MmuJRB7mAeVJ07/bw48vWzLMKddcLqPpmU9/n42wm9CZNzZrIHo6bs9NuZBL84xkMmaJgeQnC+Z20J64J75erTEUUA6EIuRUaqZEQ2TbS8aK2M0vhaWvMrZNn2FgkwrEf9itbXTQeJ+bd/2TeudLv5ZHX7NvQCbiXsr2wPXGJEJauFUXBEyxu500f36u7ZRoPz7EFJOGj+ABbhXZL6zFgke7dLYMbr3YhMuS1yCObZAdYirkZ5nelP2np1arPVcBN7cQYWY2RGKWG3sT2eNoTZ801az/YHsmaol7gnGeJYfccA="
-
+      secure: LcfN7RBp3n6K4+UgSsJbh/CB0bdT/BFABDn5S9IUZJr4UNbJ/NhLUCtkSjN3sfbib08wBH+u2GcGy2c38Urk6mxMTPH3NYFBRav1fSWu8dPtkoQpCBkFixjVWT5/dVrcjZLNPJQu4J22f2IFtW2F+J4aw6XEUZAo5z6n8rvwdLC2pmp1VaHKbrn19n3USD84dZZ0ROWbl8/p3wM2SD671hOo5kG3YM8OjlehGeSMAHaCWRNtAoutSuJxlKVHj6tk+SXwhgu+kzT+Zwg1cHQSOMS9SnSwMIBFuVJk7YGuD8yAutmDxct1Q8Hv48OC/r1KEqI7JVkp2e1HVNgbozMIp3hP+Xc2R6rJidVLPZeFfHCJb/oyv0ATo8uVAy4m6MmuJRB7mAeVJ07/bw48vWzLMKddcLqPpmU9/n42wm9CZNzZrIHo6bs9NuZBL84xkMmaJgeQnC+Z20J64J75erTEUUA6EIuRUaqZEQ2TbS8aK2M0vhaWvMrZNn2FgkwrEf9itbXTQeJ+bd/2TeudLv5ZHX7NvQCbiXsr2wPXGJEJauFUXBEyxu500f36u7ZRoPz7EFJOGj+ABbhXZL6zFgke7dLYMbr3YhMuS1yCObZAdYirkZ5nelP2np1arPVcBN7cQYWY2RGKWG3sT2eNoTZ801az/YHsmaol7gnGeJYfccA=
 cache:
-  directories:
-    – $HOME/.sonar/cache
-
+  directories: "– $HOME/.sonar/cache"
 before_install:
-  - jdk_switcher use oraclejdk8
-
+- jdk_switcher use oraclejdk8
 install:
-  - pip install coveralls
-  - pip install -r requirements.txt .
-
+- pip install coveralls
+- pip install -r requirements.txt .
 script:
-  - env DISPLAY=:99.0 coverage run --source=HierMat setup.py nosetests
-  - sonar-scanner -Dsonar.projectKey=hierarchicalmatrices -Dsonar.host.url=https://sonarqube.com -Dsonar.organization=maekke97-github -Dsonar.sources=HierMat -Dsonar.login=$SONAR_TOKEN
-
+- env DISPLAY=:99.0 coverage run --source=HierMat setup.py nosetests
+- sonar-scanner -Dsonar.projectKey=hierarchicalmatrices -Dsonar.host.url=https://sonarqube.com
+  -Dsonar.organization=maekke97-github -Dsonar.sources=HierMat -Dsonar.login=$SONAR_TOKEN
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- sleep 3
+after_success: coveralls
+deploy:
+  provider: pypi
+  user: "maekke97"
+  password:
+    secure: "KzBUNwTIoIgmxx90JBABu4w3NBPqb0M28P3aapugvgh5nVPahm29kwoDGYd1rBjAY9wBgufEYW4CjINHnnD7cPWyZjSnFMEVKjMghyfe/7m8ZyeGY0ekf078EhVccSSeO+84KqhSvop9UJ1Q8juKT4obbXu03eploqIk6QAfkdifqWtCY8+wWKMcntFSOaysxtWaO5ZmMYx/LgnsugwW9oFp+85/x6+85XSf1/jRAb7LHHo57t9aw6rduU3yx+E5/t92UKujR0n9DrJtz2nIzxPQkI0tXm2kaJoIqt7zAImUPc6xQ3trAk0ZhrpmFLtt9T71HiJIg9IrHHmamUdWXr7l+htd2Zjk15fePxlDuxn6MZZavnNuaO2ZMqD4BU+Gmp1v6v7jUuT/AjD+BBVYsoLKIkZS1Zz4P5I1wR23qsxAWCB1GZD+ifqBPEcKdSq0wRwIJeaMEIzXf94YVV9ehVehIRM8R7P0MGPOg0NEd28NBAGJ1gf2dNuYK4aHLL34sOdNzbZWkeOAhi0iI1PCjwts80TcFofQQzFEtahtkeo1t3gzbjEZgzRdYl5jeEgKxBMxGtYjkFN8LHPHhLPATOGltTikMBCLo+7k1AEC/gyX44b+MroByCUAAZ8ix275biFLh6UJix5Z2IETypw2wEZZ0L+hZf2QaMMHUUTJTU4="
+  on:
+    branch: master
 
-after_success:
-  coveralls
