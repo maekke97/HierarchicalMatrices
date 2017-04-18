@@ -351,3 +351,6 @@ class TestHmat(TestCase):
         check4 = HMat(content=check_rmat, shape=(4, 4), root_index=(4, 4))
         check = HMat(blocks=[check1, check2, check3, check4], shape=(8, 8), root_index=(0, 0))
         self.assertEqual(hmat, check)
+        bct1 = build_block_cluster_tree(ct1, right_cluster_tree=ct1, admissible_function=lambda x, y: True)
+        hmat = build_hmatrix(bct1, generate_rmat_function=block_func, generate_full_matrix_function=block_func)
+        self.assertIsInstance(hmat, HMat)
