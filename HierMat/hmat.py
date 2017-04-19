@@ -591,6 +591,24 @@ class HMat(object):
         else:  # We have regular content, so we return it
             return self.content
 
+    def transpose(self):
+        """Return transposed copy of self
+
+        :rtype: RMat
+        """
+        out_shape = (self.shape[1], self.shape[0])
+        if self.blocks == ():
+            out_content = self.content.transpose()
+            out_blocks = ()
+        else:
+            out_content = None
+            out_blocks = []
+            for block in self.blocks:
+                out_block = block.transpose()
+                out_block.parent_index = (block.parent_index[1], block.parent_index[0])
+                out_blocks.append(out_block)
+        return HMat(content=out_content, blocks=out_blocks, shape=out_shape, parent_index=self.parent_index)
+
 
 def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate_full_matrix_function=None):
     """Factory to build an hierarchical matrix

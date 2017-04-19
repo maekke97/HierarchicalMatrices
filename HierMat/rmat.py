@@ -303,3 +303,13 @@ class RMat(object):
         self.left_mat = new_left
         self.right_mat = new_right
         self.max_rank = new_k
+
+    def transpose(self):
+        """Return transposed copy of self
+        
+        :rtype: RMat
+        """
+        out_max_rank = self.max_rank
+        out_left = self.right_mat
+        out_right = self.left_mat
+        return RMat(left_mat=out_left, right_mat=out_right, max_rank=out_max_rank)

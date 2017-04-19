@@ -206,6 +206,8 @@ class TestHmat(TestCase):
                               shape=(5, 6), parent_index=(0, 0))
         self.assertEqual(self.cmat1 - self.cmat1, zercmat1)
         self.assertEqual(self.consistent1 - self.consistent1, zerconsistent1)
+        res = self.hmat - self.hmat
+        self.assertTrue(numpy.array_equal(res.to_matrix(), numpy.matrix(numpy.zeros((7, 6)))))
 
     def test_repr(self):
         check = '<HMat with {content}>'.format(content=self.hmat_lvl2.blocks)
@@ -353,6 +355,18 @@ class TestHmat(TestCase):
                              shape=(1, 1), parent_index=(i, j)) for i in xrange(2) for j in xrange(2)]
         check = HMat(blocks=check_blocks, shape=(2, 2), parent_index=(0, 0))
         self.assertEqual(splitter.restructure(check.block_structure()), check)
+
+    def test_transpose(self):
+        trans = self.hmat.transpose()
+        full = self.hmat.to_matrix()
+        self.assertTrue(numpy.array_equal(trans.to_matrix(), full.transpose()))
+        hmat = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), parent_index=(0, 0))
+        hmat2 = HMat(content=numpy.matrix(numpy.ones((3, 2))), shape=(3, 2), parent_index=(0, 3))
+        hmat_1 = HMat(blocks=[hmat, hmat2], shape=(3, 5), parent_index=(0, 0))
+        thmat = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), parent_index=(0, 0))
+        thmat2 = HMat(content=numpy.matrix(numpy.ones((2, 3))), shape=(2, 3), parent_index=(3, 0))
+        thmat_1 = HMat(blocks=[thmat, thmat2], shape=(5, 3), parent_index=(0, 0))
+        self.assertEqual(hmat_1.transpose(), thmat_1)
 
     def test_build_hmatrix(self):
         full_func = lambda x: numpy.matrix(numpy.ones(x.shape()))

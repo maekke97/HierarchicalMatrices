@@ -225,3 +225,12 @@ and right block:
         self.assertEqual(rmat.split(0, 0, 1, 1), check1)
         self.assertEqual(rmat.split(1, 1, 3, 3), check2)
         self.assertEqual(rmat.split(0, 1, 2, 3), check3)
+
+    def test_transpose(self):
+        left_block = numpy.matrix([[1, 2, 3], [3, 2, 1], [2, 3, 1]])
+        right_block = numpy.matrix([[2, 3, 4], [4, 3, 2], [3, 4, 2]])
+        rmat = RMat(left_block, right_block)
+        self.assertEqual(rmat.transpose(), RMat(left_mat=right_block, right_mat=left_block))
+        trans = rmat.transpose()
+        full = rmat.to_matrix()
+        self.assertTrue(numpy.array_equal(trans.to_matrix(), full.transpose()))
