@@ -350,9 +350,9 @@ class HMat(object):
             return HMat(content=out_content, shape=out_shape, parent_index=out_parent_index)
         elif self.content is None and other.content is None:  # both have blocks
             return self._mul_with_hmat_blocks(other, out_shape, out_parent_index)
-        elif isinstance(self.content, RMat):  # other has blocks, self has RMat. Collect other to full matrix
+        elif isinstance(self.content, RMat) or isinstance(self.content, numpy.matrix):  # other has blocks, self has RMat. Collect other to full matrix
             return HMat(content=self.content * other.to_matrix(), shape=out_shape, parent_index=out_parent_index)
-        elif isinstance(other.content, RMat):  # other has RMat, self has blocks. Collect self to full
+        elif isinstance(other.content, RMat) or isinstance(other.content, numpy.matrix):  # other has RMat, self has blocks. Collect self to full
             return HMat(content=self.to_matrix() * other.content, shape=out_shape, parent_index=out_parent_index)
         else:
             raise NotImplementedError('Not done yet! Blocks * full matrix should not occur')
@@ -608,6 +608,64 @@ class HMat(object):
                 out_block.parent_index = (block.parent_index[1], block.parent_index[0])
                 out_blocks.append(out_block)
         return HMat(content=out_content, blocks=out_blocks, shape=out_shape, parent_index=self.parent_index)
+
+    def inv(self):
+        """Invert the matrix according to chapter 3.7 in :cite:`hackbusch2015hierarchical`
+        
+        .. warning::
+            
+            Inversion will change the block structure. The result will always have 4 blocks 
+        
+        :raises: :class:`numpy.LinAlgError` if matrix is singular
+        """
+        if isinstance(self.content, numpy.matrix):
+            return HMat(content=numpy.linalg.inv(self.content), shape=self.shape, parent_index=self.parent_index)
+        elif self.blocks != ():
+            return self._invert_blocks()
+        else:
+            raise NotImplementedError('Not done yet')
+
+    def _invert_blocks(self):
+        """sub-function for restructuring"""
+        structure = self.block_structure()
+        m11_inv = self[0, 0].inv()
+        blocks12 = [x for x in structure if x[0] == 0 and x[1] != 0]
+        if len(blocks12) > 1:
+            shape12 = (m11_inv.shape[0], self.shape[1] - m11_inv.shape[1])
+            blocks = [self[b] for b in blocks12]
+            for block in blocks:
+                block.parent_index = (0, block.parent_index[1] - m11_inv.shape[1])
+            m12 = HMat(blocks=blocks, shape=shape12, parent_index=(0, m11_inv.shape[1]))
+        else:
+            m12 = self[blocks12[0]]
+        blocks21 = [x for x in structure if x[1] == 0 and x[0] != 0]
+        if len(blocks21) > 1:
+            shape21 = (self.shape[0] - m11_inv.shape[0], m11_inv.shape[1])
+            blocks = [self[b] for b in blocks21]
+            for block in blocks:
+                block.parent_index = (block.parent_index[0] - m11_inv.shape[0], 0)
+            m21 = HMat(blocks=blocks, shape=shape21, parent_index=(m11_inv.shape[0], 0))
+        else:
+            m21 = self[blocks21[0]]
+        blocks22 = [x for x in structure if x[0] != 0 and x[1] != 0]
+        if len(blocks22) > 1:
+            shape22 = (self.shape[0] - m11_inv.shape[0], self.shape[1] - m11_inv.shape[1])
+            blocks = [self[b] for b in blocks22]
+            for block in blocks:
+                block.parent_index = (block.parent_index[0] - m11_inv.shape[0],
+                                      block.parent_index[1] - m11_inv.shape[1])
+            m22 = HMat(blocks=blocks,
+                       shape=shape22, parent_index=(m11_inv.shape[0], m11_inv.shape[1]))
+        else:
+            m22 = self[blocks22[0]]
+
+        s = m22 - m21 * (m11_inv * m12)
+        s_inv = s.inv()
+        out_block11 = m11_inv + m11_inv * m12 * s_inv * m21 * m11_inv
+        out_block12 = -m11_inv * m12 * s_inv
+        out_block21 = -s_inv * m21 * m11_inv
+        return HMat(blocks=[out_block11, out_block12, out_block21, s_inv],
+                    shape=self.shape, parent_index=self.parent_index)
 
 
 def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate_full_matrix_function=None):

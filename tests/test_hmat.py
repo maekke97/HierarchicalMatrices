@@ -327,7 +327,6 @@ class TestHmat(TestCase):
         block_mat = HMat(blocks=blocks, shape=(3, 3), parent_index=(0, 0))
         hmat = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), parent_index=(0, 0))
         hmat1 = HMat(content=rmat, shape=(3, 3), parent_index=(0, 0))
-        self.assertRaises(NotImplementedError, hmat.__mul__, block_mat)
         self.assertTrue(numpy.array_equal((hmat1 * block_mat).to_matrix(), (3*hmat1).to_matrix()))
         self.assertTrue(numpy.array_equal((block_mat * hmat1).to_matrix(), (3 * hmat1).to_matrix()))
         res1 = HMat(content=numpy.matrix(6 * numpy.ones((3, 3))), shape=(3, 3), parent_index=(0, 0))
@@ -367,6 +366,33 @@ class TestHmat(TestCase):
         thmat2 = HMat(content=numpy.matrix(numpy.ones((2, 3))), shape=(2, 3), parent_index=(3, 0))
         thmat_1 = HMat(blocks=[thmat, thmat2], shape=(5, 3), parent_index=(0, 0))
         self.assertEqual(hmat_1.transpose(), thmat_1)
+
+    def test_inv(self):
+        self.assertRaises(numpy.linalg.LinAlgError, self.hmat1.inv)
+        mat = numpy.matrix(numpy.eye(5))
+        hmat = HMat(content=mat, shape=(5, 5), parent_index=(0, 0))
+        self.assertEqual(hmat.inv(), hmat)
+        zmat = numpy.matrix(numpy.zeros((5, 5)))
+        hmat11 = HMat(content=mat, shape=(5, 5), parent_index=(0, 0))
+        hmat12 = HMat(content=zmat, shape=(5, 5), parent_index=(0, 5))
+        hmat21 = HMat(content=zmat, shape=(5, 5), parent_index=(5, 0))
+        hmat22 = HMat(content=mat, shape=(5, 5), parent_index=(5, 5))
+        hmat = HMat(blocks=[hmat11, hmat12, hmat21, hmat22], shape=(10, 10), parent_index=(0, 0))
+        self.assertEqual(hmat, hmat.inv())
+        hmat = hmat * 2
+        self.assertEqual(0.25 * hmat, hmat.inv())
+        hmat33 = HMat(content=mat, shape=(5, 5), parent_index=(10, 10))
+        hmat13 = HMat(content=zmat, shape=(5, 5), parent_index=(0, 10))
+        hmat31 = HMat(content=zmat, shape=(5, 5), parent_index=(10, 0))
+        hmat23 = HMat(content=zmat, shape=(5, 5), parent_index=(5, 10))
+        hmat32 = HMat(content=zmat, shape=(5, 5), parent_index=(10, 5))
+        hmat = HMat(blocks=[hmat11, hmat12, hmat21, hmat22, hmat13, hmat31, hmat23, hmat32, hmat33],
+                    shape=(15, 15), parent_index=(0, 0))
+        hmat_inv = hmat.inv()
+        self.assertEqual(hmat.norm(), hmat_inv.norm())
+        rmat = RMat(left_mat=numpy.matrix(numpy.ones((3, 1))), right_mat=numpy.matrix(numpy.ones((3, 1))))
+        rhmat = HMat(content=rmat, shape=(3, 3), parent_index=(0, 0))
+        self.assertRaises(NotImplementedError, rhmat.inv)
 
     def test_build_hmatrix(self):
         full_func = lambda x: numpy.matrix(numpy.ones(x.shape()))
