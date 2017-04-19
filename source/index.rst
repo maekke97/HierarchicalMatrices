@@ -49,6 +49,37 @@ The main goal is to provide an easy to use yet performing alternative to existin
 
 .. image:: https://sonarqube.com/api/badges/gate?key=hierarchicalmatrices
 
+Installation
+------------
+
+The package is available on different platforms, so there are different ways to install:
+
+#. The easiest would be using ``pip``:
+
+   .. code-block:: bash
+
+      pip install [--user -U] HierMat
+
+#. Another way is to download the source package e.g. from `GitHub <https://github.com/maekke97/HierarchicalMatrices>`_
+   and install from there:
+
+   .. code-block:: bash
+
+      wget https://github.com/maekke97/HierarchicalMatrices/archive/master.zip
+      unzip master.zip
+      cd HierarchicalMatrices-master
+      python setup.py install
+
+Basic Usage
+-----------
+.. todo::
+
+    implement examples and show their usage here
+
+.. code-block:: python
+
+   import HierMat
+
 Links and references
 --------------------
 

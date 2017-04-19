@@ -65,3 +65,6 @@ class TestIntegration(TestCase):
         check = self.hmat1 * self.hmat2
         out = check.to_matrix()
         self.assertAlmostEqual(numpy.linalg.norm(out), numpy.linalg.norm(16*numpy.matrix(numpy.ones((16, 16)))))
+        check2 = self.hmat2.transpose() * self.hmat1.transpose()
+        tcheck = check.transpose()
+        self.assertEqual(tcheck.norm(), check2.norm())
