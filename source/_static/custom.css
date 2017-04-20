@@ -4,7 +4,7 @@
 }
 
 pre {
-    background-color: #e9f0ff;
+    background-color: #eff9ff;
     border: 1px solid #6070ff;
     border-left: none;
     border-right: none;
@@ -26,7 +26,7 @@ div.document {
     background-color: #90c0ff;
 }
 
-.admonition {
+.admonition, .topic {
     background-color: #e9f0ff;
     border: 1px solid #6090ff;
     border-radius: 5px;

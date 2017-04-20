@@ -2,7 +2,6 @@
 """
 import math
 import numbers
-
 import numpy
 
 from HierMat.rmat import RMat
@@ -525,17 +524,20 @@ class HMat(object):
     def split_rmat(self, start_x, start_y, end_x, end_y):
         """Fetch the block specified by indices from a rmat
         
-        **Example**::
+        .. admonition:: Example
+            
+            .. code:: python
         
-            r = RMat(numpy.matrix([[2], [2], [2]]),
-                     numpy.matrix([[3], [3], [3]]))
-            h = HMat(content=r, shape=(3, 3), parent_index=(0, 0))
-            res = h.split_rmat(0, 2, 1, 3)
-            res
-            <RMat with left_mat: matrix([[2]]), right_mat: matrix([[3]]) and max_rank: None> 
+                r = RMat(numpy.matrix([[2], [2], [2]]),
+                         numpy.matrix([[3], [3], [3]]))
+                h = HMat(content=r, shape=(3, 3), parent_index=(0, 0))
+                res = h.split_rmat(0, 2, 1, 3)
+                res
+                <RMat with left_mat: matrix([[2]]), right_mat: matrix([[3]]) and max_rank: None> 
         
         :param start_x: vertical start index
         :type start_x: int
+        
         :param start_y: horizontal start index
         :type start_y: int
         :param end_x: vertical end index

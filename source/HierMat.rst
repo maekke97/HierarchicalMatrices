@@ -1,86 +1,85 @@
 HierMat package
 ===============
 
-Submodules
-----------
+Module contents
+---------------
 
-HierMat.block_cluster_tree module
----------------------------------
+.. automodule:: HierMat
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. contents::
+
+
+block_cluster_tree module
+-------------------------
 
 .. automodule:: HierMat.block_cluster_tree
     :members:
     :undoc-members:
     :show-inheritance:
 
-HierMat.cluster module
-----------------------
+cluster module
+--------------
 
 .. automodule:: HierMat.cluster
     :members:
     :undoc-members:
     :show-inheritance:
 
-HierMat.cluster_tree module
----------------------------
+cluster_tree module
+-------------------
 
 .. automodule:: HierMat.cluster_tree
     :members:
     :undoc-members:
     :show-inheritance:
 
-HierMat.cuboid module
----------------------
+cuboid module
+-------------
 
 .. automodule:: HierMat.cuboid
     :members:
     :undoc-members:
     :show-inheritance:
 
-HierMat.grid module
--------------------
+grid module
+-----------
 
 .. automodule:: HierMat.grid
     :members:
     :undoc-members:
     :show-inheritance:
 
-HierMat.hmat module
--------------------
+hmat module
+-----------
 
 .. automodule:: HierMat.hmat
     :members:
     :undoc-members:
     :show-inheritance:
 
-HierMat.rmat module
--------------------
+rmat module
+-----------
 
 .. automodule:: HierMat.rmat
     :members:
     :undoc-members:
     :show-inheritance:
 
-HierMat.splitable module
-------------------------
+splitable module
+----------------
 
 .. automodule:: HierMat.splitable
     :members:
     :undoc-members:
     :show-inheritance:
 
-HierMat.utils module
---------------------
+utils module
+------------
 
 .. automodule:: HierMat.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: HierMat
     :members:
     :undoc-members:
     :show-inheritance:
