@@ -347,12 +347,10 @@ class HMat(object):
             return HMat(content=out_content, shape=out_shape, parent_index=out_parent_index)
         elif self.content is None and other.content is None:  # both have blocks
             return self._mul_with_hmat_blocks(other, out_shape, out_parent_index)
-        elif isinstance(self.content, RMat) or isinstance(self.content, numpy.matrix):  # other has blocks, self has RMat. Collect other to full matrix
+        elif self.content is not None:  # other has blocks, self has content. Collect other to full matrix
             return HMat(content=self.content * other.to_matrix(), shape=out_shape, parent_index=out_parent_index)
-        elif isinstance(other.content, RMat) or isinstance(other.content, numpy.matrix):  # other has RMat, self has blocks. Collect self to full
+        else:  # other has content, self has blocks. Collect self to full
             return HMat(content=self.to_matrix() * other.content, shape=out_shape, parent_index=out_parent_index)
-        else:
-            raise NotImplementedError('Not done yet! Blocks * full matrix should not occur')
 
     def _mul_with_hmat_blocks(self, other, out_shape, out_parent_index):
         """multiplication when self and other have blocks
