@@ -1,17 +1,17 @@
+import os
+import random
 from unittest import TestCase
 
 import matplotlib.figure
 import numpy
-import random
-import os
 
-from HierMat.block_cluster_tree import BlockClusterTree, build_block_cluster_tree
+from HierMat.block_cluster_tree import build_block_cluster_tree
 from HierMat.cluster import Cluster
-from HierMat.cluster_tree import ClusterTree, build_cluster_tree, admissible
+from HierMat.cluster_tree import build_cluster_tree, admissible
 from HierMat.cuboid import Cuboid
-from HierMat.utils import load, export, plot
 from HierMat.grid import Grid
 from HierMat.splitable import RegularCuboid
+from HierMat.utils import load, export, plot
 
 
 class TestUtils(TestCase):
@@ -104,6 +104,13 @@ class TestUtils(TestCase):
         self.assertTrue(os.path.exists(out_string))
         fig = plot(self.bct3, ticks=True)
         self.assertIsInstance(fig, matplotlib.figure.Figure)
+        out_string = 'test_plot_grid2'
+        plot(self.grid2, out_string)
+        self.assertTrue(os.path.exists(out_string))
+        fig = plot(self.grid2)
+        self.assertIsInstance(fig, matplotlib.figure.Figure)
+        self.assertRaises(NotImplementedError, plot, self.ct1)
+        self.assertRaises(NotImplementedError, plot, self.grid1)
 
     @classmethod
     def tearDownClass(cls):
@@ -117,5 +124,6 @@ class TestUtils(TestCase):
                     os.remove(out_string_bct.format(i + 1) + form)
                     os.remove(out_string_ct.format(i + 1) + form)
                 os.remove(plot_out + str(i + 1))
+            os.remove('test_plot_grid2')
         except OSError:
             pass

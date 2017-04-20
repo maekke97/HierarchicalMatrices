@@ -2,7 +2,6 @@ import os
 import random
 from unittest import TestCase
 
-import matplotlib.figure
 import numpy
 
 from HierMat.grid import Grid
@@ -100,13 +99,6 @@ class TestGrid(TestCase):
         self.assertEqual(self.grid1.dim(), 1)
         self.assertEqual(self.grid2.dim(), 2)
         self.assertEqual(self.grid3.dim(), 3)
-
-    def test_plot(self):
-        self.grid2.plot('grid_plot_test.png')
-        self.assertTrue(os.path.exists('grid_plot_test.png'))
-        self.assertRaises(NotImplementedError, self.grid1.plot)
-        fig = self.grid2.plot()
-        self.assertTrue(isinstance(fig, matplotlib.figure.Figure))
 
     @classmethod
     def tearDownClass(cls):

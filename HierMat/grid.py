@@ -91,36 +91,6 @@ class Grid(object):
         """
         return len(self[0])
 
-    def plot(self, filename=None):
-        """Plot the grid
-
-        :param filename: file to save the plot in. If not specified, the figure is returned
-        :type filename: str
-        """
-        # TODO: move plot to utils
-        # check dimensions:
-        d = self.dim()
-        if d != 2:
-            raise NotImplementedError("Only 2D plot is supported for now")
-        import matplotlib.pyplot as plt
-
-        plt.rc('axes', linewidth=0.5, labelsize=4)
-        plt.rc('xtick', labelsize=4)
-        plt.rc('ytick', labelsize=4)
-        plt.rc('lines', linewidth=0.5)
-        plt.rc('lines', markersize=2)
-        plt.rc('lines', markeredgewidth=0.5)
-        fig = plt.figure(figsize=(3, 3), dpi=400)
-        length = len(self.points)
-        for i in xrange(length):
-            plt.plot(self.points[i][0], self.points[i][1], 'xk')
-            for link in self.links[i]:
-                plt.plot([self.points[i][0], link[0]], [self.points[i][1], link[1]], '-b')
-        if not filename:
-            return fig
-        else:
-            plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None, bb_inches='tight')
-
 
 class GridIterator(object):
     """Iterator to Grid object
