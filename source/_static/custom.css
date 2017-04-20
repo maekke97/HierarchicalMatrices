@@ -26,13 +26,7 @@ div.document {
     background-color: #90c0ff;
 }
 
-.hint {
-    background-color: #e9f0ff;
-    border: 1px solid #6090ff;
-    border-radius: 5px;
-}
-
-div.note {
+.admonition {
     background-color: #e9f0ff;
     border: 1px solid #6090ff;
     border-radius: 5px;

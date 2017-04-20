@@ -11,18 +11,16 @@ from HierMat.rmat import RMat
 class HMat(object):
     """Implement a hierarchical Matrix
     
-    :param blocks: list of HMat instances the children (optional)
+    :param blocks: list of HMat instances (children) (optional)
     :type blocks: list(HMat)
     :param content: the content if the matrix has no children (optional)
     :type content: RMat or numpy.matrix
     :param shape: the shape of the matrix (same as for numpy matrices)
     :type shape: tuple(int, int)
-    :param parent_index: the index of this matrix with respect to its containing *root*-matrix, zero based
+    :param parent_index: the index of this matrix with respect to its containing *parent*-matrix, zero based
     :type parent_index: tuple(int, int)
     
-    .. note::
-    
-        **Supported operations:**
+    .. admonition:: Supported operations
         
         * ``+`` (formatted addition)
         
@@ -37,10 +35,9 @@ class HMat(object):
         * ``!=`` (not equal)
         
         * ``abs`` (frobenius norm)
-    
-    .. todo::
         
-        * implement ``inv``
+        * ``inv`` (inversion)
+
     """
 
     def __init__(self, blocks=(), content=None, shape=(), parent_index=()):
@@ -612,7 +609,7 @@ class HMat(object):
     def inv(self):
         """Invert the matrix according to chapter 3.7 in :cite:`hackbusch2015hierarchical`
         
-        .. warning::
+        .. caution::
             
             Inversion will change the block structure. The result will always have 4 blocks 
         

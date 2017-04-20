@@ -22,9 +22,7 @@ from HierMat.cuboid import Cuboid
 class Splitable(object):
     """Interface to the different strategies that can be used to restructure a cluster in two or more.
 
-    .. note::
-
-        Methods that need to be implemented by subclasses:
+    .. admonition:: Methods that need to be implemented by subclasses
 
         - __len__: return the length of the cluster
         - __iter__: return SplitableIterator(self)
