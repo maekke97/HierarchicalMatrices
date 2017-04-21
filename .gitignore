@@ -1,7 +1,9 @@
 tests/*.png
+HierMat/examples/*.png
 source_old
 out
 dist
+*.svg
 *.dot
 *.xml
 *.bin

@@ -122,15 +122,19 @@ class ClusterTree(object):
 
     @staticmethod
     def _to_dot(lst, out_string=''):
-        if len(lst) > 1 and type(lst[1]) is list:
-            for item in lst[1]:
-                value_string = str(lst[0])
-                item_string = str(item[0])
-                label_string = len(lst[0])
-                out_string += '''"{0}" -- "{1}";
-                "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
-                    value_string, item_string, label_string)
-                out_string = ClusterTree._to_dot(item, out_string)
+        value_string = str(lst[0])
+        label_string = len(lst[0])
+        for item in lst[1]:
+            item_string = str(item[0])
+            out_string += '''"{0}" -- "{1}";
+            "{0}"[label="{2}",color="#cccccc",style="filled",shape="box"];\n'''.format(
+                value_string, item_string, label_string)
+            out_string = ClusterTree._to_dot(item, out_string)
+        if not lst[1]:
+            content_list = ['{:.2f}'.format(p) for p in lst[0].content]
+            label_string = ', '.join(content_list)
+            out_string += '"{0}"[label="{1}",color="#cccccc",style="filled",shape="box"];\n'.format(value_string,
+                                                                                                    label_string)
         return out_string
 
     def depth(self, root_level=None):

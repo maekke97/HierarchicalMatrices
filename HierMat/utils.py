@@ -33,7 +33,7 @@ def export(obj, form='xml', out_file='out'):
         with open(out_file, "w") as out:
             out.write(output)
     elif form == 'dot':
-        head = 'graph {\n'
+        head = 'graph {\nnodesep=0.1;\nranksep=1.5;\n'
         output = obj.to_dot()
         tail = '}'
         output = head + output + tail

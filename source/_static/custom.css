@@ -26,7 +26,7 @@ div.document {
     background-color: #90c0ff;
 }
 
-.admonition, .topic {
+.admonition, div.topic {
     background-color: #e9f0ff;
     border: 1px solid #6090ff;
     border-radius: 5px;
