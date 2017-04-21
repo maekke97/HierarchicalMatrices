@@ -42,7 +42,7 @@ setup(
     license='GNU GPL v3',
     author='Markus Neumann',
     author_email='markus.neumann@math.uzh.ch',
-    requires=['numpy', 'matplotlib'],
+    requires=['numpy', 'matplotlib', 'scipy'],
     description='Framework for Hierarchical Matrices',
     long_description=long_desc
 )
