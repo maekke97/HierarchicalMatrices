@@ -131,7 +131,11 @@ class ClusterTree(object):
                 value_string, item_string, label_string)
             out_string = ClusterTree._to_dot(item, out_string)
         if not lst[1]:
-            content_list = ['{:.2f}'.format(p) for p in lst[0].content]
+            try:
+                content_list = ['{:.2f}'.format(p) for p in lst[0].content]
+            except ValueError:
+
+                content_list = [str(['{:.2f}'.format(p) for p in item]) for item in lst[0].content]
             label_string = ', '.join(content_list)
             out_string += '"{0}"[label="{1}",color="#cccccc",style="filled",shape="box"];\n'.format(value_string,
                                                                                                     label_string)

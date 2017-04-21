@@ -40,7 +40,7 @@ class TestCluster(TestCase):
     def test_getitem(self):
         self.assertEqual(self.cluster1[0], self.grid1[0])
         self.assertTrue(numpy.array_equal(self.cluster2[-1], self.grid2[-1]))
-        check = random.randint(0, self.lim3 ** 3)
+        check = random.randint(0, self.lim3 ** 3 - 1)
         self.assertTrue(numpy.array_equal(self.cluster3[check], self.points3[check]))
 
     def test_get_index(self):
