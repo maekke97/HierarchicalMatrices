@@ -55,12 +55,12 @@ class TestGrid(TestCase):
         self.assertTrue(numpy.array_equal(self.grid3.get_point(-1), self.points3[-1]))
 
     def test_get_link(self):
-        self.assertTrue(numpy.array_equal(self.grid1.get_link(0), self.links1[0]))
-        self.assertTrue(numpy.array_equal(self.grid1.get_link(-1), self.links1[-1]))
-        self.assertTrue(numpy.array_equal(self.grid2.get_link(0), self.links2[0]))
-        self.assertTrue(numpy.array_equal(self.grid2.get_link(-1), self.links2[-1]))
-        self.assertTrue(numpy.array_equal(self.grid3.get_link(0), self.links3[0]))
-        self.assertTrue(numpy.array_equal(self.grid3.get_link(-1), self.links3[-1]))
+        self.assertTrue(numpy.array_equal(self.grid1.get_support(0), self.links1[0]))
+        self.assertTrue(numpy.array_equal(self.grid1.get_support(-1), self.links1[-1]))
+        self.assertTrue(numpy.array_equal(self.grid2.get_support(0), self.links2[0]))
+        self.assertTrue(numpy.array_equal(self.grid2.get_support(-1), self.links2[-1]))
+        self.assertTrue(numpy.array_equal(self.grid3.get_support(0), self.links3[0]))
+        self.assertTrue(numpy.array_equal(self.grid3.get_support(-1), self.links3[-1]))
 
     def test_iterator(self):
         iterator = self.grid1.__iter__()

@@ -60,7 +60,17 @@ class Cluster(object):
         :param item: index
         :type item: int
         """
+        # TODO: change this to return the i-th item as in get_item
         return self.grid[item]
+
+    def get_grid_item_support(self, item):
+        """Return supports of item from grid
+
+        :param item: index
+        :type item: int
+        """
+        # TODO: change this to return the support of the i-th item
+        return self.grid.get_support(item)
 
     def get_index(self, item):
         """Return index at item
@@ -99,9 +109,9 @@ class Cluster(object):
         """
         # get all points from grid in indices
         points = [self.grid.points[i] for i in self.indices]
-        # add relevant links
+        # add relevant supports
         for i in self.indices:
-            points.extend([p for p in self.grid.links[i]])
+            points.extend([p for p in self.grid.supports[i]])
         # compute distance matrix
         dist_mat = [numpy.linalg.norm(x - y) for x in points for y in points]
         return max(dist_mat)

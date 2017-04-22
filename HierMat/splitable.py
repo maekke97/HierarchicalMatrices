@@ -61,6 +61,9 @@ class Splitable(object):
     def get_grid_item(self, item):
         raise NotImplementedError()
 
+    def get_grid_item_support(self, item):
+        raise NotImplementedError()
+
     def get_patch_coordinates(self):
         raise NotImplementedError()
 
@@ -146,6 +149,14 @@ class RegularCuboid(Splitable):
         :type item: int
         """
         return self.cluster.get_grid_item(item)
+
+    def get_grid_item_support(self, item):
+        """Return supports of item from grid
+
+        :param item: index
+        :type item: int
+        """
+        return self.cluster.get_support(item)
 
     def get_patch_coordinates(self):
         """Return min and max out of indices
@@ -283,6 +294,14 @@ class Balanced(Splitable):
         :type item: int
         """
         return self.cluster.get_grid_item(item)
+
+    def get_grid_item_support(self, item):
+        """Return supports of item from grid
+
+        :param item: index
+        :type item: int
+        """
+        return self.cluster.get_grid_item_support(item)
 
     def get_patch_coordinates(self):
         """Return min and max out of indices

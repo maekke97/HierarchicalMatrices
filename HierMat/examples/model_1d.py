@@ -14,6 +14,8 @@ It shows a basic use-case of hierarchical matrices:
     
 
 """
+import numpy
+
 import HierMat
 
 import os
@@ -21,21 +23,17 @@ import math
 import scipy
 
 
-def model_1d(n=2 ** 5, gauss_points=1):
-    """
-    
-    :param n: 
-    :param gauss_points: 
-    :return: 
-    """
+def model_1d(n=2 ** 5, max_rank=2, gauss_points=1):
+    """"""
     h = float(1)/n
     midpoints = [(i + 0.5) * h for i in xrange(n)]
     intervals = [[i * h, (i + 1) * h] for i in xrange(n)]
-    grid = HierMat.Grid(points=midpoints, links=intervals)
+    supports = {point: lambda x: x == point for point in midpoints}
+    grid = HierMat.Grid(points=midpoints, supports=supports)
     cluster = HierMat.Cluster(grid=grid)
     unit_cuboid = HierMat.Cuboid([0], [1])
     strategy = HierMat.RegularCuboid(cluster=cluster, cuboid=unit_cuboid)
-    cluster_tree = HierMat.build_cluster_tree(splitable=strategy, max_leaf_size=1)
+    cluster_tree = HierMat.build_cluster_tree(splitable=strategy, max_leaf_size=max_rank)
     HierMat.export(cluster_tree, form='dot', out_file='galerkin_1d_ct.dot')
     os.system('dot -Tpng galerkin_1d_ct.dot > model_1d-ct.png')
     os.system('dot -Tsvg galerkin_1d_ct.dot > model_1d-ct.svg')
@@ -47,15 +45,22 @@ def model_1d(n=2 ** 5, gauss_points=1):
 
 
 def kernel(x, y):
+    """"""
     return math.log(math.fabs(x - y))
 
 
-def galerkin_1d_rank_k(block_cluster_tree):
+def galerkin_1d_rank_k(block_cluster_tree, max_rank):
     """
-
-    :param block_cluster_tree: 
+    
+    :param block_cluster_tree: admissible block cluster tree
+    :type block_cluster_tree: HierMat.BlockClusterTree
+    :param max_rank: separation rank
+    :type max_rank: int
     :return: 
     """
+    x_length, y_length = block_cluster_tree.shape()
+    left_matrix = numpy.matrix(numpy.zeros((x_length, max_rank)))
+    right_matrix = numpy.matrix(numpy.zeros((y_length, max_rank)))
 
     return HierMat.RMat()
 

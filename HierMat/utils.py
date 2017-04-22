@@ -151,7 +151,7 @@ def grid_plot(obj, filename=None):
     length = len(obj.points)
     for i in xrange(length):
         plt.plot(obj.points[i][0], obj.points[i][1], 'xk')
-        for link in obj.links[i]:
+        for link in obj.supports[i]:
             plt.plot([obj.points[i][0], link[0]], [obj.points[i][1], link[1]], '-b')
     if not filename:
         return fig

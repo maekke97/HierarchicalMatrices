@@ -4,23 +4,23 @@ import numpy
 
 
 class Grid(object):
-    """Discretized grid characterized by points and links
+    """Discretized grid characterized by points and supports
     """
-    def __init__(self, points, links):
+    def __init__(self, points, supports):
         """Create a Grid
 
         :param points: list of coordinates
         :type points: list[numpy.array or list[float]]
-        :param links: list of links for every point
-        :type links: list[list[numpy.array or list[float]]]
-        :raise ValueError: if points and links have different length
+        :param supports: list of supports for every point
+        :type supports: dict{point: function}
+        :raise ValueError: if points and supports have different length
         """
         # check input
-        if len(points) != len(links):
-            raise ValueError('points and links must be of same length')
+        if len(points) != len(supports):
+            raise ValueError('points and supports must be of same length')
         # fill instance
         self.points = points
-        self.links = links
+        self.supports = supports
 
     def __len__(self):
         """Return length of points
@@ -52,7 +52,7 @@ class Grid(object):
         :rtype: bool
         """
         points_eq = numpy.array_equal(self.points, other.points)
-        links_eq = numpy.array_equal(self.links, other.links)
+        links_eq = numpy.array_equal(self.supports, other.supports)
         return points_eq and links_eq
 
     def __ne__(self, other):
@@ -74,17 +74,23 @@ class Grid(object):
         """
         return self.points[item]
 
-    def get_link(self, item):
+    def get_support(self, item):
         """Return link at position item
 
         :param item: index
         :type item: int
-        :return: links
+        :return: supports
         """
-        return self.links[item]
+        return self.supports[item]
 
     def dim(self):
         """Dimension of the Grid
+        
+        .. note::
+            
+            this is the dimension of the first point
+             
+             if you store points of different dimensions, this will be misleading
 
         :return: dimension
         :rtype: int
