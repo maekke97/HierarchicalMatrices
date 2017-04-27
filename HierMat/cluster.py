@@ -109,11 +109,8 @@ class Cluster(object):
         """
         # get all points from grid in indices
         points = [self.grid.points[i] for i in self.indices]
-        # add relevant supports
-        for i in self.indices:
-            points.extend([p for p in self.grid.supports[i]])
         # compute distance matrix
-        dist_mat = [numpy.linalg.norm(x - y) for x in points for y in points]
+        dist_mat = [numpy.linalg.norm(numpy.array(x) - numpy.array(y)) for x in points for y in points]
         return max(dist_mat)
 
     def distance(self, other):

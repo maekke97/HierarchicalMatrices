@@ -60,8 +60,6 @@ def plot(obj, filename=None, **kwargs):
     """
     if isinstance(obj, BlockClusterTree):
         return block_cluster_tree_plot(obj, filename, **kwargs)
-    elif isinstance(obj, Grid):
-        return grid_plot(obj, filename)
     else:
         raise NotImplementedError('object can not be plotted')
 
@@ -127,36 +125,6 @@ def block_cluster_tree_plot(obj, filename=None, ticks=False, face_color='#133f52
         # remove whitespace around the plot
         plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
         plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None)
-
-
-def grid_plot(obj, filename=None):
-    """Plot a grid
-
-    :param filename: file to save the plot in. If not specified, the figure is returned
-    :type filename: str
-    """
-    # check dimensions:
-    d = obj.dim()
-    if d != 2:
-        raise NotImplementedError("Only 2D plot is supported for now")
-    import matplotlib.pyplot as plt
-
-    plt.rc('axes', linewidth=0.5, labelsize=4)
-    plt.rc('xtick', labelsize=4)
-    plt.rc('ytick', labelsize=4)
-    plt.rc('lines', linewidth=0.5)
-    plt.rc('lines', markersize=2)
-    plt.rc('lines', markeredgewidth=0.5)
-    fig = plt.figure(figsize=(3, 3), dpi=400)
-    length = len(obj.points)
-    for i in xrange(length):
-        plt.plot(obj.points[i][0], obj.points[i][1], 'xk')
-        for link in obj.supports[i]:
-            plt.plot([obj.points[i][0], link[0]], [obj.points[i][1], link[1]], '-b')
-    if not filename:
-        return fig
-    else:
-        plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None, bb_inches='tight')
 
 
 def load(filename):

@@ -14,17 +14,17 @@ class TestCluster(TestCase):
         cls.lim2 = 8
         cls.lim3 = 4
         cls.link_num = 4
-        cls.points1 = [numpy.array([float(i) / cls.lim1]) for i in xrange(cls.lim1)]
-        cls.links1 = [[cls.points1[l] for l in [random.randint(0, cls.lim1 - 1) for x in xrange(cls.link_num)]]
-                      for i in xrange(cls.lim1)]
-        cls.points2 = [numpy.array([float(i) / cls.lim2, float(j) / cls.lim2])
+        cls.points1 = [(float(i) / cls.lim1,) for i in xrange(cls.lim1)]
+        cls.links1 = {p: [cls.points1[l] for l in [random.randint(0, cls.lim1 - 1) for x in xrange(cls.link_num)]]
+                      for p in cls.points1}
+        cls.points2 = [(float(i) / cls.lim2, float(j) / cls.lim2)
                        for i in xrange(cls.lim2) for j in xrange(cls.lim2)]
-        cls.links2 = [[cls.points2[l] for l in [random.randint(0, cls.lim2 ** 2 - 1) for x in xrange(cls.link_num)]]
-                      for j in xrange(cls.lim2) for i in xrange(cls.lim2)]
-        cls.points3 = [numpy.array([float(i) / cls.lim3, float(j) / cls.lim3, float(k) / cls.lim3])
+        cls.links2 = {p: [cls.points2[l] for l in [random.randint(0, cls.lim2 ** 2 - 1) for x in xrange(cls.link_num)]]
+                      for p in cls.points2}
+        cls.points3 = [(float(i) / cls.lim3, float(j) / cls.lim3, float(k) / cls.lim3)
                        for i in xrange(cls.lim3) for j in xrange(cls.lim3) for k in xrange(cls.lim3)]
-        cls.links3 = [[cls.points3[l] for l in [random.randint(0, cls.lim3 ** 3 - 1) for x in xrange(cls.link_num)]]
-                      for k in xrange(cls.lim3) for j in xrange(cls.lim3) for i in xrange(cls.lim3)]
+        cls.links3 = {p: [cls.points3[l] for l in [random.randint(0, cls.lim3 ** 3 - 1) for x in xrange(cls.link_num)]]
+                      for p in cls.points3}
         cls.grid1 = Grid(cls.points1, cls.links1)
         cls.grid2 = Grid(cls.points2, cls.links2)
         cls.grid3 = Grid(cls.points3, cls.links3)

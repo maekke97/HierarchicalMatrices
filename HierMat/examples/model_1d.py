@@ -143,4 +143,4 @@ def galerkin_1d_full(block_cluster_tree):
 
 
 if __name__ == '__main__':
-    model_1d(n=2**8, max_rank=1, n_min=1)
+    model_1d(n=2**5, max_rank=1, n_min=1)

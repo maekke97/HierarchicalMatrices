@@ -5,16 +5,21 @@ import numpy
 
 class Grid(object):
     """Discretized grid characterized by points and supports
+    
+    :param points: list of coordinates
+    
+        The points of the discretized Grid.
+        
+        For 1-dimensional problems this is a list of floats,
+        for higher dimension this is a list of tuples of floats
+            
+    :type points: list[tuple(float)]
+    :param supports: dictionary mapping points with their supports
+    :type supports: dict{point: support}
+    :raise ValueError: if points and supports have different length
     """
     def __init__(self, points, supports):
-        """Create a Grid
-
-        :param points: list of coordinates
-        :type points: list[numpy.array or list[float]]
-        :param supports: list of supports for every point
-        :type supports: dict{point: function}
-        :raise ValueError: if points and supports have different length
-        """
+        """Create a Grid"""
         # check input
         if len(points) != len(supports):
             raise ValueError('points and supports must be of same length')
@@ -23,9 +28,9 @@ class Grid(object):
         self.supports = supports
 
     def __len__(self):
-        """Return length of points
+        """Return number of points
 
-        :return: length of points
+        :return: len(points)
         :rtype: int
         """
         return len(self.points)
@@ -75,13 +80,22 @@ class Grid(object):
         return self.points[item]
 
     def get_support(self, item):
-        """Return link at position item
+        """Return support for item
 
-        :param item: index
-        :type item: int
-        :return: supports
+        :param item: point
+        :type item: float or tuple(float)
+        :return: support
         """
         return self.supports[item]
+
+    def get_support_by_index(self, index):
+        """Return support for the i-th item
+
+        :param index: index
+        :type index: int
+        :return: support
+        """
+        return self.supports[self.get_point(index)]
 
     def dim(self):
         """Dimension of the Grid
@@ -95,7 +109,10 @@ class Grid(object):
         :return: dimension
         :rtype: int
         """
-        return len(self[0])
+        try:
+            return len(self[0])
+        except TypeError:
+            return 1
 
 
 class GridIterator(object):
