@@ -60,8 +60,7 @@ class Cluster(object):
         :param item: index
         :type item: int
         """
-        # TODO: change this to return the i-th item as in get_item
-        return self.grid[item]
+        return self.grid.get_point(item)
 
     def get_grid_item_support(self, item):
         """Return supports of item from grid
@@ -69,8 +68,7 @@ class Cluster(object):
         :param item: index
         :type item: int
         """
-        # TODO: change this to return the support of the i-th item
-        return self.grid.get_support(item)
+        return self.grid.get_support_by_index(item)
 
     def get_index(self, item):
         """Return index at item

@@ -206,6 +206,36 @@ class TestSplitable(TestCase):
 
     def test_get_grid_item_support(self):
         self.assertRaises(NotImplementedError, self.dummy.get_grid_item_support, 0)
+        self.assertEqual(self.rc1.get_grid_item_support(0), self.grid1.get_support_by_index(0))
+        self.assertEqual(self.rc1.get_grid_item_support(-1), self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.rc2.get_grid_item_support(0),
+                                          self.grid2.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.rc2.get_grid_item_support(-1),
+                                          self.grid2.get_support_by_index(-1)))
+        self.assertTrue(numpy.array_equal(self.rc3.get_grid_item_support(0),
+                                          self.grid3.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.rc3.get_grid_item_support(-1),
+                                          self.grid3.get_support_by_index(-1)))
+        self.assertEqual(self.mc1.get_grid_item_support(0), self.grid1.get_support_by_index(0))
+        self.assertEqual(self.mc1.get_grid_item_support(-1), self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.mc2.get_grid_item_support(0),
+                                          self.grid2.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.mc2.get_grid_item_support(-1),
+                                          self.grid2.get_support_by_index(-1)))
+        self.assertTrue(numpy.array_equal(self.mc3.get_grid_item_support(0),
+                                          self.grid3.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.mc3.get_grid_item_support(-1),
+                                          self.grid3.get_support_by_index(-1)))
+        self.assertEqual(self.ba1.get_grid_item_support(0), self.grid1.get_support_by_index(0))
+        self.assertEqual(self.ba1.get_grid_item_support(-1), self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.ba2.get_grid_item_support(0),
+                                          self.grid2.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.ba2.get_grid_item_support(-1),
+                                          self.grid2.get_support_by_index(-1)))
+        self.assertTrue(numpy.array_equal(self.ba3.get_grid_item_support(0),
+                                          self.grid3.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.ba3.get_grid_item_support(-1),
+                                          self.grid3.get_support_by_index(-1)))
 
     def test_eq(self):
         self.assertRaises(NotImplementedError, self.dummy.__eq__, self.dummy)

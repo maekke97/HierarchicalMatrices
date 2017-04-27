@@ -109,10 +109,7 @@ class Grid(object):
         :return: dimension
         :rtype: int
         """
-        try:
-            return len(self[0])
-        except TypeError:
-            return 1
+        return len(self[0])
 
 
 class GridIterator(object):
