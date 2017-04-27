@@ -174,8 +174,10 @@ class HMat(object):
             return addend + other
         # both have content
         elif isinstance(self.content, numpy.matrix) and isinstance(other.content, RMat):
-            # take other first to avoid numpy broadcast
-            return HMat(content=other.content + self.content, shape=self.shape, parent_index=self.parent_index)
+            # # take other first to avoid numpy broadcast
+            # return HMat(content=other.content + self.content, shape=self.shape, parent_index=self.parent_index)
+            # take other to full
+            return HMat(content=self.content + other.to_matrix(), shape=self.shape, parent_index=self.parent_index)
         elif self.content is not None:  # both have content, that can be added left to right
             return HMat(content=self.content + other.content, shape=self.shape, parent_index=self.parent_index)
         # if we get here, both have children
@@ -656,7 +658,8 @@ class HMat(object):
         else:
             m22 = self[blocks22[0]]
 
-        s = m22 - m21 * (m11_inv * m12)
+        s_1 = m21 * (m11_inv * m12)
+        s = m22 - s_1
         s_inv = s.inv()
         out_block11 = m11_inv + m11_inv * m12 * s_inv * m21 * m11_inv
         out_block12 = -m11_inv * m12 * s_inv

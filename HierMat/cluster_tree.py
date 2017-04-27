@@ -79,7 +79,7 @@ class ClusterTree(object):
         :param item: index
         :type item: int
         """
-        return self.content.get_support(item)
+        return self.content.get_grid_item_support(item)
 
     def get_patch_coordinates(self):
         """Return min and max out of indices

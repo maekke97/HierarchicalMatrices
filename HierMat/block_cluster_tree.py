@@ -2,13 +2,14 @@
 :func:`build_block_cluster_tree`,
 :func:`recursion_build_block_cluster_tree`
 """
-from HierMat.cluster_tree import admissible
+from HierMat.cluster_tree import admissible, ClusterTree
 
 
 class BlockClusterTree(object):
     """Compares two cluster trees level wise with respect to an admissibility condition and builds a tree
     """
     def __init__(self, left_clustertree, right_clustertree, sons=None, level=0, is_admissible=False, plot_info=None):
+        # type: (ClusterTree, ClusterTree, list, int, bool, tuple) -> None
         self.sons = sons if sons else []
         self.left_clustertree = left_clustertree
         self.right_clustertree = right_clustertree

@@ -11,6 +11,7 @@ from HierMat.grid import Grid
 from HierMat.hmat import build_hmatrix
 from HierMat.rmat import RMat
 from HierMat.splitable import RegularCuboid
+from HierMat.examples.model_1d import model_1d
 
 
 class TestIntegration(TestCase):
@@ -67,4 +68,7 @@ class TestIntegration(TestCase):
         self.assertAlmostEqual(numpy.linalg.norm(out), numpy.linalg.norm(16*numpy.matrix(numpy.ones((16, 16)))))
         check2 = self.hmat2.transpose() * self.hmat1.transpose()
         tcheck = check.transpose()
-        self.assertEqual(tcheck.norm(), check2.norm())
+        self.assertAlmostEqual(tcheck.norm(), check2.norm())
+
+    def test_model_1d(self):
+        self.assertTrue(model_1d(n=2**6, max_rank=1, n_min=1))

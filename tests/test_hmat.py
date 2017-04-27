@@ -321,7 +321,7 @@ class TestHmat(TestCase):
         hmat = HMat(content=numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), parent_index=(0, 3))
         hmat1 = HMat(content=rmat, shape=(3, 3), parent_index=(3, 0))
         check_rmat = RMat(numpy.matrix(3*numpy.ones((3, 1))), right_mat=numpy.matrix(numpy.ones((3, 1))))
-        check = HMat(content=check_rmat, shape=(3, 3), parent_index=(0, 0))
+        check = HMat(content=3*numpy.matrix(numpy.ones((3, 3))), shape=(3, 3), parent_index=(0, 0))
         self.assertEqual(hmat * hmat1, check)
         blocks = [HMat(content=numpy.matrix(1), shape=(1, 1), parent_index=(i, j)) for i in xrange(3) for j in xrange(3)]
         block_mat = HMat(blocks=blocks, shape=(3, 3), parent_index=(0, 0))

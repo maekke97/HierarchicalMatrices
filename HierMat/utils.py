@@ -11,7 +11,7 @@ def export(obj, form='xml', out_file='out'):
     """Export obj in specified format.
     
     :param obj: object to export
-    :type obj: BlockClusterTree or ClusterTree
+    :type obj: BlockClusterTree or ClusterTree or HMat or RMat
     :param form: format specifier
     :type form: str
     :param out_file: path to output file

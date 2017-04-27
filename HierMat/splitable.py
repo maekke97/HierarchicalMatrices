@@ -156,7 +156,7 @@ class RegularCuboid(Splitable):
         :param item: index
         :type item: int
         """
-        return self.cluster.get_support(item)
+        return self.cluster.get_grid_item_support(item)
 
     def get_patch_coordinates(self):
         """Return min and max out of indices

@@ -235,7 +235,8 @@ class RMat(object):
     def __rmul__(self, other):
         """Multiplication numpy.matrix * RMat"""
         if isinstance(other, numpy.matrix):
-            return RMat(other * self.left_mat, self.right_mat, self.max_rank)
+            # return RMat(other * self.left_mat, self.right_mat, self.max_rank)
+            return other * self.to_matrix()
         elif isinstance(other, numbers.Number):
             return self._mul_with_int(other)
         else:

@@ -148,8 +148,8 @@ and right block:
         self.assertEqual(res, rmat1 * mat)
         self.assertRaises(ValueError, rmat1.__rmul__, mat)
         mat = numpy.matrix(numpy.ones((1, 3)))
-        res = RMat(mat * left1, right1, 3)
-        self.assertEqual(res, mat * rmat1)
+        check = mat * left1 * right1.T
+        self.assertTrue(numpy.array_equal(mat * rmat1, check))
         mat = numpy.matrix(numpy.ones((4, 1)))
         self.assertRaises(ValueError, rmat1.__mul__, mat)
         mat = numpy.ones((3, 1))
