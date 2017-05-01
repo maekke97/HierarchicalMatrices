@@ -100,6 +100,32 @@ class TestClusterTree(TestCase):
         self.assertTrue(numpy.array_equal(self.ct3.get_grid_item(0), self.grid3[0]))
         self.assertTrue(numpy.array_equal(self.ct3.get_grid_item(-1), self.grid3[-1]))
 
+    def test_get_grid_item_support_by_index(self):
+        self.assertEqual(self.ct1.get_grid_item_support_by_index(0), self.grid1.get_support_by_index(0))
+        self.assertEqual(self.ct1.get_grid_item_support_by_index(-1), self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.ct2.get_grid_item_support_by_index(0),
+                                          self.grid2.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.ct2.get_grid_item_support_by_index(-1),
+                                          self.grid2.get_support_by_index(-1)))
+        self.assertTrue(numpy.array_equal(self.ct3.get_grid_item_support_by_index(0),
+                                          self.grid3.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.ct3.get_grid_item_support_by_index(-1),
+                                          self.grid3.get_support_by_index(-1)))
+
+    def test_get_grid_item_support(self):
+        self.assertEqual(self.ct1.get_grid_item_support(self.points1[0]),
+                         self.grid1.get_support_by_index(0))
+        self.assertEqual(self.ct1.get_grid_item_support(self.points1[-1]),
+                         self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.ct2.get_grid_item_support(self.points2[0]),
+                                          self.grid2.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.ct2.get_grid_item_support(self.points2[-1]),
+                                          self.grid2.get_support_by_index(-1)))
+        self.assertTrue(numpy.array_equal(self.ct3.get_grid_item_support(self.points3[0]),
+                                          self.grid3.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.ct3.get_grid_item_support(self.points3[-1]),
+                                          self.grid3.get_support_by_index(-1)))
+
     def test_get_patch_coordinates(self):
         self.assertEqual(self.ct1.get_patch_coordinates(), (0, self.lim1 - 1))
         self.assertEqual(self.ct2.get_patch_coordinates(), (0, self.lim2**2 - 1))
