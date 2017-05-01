@@ -25,9 +25,9 @@ import scipy.integrate as integrate
 
 def model_1d(n=2 ** 5, max_rank=1, n_min=1):
     """"""
-    midpoints = [(i + 0.5)/n for i in xrange(n)]
-    intervals = {p: [p - 0.5/n, p + 0.5/n] for p in midpoints}
-    supports = {point: lambda x: x == point for point in midpoints}
+    midpoints = [((i + 0.5)/n,) for i in xrange(n)]
+    intervals = {p: [p[0] - 0.5/n, p[0] + 0.5/n] for p in midpoints}
+    # supports = {point: lambda x: x == point for point in midpoints}
     grid = HierMat.Grid(points=midpoints, supports=intervals)
     cluster = HierMat.Cluster(grid=grid)
     unit_cuboid = HierMat.Cuboid([0], [1])

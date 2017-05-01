@@ -24,30 +24,26 @@ class Splitable(object):
 
     .. admonition:: Methods that need to be implemented by subclasses
 
-        - __len__: return the length of the cluster
-        - __iter__: return SplitableIterator(self)
-        - __repr__: give a meaningful string representation
-        - __getitem__: return item from inner cluster
         - __eq__: check for equality against other Splitable
-        - get_index: return index from inner cluster
-        - get_grid_item: return grid item from inner cluster
-        - get_patch_coordinates: return min and max of index list of cluster
-        - restructure: restructure the object in two or more, return new instances
+        - split: restructure the object in two or more, return new instances
         - diameter: return the diameter of the object
         - distance: return the distance to other object
 
     """
-    def __len__(self):
-        raise NotImplementedError()
+    cluster = None
 
     def __iter__(self):
         return SplitableIterator(self)
 
     def __repr__(self):
-        raise NotImplementedError()
+        return '<Splitable with cluster {0}>'.format(self.cluster)
 
     def __getitem__(self, item):
-        raise NotImplementedError()
+        return self.cluster[item]
+
+    def __len__(self):
+        """Return the length of the cluster"""
+        return len(self.cluster)
 
     def __eq__(self, other):
         raise NotImplementedError()
@@ -56,16 +52,46 @@ class Splitable(object):
         return not self == other
 
     def get_index(self, item):
-        raise NotImplementedError()
+        """Get index from cluster
+
+        :param item: index to get
+        :type item: int
+        :return: index
+        :rtype: int
+        """
+        return self.cluster.get_index(item)
 
     def get_grid_item(self, item):
-        raise NotImplementedError()
+        """Get grid item from cluster
+
+        :param item: index of item to get
+        :type item: int
+        """
+        return self.cluster.get_grid_item(item)
 
     def get_grid_item_support(self, item):
-        raise NotImplementedError()
+        """Return supports of item from grid
+
+        :param item: point
+        :type item: tuple(float)
+        """
+        return self.cluster.get_grid_item_support(item)
+
+    def get_grid_item_support_by_index(self, item):
+        """Return supports of item from grid
+
+        :param item: index
+        :type item: int
+        """
+        return self.cluster.get_grid_item_support_by_index(item)
 
     def get_patch_coordinates(self):
-        raise NotImplementedError()
+        """Return min and max out of cluster indices
+
+        :return: min and max
+        :rtype: tuple(int, int)
+        """
+        return self.cluster.get_patch_coordinates()
 
     def diameter(self):
         raise NotImplementedError()
@@ -118,53 +144,11 @@ class RegularCuboid(Splitable):
     def __repr__(self):
         return "<RegularCuboid with cluster {0} and cuboid {1}>".format(self.cluster, self.cuboid)
 
-    def __getitem__(self, item):
-        return self.cluster[item]
-
-    def __len__(self):
-        """Return the length of the cluster"""
-        return len(self.cluster)
-
     def __eq__(self, other):
-        """Check for equality"""
+        """:type other: RegularCuboid
+        :rtype: bool 
+        """
         return self.cluster == other.cluster and self.cuboid == other.cuboid
-
-    def __ne__(self, other):
-        return not self == other
-
-    def get_index(self, item):
-        """Get index from cluster
-
-        :param item: index to get
-        :type item: int
-        :return: index
-        :rtype: int
-        """
-        return self.cluster.get_index(item)
-
-    def get_grid_item(self, item):
-        """Get grid item from cluster
-
-        :param item: index of item to get
-        :type item: int
-        """
-        return self.cluster.get_grid_item(item)
-
-    def get_grid_item_support(self, item):
-        """Return supports of item from grid
-
-        :param item: index
-        :type item: int
-        """
-        return self.cluster.get_grid_item_support(item)
-
-    def get_patch_coordinates(self):
-        """Return min and max out of indices
-
-        :return: min and max
-        :rtype: tuple(int, int)
-        """
-        return self.cluster.get_patch_coordinates()
 
     def split(self):
         """Split the cuboid and distribute items in cluster according to the cuboid they belong to
@@ -298,10 +282,18 @@ class Balanced(Splitable):
     def get_grid_item_support(self, item):
         """Return supports of item from grid
 
+        :param item: point
+        :type item: tuple(float)
+        """
+        return self.cluster.get_grid_item_support(item)
+
+    def get_grid_item_support_by_index(self, item):
+        """Return supports of item from grid
+
         :param item: index
         :type item: int
         """
-        return self.cluster.get_grid_item_support(item)
+        return self.cluster.get_grid_item_support_by_index(item)
 
     def get_patch_coordinates(self):
         """Return min and max out of indices

@@ -60,7 +60,6 @@ class TestSplitable(TestCase):
         self.assertIsInstance(self.ba1, Splitable)
 
     def test_len(self):
-        self.assertRaises(NotImplementedError, len, self.dummy)
         self.assertEqual(len(self.rc1), self.lim1)
         self.assertEqual(len(self.rc2), self.lim2 ** 2)
         self.assertEqual(len(self.rc3), self.lim3 ** 3)
@@ -72,7 +71,8 @@ class TestSplitable(TestCase):
         self.assertEqual(len(self.ba3), self.lim3 ** 3)
 
     def test_repr(self):
-        self.assertRaises(NotImplementedError, self.dummy.__repr__)
+        check = "<Splitable with cluster None>"
+        self.assertEqual(check, self.dummy.__repr__())
         check = "<RegularCuboid with cluster {0} and cuboid {1}>".format(self.cluster1, self.rc1.cuboid)
         self.assertEqual(check, self.rc1.__repr__())
         check = "<RegularCuboid with cluster {0} and cuboid {1}>".format(self.cluster2, self.rc2.cuboid)
@@ -93,8 +93,6 @@ class TestSplitable(TestCase):
         self.assertEqual(check, self.ba3.__repr__())
 
     def test_iter(self):
-        iterator = self.dummy.__iter__()
-        self.assertRaises(NotImplementedError, iterator.next)
         check = [p for p in self.rc1]
         self.assertEqual(check, self.points1)
         iterator = self.rc1.__iter__()
@@ -112,7 +110,6 @@ class TestSplitable(TestCase):
         self.assertEqual(iterator, iteriter)
 
     def test_getitem(self):
-        self.assertRaises(NotImplementedError, self.dummy.__getitem__, 0)
         i = random.randint(0, self.lim1 - 1)
         self.assertEqual(self.rc1[i], self.points1[i])
         i = random.randint(0, self.lim2 ** 2 - 1)
@@ -133,7 +130,6 @@ class TestSplitable(TestCase):
         self.assertTrue(numpy.array_equal(self.ba3[i], self.points3[i]))
 
     def test_get_index(self):
-        self.assertRaises(NotImplementedError, self.dummy.get_index, 0)
         self.assertEqual(self.rc1.get_index(0), self.cluster1.get_index(0))
         self.assertEqual(self.rc1.get_index(-1), self.cluster1.get_index(-1))
         self.assertEqual(self.rc2.get_index(0), self.cluster2.get_index(0))
@@ -154,7 +150,6 @@ class TestSplitable(TestCase):
         self.assertEqual(self.ba3.get_index(-1), self.cluster3.get_index(-1))
 
     def test_get_grid_item(self):
-        self.assertRaises(NotImplementedError, self.dummy.get_grid_item, 0)
         self.assertEqual(self.rc1.get_grid_item(0), self.grid1[0])
         self.assertEqual(self.rc1.get_grid_item(-1), self.grid1[-1])
         self.assertTrue(numpy.array_equal(self.rc2.get_grid_item(0), self.grid2[0]))
@@ -175,7 +170,6 @@ class TestSplitable(TestCase):
         self.assertTrue(numpy.array_equal(self.ba3.get_grid_item(-1), self.grid3[-1]))
 
     def test_get_patch_coordinates(self):
-        self.assertRaises(NotImplementedError, self.dummy.get_patch_coordinates)
         coordinates = self.rc1.get_patch_coordinates()
         self.assertEqual(coordinates[0], 0)
         self.assertEqual(coordinates[1], self.lim1 - 1)
@@ -205,36 +199,79 @@ class TestSplitable(TestCase):
         self.assertEqual(coordinates[1], self.lim3 ** 3 - 1)
 
     def test_get_grid_item_support(self):
-        self.assertRaises(NotImplementedError, self.dummy.get_grid_item_support, 0)
-        self.assertEqual(self.rc1.get_grid_item_support(0), self.grid1.get_support_by_index(0))
-        self.assertEqual(self.rc1.get_grid_item_support(-1), self.grid1.get_support_by_index(-1))
-        self.assertTrue(numpy.array_equal(self.rc2.get_grid_item_support(0),
+        self.assertEqual(self.rc1.get_grid_item_support(self.points1[0]),
+                         self.grid1.get_support_by_index(0))
+        self.assertEqual(self.rc1.get_grid_item_support(self.points1[-1]),
+                         self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.rc2.get_grid_item_support(self.points2[0]),
                                           self.grid2.get_support_by_index(0)))
-        self.assertTrue(numpy.array_equal(self.rc2.get_grid_item_support(-1),
+        self.assertTrue(numpy.array_equal(self.rc2.get_grid_item_support(self.points2[-1]),
                                           self.grid2.get_support_by_index(-1)))
-        self.assertTrue(numpy.array_equal(self.rc3.get_grid_item_support(0),
+        self.assertTrue(numpy.array_equal(self.rc3.get_grid_item_support(self.points3[0]),
                                           self.grid3.get_support_by_index(0)))
-        self.assertTrue(numpy.array_equal(self.rc3.get_grid_item_support(-1),
+        self.assertTrue(numpy.array_equal(self.rc3.get_grid_item_support(self.points3[-1]),
                                           self.grid3.get_support_by_index(-1)))
-        self.assertEqual(self.mc1.get_grid_item_support(0), self.grid1.get_support_by_index(0))
-        self.assertEqual(self.mc1.get_grid_item_support(-1), self.grid1.get_support_by_index(-1))
-        self.assertTrue(numpy.array_equal(self.mc2.get_grid_item_support(0),
+        self.assertEqual(self.mc1.get_grid_item_support(self.points1[0]),
+                         self.grid1.get_support_by_index(0))
+        self.assertEqual(self.mc1.get_grid_item_support(self.points1[-1]),
+                         self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.mc2.get_grid_item_support(self.points2[0]),
                                           self.grid2.get_support_by_index(0)))
-        self.assertTrue(numpy.array_equal(self.mc2.get_grid_item_support(-1),
+        self.assertTrue(numpy.array_equal(self.mc2.get_grid_item_support(self.points2[-1]),
                                           self.grid2.get_support_by_index(-1)))
-        self.assertTrue(numpy.array_equal(self.mc3.get_grid_item_support(0),
+        self.assertTrue(numpy.array_equal(self.mc3.get_grid_item_support(self.points3[0]),
                                           self.grid3.get_support_by_index(0)))
-        self.assertTrue(numpy.array_equal(self.mc3.get_grid_item_support(-1),
+        self.assertTrue(numpy.array_equal(self.mc3.get_grid_item_support(self.points3[-1]),
                                           self.grid3.get_support_by_index(-1)))
-        self.assertEqual(self.ba1.get_grid_item_support(0), self.grid1.get_support_by_index(0))
-        self.assertEqual(self.ba1.get_grid_item_support(-1), self.grid1.get_support_by_index(-1))
-        self.assertTrue(numpy.array_equal(self.ba2.get_grid_item_support(0),
+        self.assertEqual(self.ba1.get_grid_item_support(self.points1[0]),
+                         self.grid1.get_support_by_index(0))
+        self.assertEqual(self.ba1.get_grid_item_support(self.points1[-1]),
+                         self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.ba2.get_grid_item_support(self.points2[0]),
                                           self.grid2.get_support_by_index(0)))
-        self.assertTrue(numpy.array_equal(self.ba2.get_grid_item_support(-1),
+        self.assertTrue(numpy.array_equal(self.ba2.get_grid_item_support(self.points2[-1]),
                                           self.grid2.get_support_by_index(-1)))
-        self.assertTrue(numpy.array_equal(self.ba3.get_grid_item_support(0),
+        self.assertTrue(numpy.array_equal(self.ba3.get_grid_item_support(self.points3[0]),
                                           self.grid3.get_support_by_index(0)))
-        self.assertTrue(numpy.array_equal(self.ba3.get_grid_item_support(-1),
+        self.assertTrue(numpy.array_equal(self.ba3.get_grid_item_support(self.points3[-1]),
+                                          self.grid3.get_support_by_index(-1)))
+
+    def test_get_grid_item_support_by_index(self):
+        self.assertEqual(self.rc1.get_grid_item_support_by_index(0),
+                         self.grid1.get_support_by_index(0))
+        self.assertEqual(self.rc1.get_grid_item_support_by_index(-1),
+                         self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.rc2.get_grid_item_support_by_index(0),
+                                          self.grid2.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.rc2.get_grid_item_support_by_index(-1),
+                                          self.grid2.get_support_by_index(-1)))
+        self.assertTrue(numpy.array_equal(self.rc3.get_grid_item_support_by_index(0),
+                                          self.grid3.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.rc3.get_grid_item_support_by_index(-1),
+                                          self.grid3.get_support_by_index(-1)))
+        self.assertEqual(self.mc1.get_grid_item_support_by_index(0),
+                         self.grid1.get_support_by_index(0))
+        self.assertEqual(self.mc1.get_grid_item_support_by_index(-1),
+                         self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.mc2.get_grid_item_support_by_index(0),
+                                          self.grid2.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.mc2.get_grid_item_support_by_index(-1),
+                                          self.grid2.get_support_by_index(-1)))
+        self.assertTrue(numpy.array_equal(self.mc3.get_grid_item_support_by_index(0),
+                                          self.grid3.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.mc3.get_grid_item_support_by_index(-1),
+                                          self.grid3.get_support_by_index(-1)))
+        self.assertEqual(self.ba1.get_grid_item_support_by_index(0),
+                         self.grid1.get_support_by_index(0))
+        self.assertEqual(self.ba1.get_grid_item_support_by_index(-1),
+                         self.grid1.get_support_by_index(-1))
+        self.assertTrue(numpy.array_equal(self.ba2.get_grid_item_support_by_index(0),
+                                          self.grid2.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.ba2.get_grid_item_support_by_index(-1),
+                                          self.grid2.get_support_by_index(-1)))
+        self.assertTrue(numpy.array_equal(self.ba3.get_grid_item_support_by_index(0),
+                                          self.grid3.get_support_by_index(0)))
+        self.assertTrue(numpy.array_equal(self.ba3.get_grid_item_support_by_index(-1),
                                           self.grid3.get_support_by_index(-1)))
 
     def test_eq(self):

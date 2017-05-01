@@ -62,13 +62,21 @@ class Cluster(object):
         """
         return self.grid.get_point(item)
 
-    def get_grid_item_support(self, item):
-        """Return supports of item from grid
+    def get_grid_item_support_by_index(self, item):
+        """Return supports of i-th item from grid
 
         :param item: index
         :type item: int
         """
         return self.grid.get_support_by_index(item)
+
+    def get_grid_item_support(self, item):
+        """Return supports of item from grid
+
+        :param item: point
+        :type item: tuple(float)
+        """
+        return self.grid.get_support(item)
 
     def get_index(self, item):
         """Return index at item

@@ -73,11 +73,19 @@ class ClusterTree(object):
         """
         return self.content.get_grid_item(item)
 
-    def get_grid_item_support(self, item):
-        """Return supports of item from grid
+    def get_grid_item_support_by_index(self, item):
+        """Return supports of i-th item from grid
 
         :param item: index
         :type item: int
+        """
+        return self.content.get_grid_item_support_by_index(item)
+
+    def get_grid_item_support(self, item):
+        """Return supports ofitem from grid
+
+        :param item: point
+        :type item: tuple(float)
         """
         return self.content.get_grid_item_support(item)
 
