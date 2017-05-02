@@ -51,12 +51,11 @@ def model_1d(n=2 ** 5, max_rank=1, n_min=1):
         x[i] = 2
     y_full = hmat_full * x
     y_hmat = hmat * x
-    # hmat_inv = hmat.inv()
     galerkin_full = galerkin_1d_full(block_cluster_tree)
     # HierMat.export(hmat, form='bin', out_file='hmat.bin')
     # numpy.savetxt('hmat_full.txt', hmat_full)
     # numpy.savetxt('gallmat_full.txt', galerkin_full)
-    print numpy.linalg.norm(galerkin_full)
+    print numpy.linalg.norm(galerkin_full - hmat_full)
     print numpy.linalg.norm(y_full - y_hmat)
     check1 = (hmat + hmat) * x
     check2 = hmat * x + hmat * x
@@ -144,4 +143,4 @@ def galerkin_1d_full(block_cluster_tree):
 
 
 if __name__ == '__main__':
-    model_1d(n=2**8, max_rank=2, n_min=2)
+    model_1d(n=2**8, max_rank=3, n_min=2)

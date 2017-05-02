@@ -277,14 +277,13 @@ class HMat(object):
             if self.shape[1] != other.shape[0]:
                 raise ValueError('shapes {0.shape} and {1.shape} not aligned: '
                                  '{0.shape[1]} (dim 1) != {1.shape[0]} (dim 0)'.format(self, other))
-            x_start, y_start = self.parent_index
             res_length = self.shape[0]
             res = numpy.zeros((res_length, 1))
             for block in self.blocks:
-                in_index_start, res_index_start = block.parent_index
+                res_index_start, in_index_start = block.parent_index
                 x_length, y_length = block.shape
-                in_index_end = in_index_start + x_length
-                res_index_end = res_index_start + y_length
+                in_index_end = in_index_start + y_length
+                res_index_end = res_index_start + x_length
                 res[res_index_start: res_index_end] += block * other[in_index_start: in_index_end]
             return res
 
