@@ -72,11 +72,14 @@ class TestIntegration(TestCase):
         self.assertAlmostEqual(tcheck.norm(), check2.norm())
 
     def test_model_1d(self):
-        self.assertTrue(model_1d(n=2**6, max_rank=1, n_min=1))
+        self.assertTrue(model_1d(n=2**6, max_rank=2, n_min=2))
 
     @classmethod
     def tearDownClass(cls):
-        created_files = ['gallmat_full.txt', 'hmat_full.txt', 'hmat.bin']
+        created_files = ['gallmat_full.txt', 'hmat_full.txt',
+                         'hmat.bin', 'galerkin_1d_ct.dot',
+                         'model_1d-bct.png', 'model_1d-ct.png',
+                         'model_1d-ct.svg']
         try:
             for f in created_files:
                 os.remove(f)

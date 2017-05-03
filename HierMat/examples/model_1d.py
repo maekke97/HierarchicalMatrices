@@ -27,20 +27,19 @@ def model_1d(n=2 ** 5, max_rank=1, n_min=1):
     """"""
     midpoints = [((i + 0.5)/n,) for i in xrange(n)]
     intervals = {p: [p[0] - 0.5/n, p[0] + 0.5/n] for p in midpoints}
-    # supports = {point: lambda x: x == point for point in midpoints}
     grid = HierMat.Grid(points=midpoints, supports=intervals)
     cluster = HierMat.Cluster(grid=grid)
     unit_cuboid = HierMat.Cuboid([0], [1])
     strategy = HierMat.RegularCuboid(cluster=cluster, cuboid=unit_cuboid)
     cluster_tree = HierMat.build_cluster_tree(splitable=strategy, max_leaf_size=n_min)
-    # HierMat.export(cluster_tree, form='dot', out_file='galerkin_1d_ct.dot')
-    # os.system('dot -Tpng galerkin_1d_ct.dot > model_1d-ct.png')
-    # os.system('dot -Tsvg galerkin_1d_ct.dot > model_1d-ct.svg')
+    HierMat.export(cluster_tree, form='dot', out_file='galerkin_1d_ct.dot')
+    os.system('dot -Tpng galerkin_1d_ct.dot > model_1d-ct.png')
+    os.system('dot -Tsvg galerkin_1d_ct.dot > model_1d-ct.svg')
     block_cluster_tree = HierMat.build_block_cluster_tree(left_cluster_tree=cluster_tree,
                                                           right_cluster_tree=cluster_tree,
                                                           admissible_function=HierMat.admissible
                                                           )
-    # HierMat.plot(block_cluster_tree, filename='model_1d-bct.png')
+    HierMat.plot(block_cluster_tree, filename='model_1d-bct.png')
     hmat = HierMat.build_hmatrix(block_cluster_tree=block_cluster_tree,
                                  generate_rmat_function=lambda bct: galerkin_1d_rank_k(bct, max_rank),
                                  generate_full_matrix_function=galerkin_1d_full
@@ -49,21 +48,11 @@ def model_1d(n=2 ** 5, max_rank=1, n_min=1):
     x = numpy.ones((n, 1))
     for i in xrange(1, n, 2):
         x[i] = 2
-    y_full = hmat_full * x
-    y_hmat = hmat * x
     galerkin_full = galerkin_1d_full(block_cluster_tree)
-    # HierMat.export(hmat, form='bin', out_file='hmat.bin')
-    # numpy.savetxt('hmat_full.txt', hmat_full)
-    # numpy.savetxt('gallmat_full.txt', galerkin_full)
-    print numpy.linalg.norm(galerkin_full - hmat_full)
-    print numpy.linalg.norm(y_full - y_hmat)
-    check1 = (hmat + hmat) * x
-    check2 = hmat * x + hmat * x
-    print numpy.linalg.norm(check1 - check2)
+    HierMat.export(hmat, form='bin', out_file='hmat.bin')
+    numpy.savetxt('hmat_full.txt', hmat_full)
+    numpy.savetxt('gallmat_full.txt', galerkin_full)
     rmat = galerkin_1d_rank_k(block_cluster_tree=block_cluster_tree, max_rank=max_rank)
-    check1 = (rmat + rmat) * x
-    check2 = rmat * x + rmat * x
-    print numpy.linalg.norm(check1 - check2)
     return True
 
 
@@ -143,4 +132,4 @@ def galerkin_1d_full(block_cluster_tree):
 
 
 if __name__ == '__main__':
-    model_1d(n=2**8, max_rank=3, n_min=2)
+    model_1d(n=2**5, max_rank=2, n_min=1)
