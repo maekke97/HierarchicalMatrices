@@ -72,6 +72,17 @@ class TestHmat(TestCase):
         self.assertEqual(self.consistent2[4], self.cmat5T)
         self.assertEqual(self.consistent2[2, 3], self.cmat5T)
 
+    def test_set_item(self):
+        self.consistent1[0, 0] = self.cmat1T
+        self.assertEqual(self.consistent1[0, 0], self.cmat1T)
+        self.consistent1[0, 2] = self.cmat2T
+        self.consistent1[0, 3] = self.cmat3T
+        self.consistent1[3, 0] = self.cmat4T
+        self.consistent1[3, 2] = self.cmat5T
+        self.consistent1[3, 3] = self.cmat6T
+        self.consistent1.shape = (6, 5)
+        self.assertEqual(self.consistent1, self.consistent2)
+
     def test_determine_block_structure(self):
         check = {(0, 0): (3, 4), (0, 4): (3, 2), (3, 0): (4, 2), (3, 2): (4, 4)}
         self.assertEqual(check, self.hmat.block_structure())

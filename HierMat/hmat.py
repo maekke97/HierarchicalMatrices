@@ -64,6 +64,14 @@ class HMat(object):
             structured_blocks = {block.parent_index: block for block in self.blocks}
             return structured_blocks[item]
 
+    def __setitem__(self, key, value):
+        """Set block at index key to value"""
+        if isinstance(key, int):
+            self.blocks[key] = value
+        else:
+            index = self.blocks.index(self[key])
+            self.blocks[index] = value
+
     def __repr__(self):
         return '<HMat with {content}>'.format(content=self.blocks if self.blocks else self.content)
 
@@ -608,11 +616,7 @@ class HMat(object):
         return HMat(content=out_content, blocks=out_blocks, shape=out_shape, parent_index=self.parent_index)
 
     def inv(self):
-        """Invert the matrix according to chapter 3.7 in :cite:`hackbusch2015hierarchical`
-        
-        .. caution::
-            
-            Inversion will change the block structure. The result will always have 4 blocks 
+        """Invert the matrix according to chapter 7.5 in :cite:`hackbusch2015hierarchical` 
         
         :raises: :class:`numpy.LinAlgError` if matrix is singular
         """
