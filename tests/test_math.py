@@ -6,6 +6,9 @@ import numpy
 class TestMath(TestCase):
     precision = 14
 
+    def setUp(self):
+        numpy.random.seed(3)
+
     def test_rmat_vec_mul(self):
         left = numpy.matrix(numpy.random.rand(3, 1))
         right = numpy.matrix(numpy.random.rand(3, 1))
@@ -155,21 +158,25 @@ class TestMath(TestCase):
         x = numpy.random.rand(9, 1)
         y = hmat3 * x
         z = hmat3.inv() * y
-        self.assertAlmostEqual(numpy.linalg.norm(x - z), 0, places=11)
-        # blocks4 = []
-        # for outer_i in xrange(2):
-        #     for outer_j in xrange(2):
-        #         inner_blocks = []
-        #         for i in xrange(3):
-        #             for j in xrange(3):
-        #                 inner_blocks.append(HMat(content=numpy.matrix(numpy.random.rand(3, 3)),
-        #                                          shape=(3, 3),
-        #                                          parent_index=(3 * i, 3 * j)
-        #                                          )
-        #                                     )
-        #         blocks4.append(HMat(blocks=inner_blocks, shape=(9, 9), parent_index=(9 * outer_i, 9 * outer_j)))
-        # hmat4 = HMat(blocks=blocks4, shape=(18, 18), parent_index=(0, 0))
-        # x = numpy.random.rand(18, 1)
-        # y = hmat4 * x
-        # z = hmat4.inv() * y
-        # self.assertAlmostEqual(numpy.linalg.norm(x - z), 0, places=12)
+        self.assertAlmostEqual(numpy.linalg.norm(x - z), 0, places=12)
+        check = hmat3 * hmat3.inv()
+        self.assertAlmostEqual(numpy.linalg.norm(check.to_matrix() - numpy.matrix(numpy.eye(9))), 0)
+        blocks4 = []
+        for outer_i in xrange(2):
+            for outer_j in xrange(2):
+                inner_blocks = []
+                for i in xrange(3):
+                    for j in xrange(3):
+                        inner_blocks.append(HMat(content=numpy.matrix(numpy.random.rand(3, 3)),
+                                                 shape=(3, 3),
+                                                 parent_index=(3 * i, 3 * j)
+                                                 )
+                                            )
+                blocks4.append(HMat(blocks=inner_blocks, shape=(9, 9), parent_index=(9 * outer_i, 9 * outer_j)))
+        hmat4 = HMat(blocks=blocks4, shape=(18, 18), parent_index=(0, 0))
+        x = numpy.random.rand(18, 1)
+        y = hmat4 * x
+        z = hmat4.inv() * y
+        self.assertAlmostEqual(numpy.linalg.norm(x - z), 0, places=12)
+        check = hmat4 * hmat4.inv()
+        self.assertAlmostEqual(numpy.linalg.norm(check.to_matrix() - numpy.matrix(numpy.eye(18))), 0)

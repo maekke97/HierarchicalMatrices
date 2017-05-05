@@ -401,9 +401,6 @@ class TestHmat(TestCase):
                     shape=(15, 15), parent_index=(0, 0))
         hmat_inv = hmat.inv()
         self.assertEqual(hmat.norm(), hmat_inv.norm())
-        rmat = RMat(left_mat=numpy.matrix(numpy.ones((3, 1))), right_mat=numpy.matrix(numpy.ones((3, 1))))
-        rhmat = HMat(content=rmat, shape=(3, 3), parent_index=(0, 0))
-        self.assertRaises(NotImplementedError, rhmat.inv)
 
     def test_build_hmatrix(self):
         full_func = lambda x: numpy.matrix(numpy.ones(x.shape()))

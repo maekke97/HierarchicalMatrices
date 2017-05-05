@@ -3,6 +3,7 @@
 import math
 import numbers
 import numpy
+import copy
 
 from HierMat.rmat import RMat
 
@@ -615,60 +616,87 @@ class HMat(object):
                 out_blocks.append(out_block)
         return HMat(content=out_content, blocks=out_blocks, shape=out_shape, parent_index=self.parent_index)
 
-    def inv(self):
-        """Invert the matrix according to chapter 7.5 in :cite:`hackbusch2015hierarchical` 
+    def zero(self, make_copy=True):
+        """Return a copy of self with zero entries
         
+        i.e. an HMat instance with the same structure, but all content is replaced by numpy.zeros
+        
+        .. note::
+        
+            If make_copy is True, a deepcopy is made at the beginning. This can be very slow for large matrices.
+        
+        :param make_copy: make a copy of the matrix to not change the original (Default True)
+        :type make_copy: bool
+        :return: zero matrix
+        :rtype: HMat
+        """
+        if self.content is not None:
+            return HMat(content=numpy.matrix(numpy.zeros(self.shape)), shape=self.shape, parent_index=self.parent_index)
+        else:
+            if make_copy:
+                out = copy.deepcopy(self)
+            else:
+                out = self
+            structure = out.block_structure()
+            for index in structure:
+                out[index] = out[index].zero()
+            return out
+
+    def inv(self, make_copy=True):
+        """Invert the matrix according to chapter 7.5.1 in :cite:`hackbusch2015hierarchical`
+         
+        .. note::
+        
+            If make_copy is True, a deepcopy is made at the beginning. This can be very slow for large matrices.
+        
+        :param make_copy: make a copy of the matrix to not change the original (Default True)
+        :type make_copy: bool
+        :return: approximation of inverse
+        :rtype: HMat
         :raises: :class:`numpy.LinAlgError` if matrix is singular
         """
         if isinstance(self.content, numpy.matrix):
             return HMat(content=numpy.linalg.inv(self.content), shape=self.shape, parent_index=self.parent_index)
-        elif self.blocks != ():
-            return self._invert_blocks()
+        if make_copy:
+            self_copy = copy.deepcopy(self)
         else:
-            raise NotImplementedError('Not done yet')
-
-    def _invert_blocks(self):
-        """sub-function for restructuring"""
-        structure = self.block_structure()
-        m11_inv = self[0, 0].inv()
-        blocks12 = [x for x in structure if x[0] == 0 and x[1] != 0]
-        if len(blocks12) > 1:
-            shape12 = (m11_inv.shape[0], self.shape[1] - m11_inv.shape[1])
-            blocks = [self[b] for b in blocks12]
-            for block in blocks:
-                block.parent_index = (0, block.parent_index[1] - m11_inv.shape[1])
-            m12 = HMat(blocks=blocks, shape=shape12, parent_index=(0, m11_inv.shape[1]))
-        else:
-            m12 = self[blocks12[0]]
-        blocks21 = [x for x in structure if x[1] == 0 and x[0] != 0]
-        if len(blocks21) > 1:
-            shape21 = (self.shape[0] - m11_inv.shape[0], m11_inv.shape[1])
-            blocks = [self[b] for b in blocks21]
-            for block in blocks:
-                block.parent_index = (block.parent_index[0] - m11_inv.shape[0], 0)
-            m21 = HMat(blocks=blocks, shape=shape21, parent_index=(m11_inv.shape[0], 0))
-        else:
-            m21 = self[blocks21[0]]
-        blocks22 = [x for x in structure if x[0] != 0 and x[1] != 0]
-        if len(blocks22) > 1:
-            shape22 = (self.shape[0] - m11_inv.shape[0], self.shape[1] - m11_inv.shape[1])
-            blocks = [self[b] for b in blocks22]
-            for block in blocks:
-                block.parent_index = (block.parent_index[0] - m11_inv.shape[0],
-                                      block.parent_index[1] - m11_inv.shape[1])
-            m22 = HMat(blocks=blocks,
-                       shape=shape22, parent_index=(m11_inv.shape[0], m11_inv.shape[1]))
-        else:
-            m22 = self[blocks22[0]]
-
-        s_1 = m21 * (m11_inv * m12)
-        s = m22 - s_1
-        s_inv = s.inv()
-        out_block11 = m11_inv + m11_inv * m12 * s_inv * m21 * m11_inv
-        out_block12 = -m11_inv * m12 * s_inv
-        out_block21 = -s_inv * m21 * m11_inv
-        return HMat(blocks=[out_block11, out_block12, out_block21, s_inv],
-                    shape=self.shape, parent_index=self.parent_index)
+            self_copy = self
+        out_matrix = self.zero()
+        row_sequence = self.row_sequence()
+        col_sequence = self.column_sequence()
+        bls = row_sequence[0]  # block size
+        block_check = [bls != c for c in row_sequence]
+        if row_sequence != col_sequence or any(block_check):
+            raise ValueError('not all squares')
+        rows = len(row_sequence)
+        for l in xrange(rows):
+            out_matrix[l * bls,  l * bls] = self_copy[l * bls, l * bls].inv()
+            for j in xrange(l):
+                out_matrix[l * bls, j * bls] = out_matrix[l * bls, l * bls] * out_matrix[l * bls, j * bls]
+            for j in xrange(l + 1, rows):
+                self_copy[l * bls, j * bls] = out_matrix[l * bls, l * bls] * self_copy[l * bls, j * bls]
+            for i in xrange(l + 1, rows):
+                for j in xrange(l+1):
+                    out_matrix[i * bls,
+                               j * bls] = out_matrix[i * bls,
+                                                     j * bls] - self_copy[i * bls,
+                                                                          l * bls] * out_matrix[l * bls,
+                                                                                                j * bls]
+                for j in xrange(l+1, rows):
+                    self_copy[i * bls,
+                              j * bls] = self_copy[i * bls,
+                                                   j * bls] - self_copy[i * bls,
+                                                                        l * bls] * self_copy[l * bls,
+                                                                                             j * bls]
+        for l in xrange(rows - 1, -1, -1):
+            for i in xrange(l - 1, -1, -1):
+                for j in xrange(rows):
+                    out_matrix[i * bls,
+                               j * bls] = out_matrix[i * bls,
+                                                     j * bls] - self_copy[i * bls,
+                                                                          l * bls] * out_matrix[l * bls,
+                                                                                                j * bls]
+        return out_matrix
 
 
 def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate_full_matrix_function=None):
