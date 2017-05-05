@@ -82,6 +82,14 @@ class TestHmat(TestCase):
         self.consistent1[3, 3] = self.cmat6T
         self.consistent1.shape = (6, 5)
         self.assertEqual(self.consistent1, self.consistent2)
+        self.consistent1[0] = self.cmat1
+        self.consistent1[1] = self.cmat2
+        self.consistent1[2] = self.cmat3
+        self.consistent1[3] = self.cmat4
+        self.consistent1[4] = self.cmat5
+        self.consistent1[5] = self.cmat6
+        self.consistent1.shape = (5, 6)
+        self.assertEqual(self.consistent1.transpose(), self.consistent2)
 
     def test_determine_block_structure(self):
         check = {(0, 0): (3, 4), (0, 4): (3, 2), (3, 0): (4, 2), (3, 2): (4, 4)}
@@ -378,8 +386,23 @@ class TestHmat(TestCase):
         thmat_1 = HMat(blocks=[thmat, thmat2], shape=(5, 3), parent_index=(0, 0))
         self.assertEqual(hmat_1.transpose(), thmat_1)
 
+    def test_zero(self):
+        zmat = numpy.matrix(numpy.zeros((5, 5)))
+        mat = numpy.matrix(numpy.eye(5))
+        hmat11 = HMat(content=mat, shape=(5, 5), parent_index=(0, 0))
+        zhmat11 = HMat(content=zmat, shape=(5, 5), parent_index=(0, 0))
+        hmat12 = HMat(content=zmat, shape=(5, 5), parent_index=(0, 5))
+        hmat21 = HMat(content=zmat, shape=(5, 5), parent_index=(5, 0))
+        hmat22 = HMat(content=mat, shape=(5, 5), parent_index=(5, 5))
+        zhmat22 = HMat(content=zmat, shape=(5, 5), parent_index=(5, 5))
+        hmat = HMat(blocks=[hmat11, hmat12, hmat21, hmat22], shape=(10, 10), parent_index=(0, 0))
+        zhmat = HMat(blocks=[zhmat11, hmat12, hmat21, zhmat22], shape=(10, 10), parent_index=(0, 0))
+        self.assertEqual(hmat.zero(), zhmat)
+        self.assertEqual(hmat.zero(False), zhmat)
+
     def test_inv(self):
         self.assertRaises(numpy.linalg.LinAlgError, self.hmat1.inv)
+        self.assertRaises(ValueError, self.consistent1.inv)
         mat = numpy.matrix(numpy.eye(5))
         hmat = HMat(content=mat, shape=(5, 5), parent_index=(0, 0))
         self.assertEqual(hmat.inv(), hmat)
@@ -390,6 +413,7 @@ class TestHmat(TestCase):
         hmat22 = HMat(content=mat, shape=(5, 5), parent_index=(5, 5))
         hmat = HMat(blocks=[hmat11, hmat12, hmat21, hmat22], shape=(10, 10), parent_index=(0, 0))
         self.assertEqual(hmat, hmat.inv())
+        self.assertEqual(hmat, hmat.inv(False))
         hmat = hmat * 2
         self.assertEqual(0.25 * hmat, hmat.inv())
         hmat33 = HMat(content=mat, shape=(5, 5), parent_index=(10, 10))

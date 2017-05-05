@@ -714,9 +714,6 @@ def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate
     :return: hmatrix
     :rtype: HMat
     """
-    if block_cluster_tree.admissible:
-        return HMat(content=generate_full_matrix_function(block_cluster_tree), shape=block_cluster_tree.shape(),
-                    parent_index=(0, 0))
     root = HMat(blocks=[], shape=tuple(block_cluster_tree.shape()), parent_index=(0, 0))
     recursion_build_hmatrix(root, block_cluster_tree, generate_rmat_function, generate_full_matrix_function)
     return root
