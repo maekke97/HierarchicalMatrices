@@ -9,9 +9,6 @@ class Grid(object):
     :param points: list of coordinates
     
         The points of the discretized Grid.
-        
-        For 1-dimensional problems this is a list of floats,
-        for higher dimension this is a list of tuples of floats
             
     :type points: list[tuple(float)]
     :param supports: dictionary mapping points with their supports

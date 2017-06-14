@@ -698,6 +698,14 @@ class HMat(object):
                                                                                                 j * bls]
         return out_matrix
 
+    def solve(self, right_hand_side):
+        """Solve the equation
+
+        :param right_hand_side:
+        :return:
+        """
+        pass
+
 
 def build_hmatrix(block_cluster_tree=None, generate_rmat_function=None, generate_full_matrix_function=None):
     """Factory to build an hierarchical matrix

@@ -23,7 +23,7 @@ import math
 import scipy.integrate as integrate
 
 
-def model_1d(n=2 ** 5, max_rank=1, n_min=1):
+def model_1d(n=2 ** 5, max_rank=1, n_min=1, u=numpy.random.rand(2**5, 1)):
     """"""
     midpoints = [((i + 0.5)/n,) for i in xrange(n)]
     intervals = {p: [p[0] - 0.5/n, p[0] + 0.5/n] for p in midpoints}
@@ -42,24 +42,20 @@ def model_1d(n=2 ** 5, max_rank=1, n_min=1):
     HierMat.plot(block_cluster_tree, filename='model_1d-bct.png')
     hmat = HierMat.build_hmatrix(block_cluster_tree=block_cluster_tree,
                                  generate_rmat_function=lambda bct: galerkin_1d_rank_k(bct, max_rank),
-                                 generate_full_matrix_function=galerkin_1d_full
+                                 generate_full_matrix_function=lambda bct: galerkin_1d_full(bct, n)
                                  )
     hmat_full = hmat.to_matrix()
-    x = numpy.ones((n, 1))
-    for i in xrange(1, n, 2):
-        x[i] = 2
-    galerkin_full = galerkin_1d_full(block_cluster_tree)
+    galerkin_full = galerkin_1d_full(block_cluster_tree, n)
     HierMat.export(hmat, form='bin', out_file='hmat.bin')
     numpy.savetxt('hmat_full.txt', hmat_full)
     numpy.savetxt('gallmat_full.txt', galerkin_full)
-    rmat = galerkin_1d_rank_k(block_cluster_tree=block_cluster_tree, max_rank=max_rank)
-    return True
+    return numpy.linalg.norm(galerkin_full - hmat_full, 2)
 
 
 def kernel(x, y):
     """"""
-    out = numpy.log(numpy.linalg.norm(x - y))
-    if out in [numpy.inf, -numpy.inf]:
+    out = x * numpy.log(abs(y))
+    if math.isnan(out):
         return 0
     else:
         return out
@@ -74,6 +70,11 @@ def galerkin_1d_rank_k(block_cluster_tree, max_rank):
     :type max_rank: int
     :return: 
     """
+
+    def ker(x, y):
+        """"""
+        return numpy.log(numpy.abs(x - y))
+
     x_length, y_length = block_cluster_tree.shape()
     left_matrix = numpy.matrix(numpy.zeros((x_length, max_rank)))
     right_matrix = numpy.matrix(numpy.zeros((y_length, max_rank)))
@@ -85,32 +86,22 @@ def galerkin_1d_rank_k(block_cluster_tree, max_rank):
     taylor_midpoint = float(lower_boundary_x + upper_boundary_x)/2
     # x_interpolation
     for k in xrange(max_rank):
-        def integral_function_x(x):
-            return (x - taylor_midpoint)**k
-
         for i in xrange(x_length):
             midpoint = block_cluster_tree.left_clustertree[i]
             lower, upper = block_cluster_tree.left_clustertree.get_grid_item_support(midpoint)
-            left_matrix[i, k] = integrate.fixed_quad(integral_function_x, lower, upper)[0]
-
+            left_matrix[i, k] = ((upper - taylor_midpoint)**(k+1) - (lower - taylor_midpoint)**(k+1))/(k+1)
         for j in xrange(y_length):
             midpoint = block_cluster_tree.right_clustertree[j]
             lower, upper = block_cluster_tree.right_clustertree.get_grid_item_support(midpoint)
             if k == 0:
-                def integral_function_y(y):
-                    return kernel(taylor_midpoint, y)
-
-                right_matrix[j, k] = integrate.fixed_quad(integral_function_y, lower, upper)[0]
+                right_matrix[j, k] = 0
             else:
-                def integral_function_y(y):
-                    return (taylor_midpoint - y) ** (-k)
-
-                integral = integrate.fixed_quad(integral_function_y, lower, upper)[0]
-                right_matrix[j, k] = (-float(1))**(k + 1)/k * integral
+                right_matrix[j, k] = (-float(1))**(k + 1)/(k * (k+1)) * ((taylor_midpoint - upper)**(1-k)
+                                                                         - (taylor_midpoint - lower)**(1-k))
     return HierMat.RMat(left_mat=left_matrix, right_mat=right_matrix, max_rank=max_rank)
 
 
-def galerkin_1d_full(block_cluster_tree):
+def galerkin_1d_full(block_cluster_tree, n):
     """
     
     :param block_cluster_tree:
@@ -121,15 +112,53 @@ def galerkin_1d_full(block_cluster_tree):
     x_length, y_length = block_cluster_tree.shape()
     out_matrix = numpy.matrix(numpy.zeros((x_length, y_length)))
     for i in xrange(x_length):
-        midpoint_x = block_cluster_tree.left_clustertree[i]
-        x_lower, x_upper = block_cluster_tree.left_clustertree.get_grid_item_support(midpoint_x)
         for j in xrange(y_length):
-            midpoint_y = block_cluster_tree.right_clustertree[j]
-            y_lower, y_upper = block_cluster_tree.right_clustertree.get_grid_item_support(midpoint_y)
-            inner_integral = lambda x: integrate.fixed_quad(lambda y: kernel(x, y), y_lower, y_upper)[0]
-            out_matrix[i, j] = integrate.fixed_quad(inner_integral, x_lower, x_upper)[0]
+            t = block_cluster_tree.left_clustertree[i][0]
+            s = block_cluster_tree.right_clustertree[j][0]
+            b = t-s
+            a = b - 1.0/n
+            c = b + 1.0/n
+            out_matrix[i, j] = -kernel(b**2, b) + b**2/2 \
+                               + kernel(a**2/2, a) - a**2/4 \
+                               + kernel(c**2/2, c) - c**2/4 - 1.0/n**2
     return out_matrix
 
 
+def gauss_legendre_interpolation(a=-1, b=1):
+    """compute abscissas and weights for Gauss-Legendre formulas, I=(-1,1)
+    abscissas are the zeroes of the Legendre polynomials
+    weights are computed by integrating the associated Lagrange polynomials
+    fixed at 5 gauss points
+    """
+    d = float(a+b)/2
+    e = float(b-a)/2
+
+    # tabular values
+    out = dict()
+    out[0] = (d, 2*e)
+    out[1] = ([d-1/math.sqrt(3)*e, d+1/math.sqrt(3)*e], [e, e])
+    out[2] = ([d-math.sqrt(15)/5*e, d, d+math.sqrt(15)/5*e], [5 * e/9, 8 * e/9, 5 * e/9])
+
+    xa = math.sqrt(525-70*math.sqrt(30))/35*e
+    xb = math.sqrt(525+70*math.sqrt(30))/35*e
+    wa = (18+math.sqrt(30))/36*e
+    wb = (18-math.sqrt(30))/36*e
+
+    out[3] = ([d-xb, d-xa, d+xa, d+xb], [wb, wa, wa, wb])
+
+    xd = math.sqrt(245-14*math.sqrt(70))/21*e
+    xe = math.sqrt(245+14*math.sqrt(70))/21*e
+    wd = (322+13*math.sqrt(70))/900*e
+    we = (322-13*math.sqrt(70))/900*e
+
+    out[4] = ([d-xe, d-xd, d, d+xd, d+xe], [we, wd, 128/225*e, wd, we])
+
+    return out
+
+
+def get_interpol_points(k):
+    return [math.cos((2*v+1)*math.pi/(2*k)) for v in xrange(k)].sort()
+
+
 if __name__ == '__main__':
-    model_1d(n=2**6, max_rank=2, n_min=1)
+    model_1d(u=numpy.random.rand(2**4), n=2**4, max_rank=1, n_min=1)

@@ -66,7 +66,7 @@ class Cuboid(object):
         True if point is between low_corner and high_corner
 
         :param point: point of correct dimension
-        :type point: numpy.array
+        :type point: tuple(float)
 
         :return: contained
         :rtype: bool

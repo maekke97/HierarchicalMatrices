@@ -72,7 +72,7 @@ class TestIntegration(TestCase):
         self.assertAlmostEqual(tcheck.norm(), check2.norm())
 
     def test_model_1d(self):
-        self.assertTrue(model_1d(n=2**6, max_rank=2, n_min=2))
+        self.assertAlmostEqual(model_1d(u=numpy.random.rand(2**4, 1), n=2**4, max_rank=2, n_min=2), 0, places=1)
 
     @classmethod
     def tearDownClass(cls):
