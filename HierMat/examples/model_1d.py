@@ -3,7 +3,7 @@ It shows a basic use-case of hierarchical matrices:
     
 .. admonition:: integral equation
     
-    we start with the generic one-dimensional integral equation of the form
+    we start with the one-dimensional integral equation of the form
     
     .. math::
         
@@ -42,19 +42,20 @@ def model_1d(n=2 ** 5, max_rank=1, n_min=1, u=numpy.random.rand(2**5, 1)):
     HierMat.plot(block_cluster_tree, filename='model_1d-bct.png')
     hmat = HierMat.build_hmatrix(block_cluster_tree=block_cluster_tree,
                                  generate_rmat_function=lambda bct: galerkin_1d_rank_k(bct, max_rank),
-                                 generate_full_matrix_function=lambda bct: galerkin_1d_full(bct, n)
+                                 generate_full_matrix_function=lambda bct: galerkin_1d_full(bct)
                                  )
     hmat_full = hmat.to_matrix()
-    galerkin_full = galerkin_1d_full(block_cluster_tree, n)
+    galerkin_full = galerkin_1d_full(block_cluster_tree)
     HierMat.export(hmat, form='bin', out_file='hmat.bin')
     numpy.savetxt('hmat_full.txt', hmat_full)
     numpy.savetxt('gallmat_full.txt', galerkin_full)
-    return numpy.linalg.norm(galerkin_full - hmat_full, 2)
+    print numpy.linalg.norm(hmat_full-galerkin_full)
+    return 0
 
 
-def kernel(x, y):
+def kernel(x):
     """"""
-    out = x * numpy.log(abs(y))
+    out = x**2 * (numpy.log(abs(x))-0.5)
     if math.isnan(out):
         return 0
     else:
@@ -101,26 +102,25 @@ def galerkin_1d_rank_k(block_cluster_tree, max_rank):
     return HierMat.RMat(left_mat=left_matrix, right_mat=right_matrix, max_rank=max_rank)
 
 
-def galerkin_1d_full(block_cluster_tree, n):
-    """
+def galerkin_1d_full(block_cluster_tree):
+    """Exact calculation of the integral
+
+    .. math::
+
+        A_{i,j}=A_{\tau,t}^{gal}=\int_t\int_\tau\log\Vert x-y\Vert \;dydx
     
     :param block_cluster_tree:
     :type block_cluster_tree: HierMat.BlockClusterTree
-    :return:
+    :return: matrix with same shape as block_cluster_tree.shape()
     :rtype: numpy.matrix
     """
     x_length, y_length = block_cluster_tree.shape()
     out_matrix = numpy.matrix(numpy.zeros((x_length, y_length)))
     for i in xrange(x_length):
         for j in xrange(y_length):
-            t = block_cluster_tree.left_clustertree[i][0]
-            s = block_cluster_tree.right_clustertree[j][0]
-            b = t-s
-            a = b - 1.0/n
-            c = b + 1.0/n
-            out_matrix[i, j] = -kernel(b**2, b) + b**2/2 \
-                               + kernel(a**2/2, a) - a**2/4 \
-                               + kernel(c**2/2, c) - c**2/4 - 1.0/n**2
+            c, d = block_cluster_tree.left_clustertree.get_grid_item_support_by_index(i)
+            a, b = block_cluster_tree.right_clustertree.get_grid_item_support_by_index(j)
+            out_matrix[i, j] = (-kernel(d-b)+kernel(c-b)+kernel(d-a)-kernel(c-a))/2+(a-b)*(d-c)
     return out_matrix
 
 
