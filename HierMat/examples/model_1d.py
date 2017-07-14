@@ -49,8 +49,7 @@ def model_1d(n=2 ** 5, max_rank=1, n_min=1, u=numpy.random.rand(2**5, 1)):
     HierMat.export(hmat, form='bin', out_file='hmat.bin')
     numpy.savetxt('hmat_full.txt', hmat_full)
     numpy.savetxt('gallmat_full.txt', galerkin_full)
-    print numpy.linalg.norm(hmat_full-galerkin_full)
-    return 0
+    return numpy.linalg.norm(hmat_full-galerkin_full)
 
 
 def kernel(x):
@@ -107,7 +106,7 @@ def galerkin_1d_full(block_cluster_tree):
 
     .. math::
 
-        A_{i,j}=A_{\tau,t}^{gal}=\int_t\int_\tau\log\Vert x-y\Vert \;dydx
+        A_{i,j}=A_{\\tau,t}^{gal}=\int_t\int_\\tau\log\Vert x-y\Vert \;dydx
     
     :param block_cluster_tree:
     :type block_cluster_tree: HierMat.BlockClusterTree
