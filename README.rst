@@ -22,8 +22,5 @@ The main goal is to provide an easy to use yet performing alternative to existin
 
 .. image:: https://sonarqube.com/api/badges/gate?key=hierarchicalmatrices
 
-.. image:: https://img.shields.io/pypi/dm/Django.svg?style=plastic
-   :target: https://pypi.python.org/pypi/HierMat
-
-.. image:: https://img.shields.io/pypi/v/nine.svg
+.. image:: https://img.shields.io/pypi/v/HierMat.svg
    :target: https://pypi.python.org/pypi/HierMat
