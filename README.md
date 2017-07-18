@@ -18,6 +18,4 @@ The main goal is to provide an easy to use yet performing alternative to existin
 [![Build Status](https://travis-ci.org/maekke97/HierarchicalMatrices.svg?branch=master)](https://travis-ci.org/maekke97/HierarchicalMatrices.svg?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/maekke97/HierarchicalMatrices/badge.svg?branch=master)](https://coveralls.io/github/maekke97/HierarchicalMatrices?branch=master)
 [![Quality Gate](https://sonarqube.com/api/badges/gate?key=hierarchicalmatrices)](https://sonarqube.com/dashboard/index?id=hierarchicalmatrices)
-[![PyPi version](https://pypip.in/v/HierMat/badge.png)](https://pypi.python.org/pypi/HierMat)
-[![PyPi downloads](https://pypip.in/d/HierMat/badge.png)](https://pypi.python.org/pypi/HierMat)
-[![PyPI](https://img.shields.io/pypi/dm/Django.svg?style=plastic)](https://pypi.python.org/pypi/HierMat)
+[![PyPI](https://img.shields.io/pypi/v/nine.svg)](https://pypi.python.org/pypi/HierMat)
