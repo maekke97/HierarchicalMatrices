@@ -106,7 +106,7 @@ def galerkin_1d_full(block_cluster_tree):
 
     .. math::
 
-        A_{i,j}=A_{\\tau,t}^{gal}=\int_t\int_\\tau\log\Vert x-y\Vert \;dydx
+        A_{i,j}=A_{\\tau,t}^{Gal}=\int_t\int_\\tau\log\Vert x-y\Vert \;dydx
     
     :param block_cluster_tree:
     :type block_cluster_tree: HierMat.BlockClusterTree

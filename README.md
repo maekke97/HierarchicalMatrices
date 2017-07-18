@@ -20,3 +20,4 @@ The main goal is to provide an easy to use yet performing alternative to existin
 [![Quality Gate](https://sonarqube.com/api/badges/gate?key=hierarchicalmatrices)](https://sonarqube.com/dashboard/index?id=hierarchicalmatrices)
 [![PyPi version](https://pypip.in/v/HierMat/badge.png)](https://pypi.python.org/pypi/HierMat)
 [![PyPi downloads](https://pypip.in/d/HierMat/badge.png)](https://pypi.python.org/pypi/HierMat)
+[![PyPI](https://img.shields.io/pypi/dm/Django.svg?style=plastic)](https://pypi.python.org/pypi/HierMat)

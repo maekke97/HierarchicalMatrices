@@ -24,4 +24,7 @@ The main goal is to provide an easy to use yet performing alternative to existin
 
 .. image:: https://pypip.in/v/HierMat/badge.png
 
+.. image:: https://img.shields.io/pypi/dm/Django.svg?style=plastic
+   :target: https://pypi.python.org/pypi/HierMat
+
 .. image:: https://pypip.in/d/HierMat/badge.png
