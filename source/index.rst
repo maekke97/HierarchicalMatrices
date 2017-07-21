@@ -36,6 +36,7 @@ It provides an interface in python to the concept of hierarchical matrices as de
 The main goal is to provide an easy to use yet performing alternative to existing implementations in C
 
 * Hosted on GitHub: `GitHub <https://github.com/maekke97/HierarchicalMatrices>`_
+* Available on PyPi: `PyPi <https://pypi.python.org/pypi/HierMat>`_
 * Documentation: `ReadTheDocs <http://hierarchicalmatrices.readthedocs.io/en/latest>`_
 * Continuous Integration: `Travis CI <https://travis-ci.org/maekke97/HierarchicalMatrices>`_
 * Code Coverage: `Coveralls <https://coveralls.io/github/maekke97/HierarchicalMatrices>`_
@@ -48,6 +49,8 @@ The main goal is to provide an easy to use yet performing alternative to existin
 .. image:: https://coveralls.io/repos/github/maekke97/HierarchicalMatrices/badge.svg?branch=master
 
 .. image:: https://sonarqube.com/api/badges/gate?key=hierarchicalmatrices
+
+.. image:: https://img.shields.io/pypi/v/HierMat.svg
 
 Installation
 ------------
