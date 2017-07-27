@@ -36,7 +36,7 @@ with open('README.rst', 'r') as readme:
 setup(
     name='HierMat',
     version='0.7.0',
-    packages=['HierMat'],
+    packages=['HierMat', 'examples'],
     url='http://hierarchicalmatrices.readthedocs.io/en/latest/index.html',
     download_url='https://github.com/maekke97/HierarchicalMatrices',
     license='GNU GPL v3',
