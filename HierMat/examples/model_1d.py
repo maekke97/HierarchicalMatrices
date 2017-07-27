@@ -20,13 +20,12 @@ import HierMat
 
 import os
 import math
-import scipy.integrate as integrate
 
 
-def model_1d(n=2 ** 5, max_rank=1, n_min=1, u=numpy.random.rand(2**5, 1)):
+def model_1d(n=2 ** 3, max_rank=1, n_min=1, b=numpy.random.rand(2**5, 1)):
     """"""
     midpoints = [((i + 0.5)/n,) for i in xrange(n)]
-    intervals = {p: [p[0] - 0.5/n, p[0] + 0.5/n] for p in midpoints}
+    intervals = {p: (p[0] - 0.5/n, p[0] + 0.5/n) for p in midpoints}
     grid = HierMat.Grid(points=midpoints, supports=intervals)
     cluster = HierMat.Cluster(grid=grid)
     unit_cuboid = HierMat.Cuboid([0], [1])
@@ -160,4 +159,4 @@ def get_interpol_points(k):
 
 
 if __name__ == '__main__':
-    model_1d(u=numpy.random.rand(2**4), n=2**4, max_rank=1, n_min=1)
+    model_1d(b=numpy.random.rand(2**3), n=2**3, max_rank=1, n_min=1)

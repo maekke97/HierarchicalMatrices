@@ -9,6 +9,9 @@ class RMat(object):
     """Rank-k matrix
 
     Implementation of the low rank matrix as described in [HB2015]
+
+    .. todo:
+        document max_rank behaviour
     
     .. note:
         There is still an issue with __radd__, when the left operand is a numpy.ndarray object

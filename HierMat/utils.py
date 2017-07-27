@@ -122,8 +122,11 @@ def block_cluster_tree_plot(obj, filename=None, ticks=False, face_color='#133f52
     if not filename:
         return fig
     else:
-        # remove whitespace around the plot
-        plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        if not ticks:
+            # remove whitespace around the plot
+            plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+        else:
+            plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)
         plt.savefig(filename, format='png', facecolor=fig.get_facecolor(), edgecolor=None)
 
 

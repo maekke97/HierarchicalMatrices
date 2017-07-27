@@ -1,7 +1,6 @@
 """cuboid.py: :class:`Cuboid` and :func:`minimal_cuboid`
 """
 import numpy
-from numpy.core.multiarray import array
 
 
 class Cuboid(object):
@@ -23,10 +22,14 @@ class Cuboid(object):
         :param high_corner: high corner
         :type high_corner: numpy.array
         """
+        if not hasattr(low_corner, '__len__'):
+            low_corner = (low_corner,)
+        if not hasattr(high_corner, '__len__'):
+            high_corner = (high_corner,)
         if len(low_corner) != len(high_corner):
             raise ValueError('corners must have same dimension')
-        self.low_corner = array(low_corner, float)
-        self.high_corner = array(high_corner, float)
+        self.low_corner = numpy.array(low_corner, float)
+        self.high_corner = numpy.array(high_corner, float)
 
     def __len__(self):
         """Dimension of the corners
@@ -101,11 +104,11 @@ class Cuboid(object):
             index = numpy.argmax(abs(self.high_corner - self.low_corner))
         # determine value at splitting point
         split = (self.high_corner[index] + self.low_corner[index]) / 2
-        low_corner1 = array(self.low_corner)
-        low_corner2 = array(self.low_corner)
+        low_corner1 = numpy.array(self.low_corner)
+        low_corner2 = numpy.array(self.low_corner)
         low_corner2[index] = split
-        high_corner1 = array(self.high_corner)
-        high_corner2 = array(self.high_corner)
+        high_corner1 = numpy.array(self.high_corner)
+        high_corner2 = numpy.array(self.high_corner)
         high_corner1[index] = split
         return Cuboid(low_corner1, high_corner1), Cuboid(low_corner2, high_corner2)
 
@@ -135,8 +138,8 @@ class Cuboid(object):
         distance2 = self.low_corner - other.high_corner
         distance3 = self.high_corner - other.low_corner
         distance4 = self.high_corner - other.high_corner
-        distance_matrix = array((distance1, distance2, distance3, distance4))
+        distance_matrix = numpy.array((distance1, distance2, distance3, distance4))
         checks = abs(numpy.sum(numpy.sign(distance_matrix), 0)) == 4 * numpy.ones(dimension)
-        distance_vector = array(checks, dtype=float)
+        distance_vector = numpy.array(checks, dtype=float)
         min_vector = numpy.amin(abs(distance_matrix), axis=0)
         return numpy.linalg.norm(min_vector * distance_vector)
