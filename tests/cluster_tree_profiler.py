@@ -53,7 +53,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("HMatrix Profiler")
     parser.add_argument("dimension", type=int, choices=[1, 2, 3])
-    parser.add_argument("limit per dimension", type=int)
+    parser.add_argument("limit", type=int)
     args = parser.parse_args()
     print '\n' + '*' * 74 + '\n'
     main(args)
