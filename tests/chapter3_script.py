@@ -67,3 +67,13 @@ print M_1
 C = np.matrix([[1, 0, 5], [2, 1, 1], [3, 1, 0]])
 M_2 = RMat(left_mat=C, max_rank=2)
 print M_2
+
+# exact addition
+print M_1 + M_1
+# formatted addition
+print M_2 + M_2
+print M_1 - M_2
+print M_1 * M_2
+print M_1.transpose()
+print M_2.norm()
+print M_1.reduce(1)
