@@ -2,7 +2,7 @@ import argparse
 import random
 from timeit import default_timer as timer
 import numpy as np
-from profilehooks import profile
+from memory_profiler import profile
 
 from HierMat import *
 
@@ -15,40 +15,48 @@ def main(args):
         supports = {points[i]: (points[i][0] - 0.5/lim, points[i][0] + 0.5/lim) for i in xrange(lim)}
     elif args.dimension == 2:
         points = [(float(i) / lim, float(j) / lim) for i in xrange(lim) for j in xrange(lim)]
-        supports = {points[k]: (points[k-1], points[k+1]) for k in xrange(lim*lim)}
+        supports = {points[k]: (points[k-1], points[k+1]) for k in xrange(lim * lim - 1)}
+        supports[points[lim*lim-1]] = (points[lim*lim-2], points[0])
     else:
         points = [(float(i) / lim, float(j) / lim, float(k) / lim) for i in xrange(lim) for j in
                   xrange(lim) for k in xrange(lim)]
-        supports = {points[k]: (points[k - 1], points[k + 1]) for k in xrange(lim * lim * lim)}
+        supports = {points[k]: (points[k - 1], points[k + 1]) for k in xrange(lim * lim * lim - 1)}
+        supports[points[lim * lim * lim - 1]] = (points[lim * lim * lim - 2], points[0])
     grid = Grid(points, supports)
     cluster = Cluster(grid)
     rc = RegularCuboid(cluster)
     mc = MinimalCuboid(cluster)
     bc = Balanced(cluster)
     start = timer()
-    ct_rc = ClusterTree(rc, 1)
+    ct_rc = build_cluster_tree(rc, 1)
     end = timer()
     print "ClusterTree build-up with RegularCuboid took {0} seconds.".format(end - start)
+    export(ct_rc, 'bin', 'ct_rc.bin')
+    # start = timer()
+    # ct_mc = build_cluster_tree(mc, 1)
+    # end = timer()
+    # print "ClusterTree build-up with MinimalCuboid took {0} seconds.".format(end - start)
+    # export(ct_mc, 'bin', 'ct_mc.bin')
     start = timer()
-    ct_mc = ClusterTree(mc, 1)
-    end = timer()
-    print "ClusterTree build-up with MinimalCuboid took {0} seconds.".format(end - start)
-    start = timer()
-    ct_bc = ClusterTree(bc, 1)
+    ct_bc = build_cluster_tree(bc, 1)
     end = timer()
     print "ClusterTree build-up with Balanced took {0} seconds.".format(end - start)
+    export(ct_bc, 'bin', 'ct_bc.bin')
     start = timer()
-    bct_rc_rc = BlockClusterTree(ct_rc, ct_rc)
+    bct_rc_rc = build_block_cluster_tree(ct_rc, ct_rc)
     end = timer()
     print "BlockClusterTree build-up with RegularCuboid took {0} seconds." .format(end - start)
+    export(bct_rc_rc, 'bin', 'bct_rc.bin')
+    # start = timer()
+    # bct_mc_mc = build_block_cluster_tree(ct_mc, ct_mc)
+    # end = timer()
+    # print "BlockClusterTree build-up with MinimalCuboid took {0} seconds.".format(end - start)
+    # export(bct_mc_mc, 'bin', 'bct_mc.bin')
     start = timer()
-    bct_mc_mc = BlockClusterTree(ct_mc, ct_mc)
-    end = timer()
-    print "BlockClusterTree build-up with MinimalCuboid took {0} seconds.".format(end - start)
-    start = timer()
-    bct_bc_bc = BlockClusterTree(ct_bc, ct_bc)
+    bct_bc_bc = build_block_cluster_tree(ct_bc, ct_bc)
     end = timer()
     print "BlockClusterTree build-up with Balanced took {0} seconds.".format(end - start)
+    export(bct_bc_bc, 'bin', 'bct_bc.bin')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("HMatrix Profiler")

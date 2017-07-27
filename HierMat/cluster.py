@@ -129,7 +129,7 @@ class Cluster(object):
         :return: distance
         :rtype: float
         """
-        return min([numpy.linalg.norm(x - y) for x in self for y in other])
+        return min([numpy.linalg.norm(numpy.array(x) - numpy.array(y)) for x in self for y in other])
 
 
 class ClusterIterator(object):
