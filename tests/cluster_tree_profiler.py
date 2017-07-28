@@ -42,9 +42,9 @@ if __name__ == '__main__':
     try:
         args = parser.parse_args()
         print '\n' + '*' * 74 + '\n'
-        print 'Starting run with dimension={0}'.format(args.dimension) + '\n'
+        print 'Starting run with n={0}'.format(args.limit) + '\n'
         main(args.limit, args.dimension)
-        print '\n' + 'Finished run with dimension={0}'.format(args.dimension)
+        print '\n' + 'Finished run with n={0}'.format(args.limit)
         print '\n' + '*' * 74 + '\n'
     except SystemExit:
         main(20, 2)
