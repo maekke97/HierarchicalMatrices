@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import csv
 
 
-infile = '/compute/nem/rmat_profiler.csv'
+infile = '/compute/nem/rmat_addition_profiler.csv'
 values = {}
 with open(infile, 'r') as csvfile:
     value_reader = csv.reader(csvfile, delimiter=',')
@@ -13,6 +13,7 @@ with open(infile, 'r') as csvfile:
         values[(n, k)] = secs
 
 fig = plt.figure()
+plt.title('Formatted addition with rank fixed')
 xs = [2**i for i in xrange(4, 25)]
 for k in xrange(1, 11):
     ax = fig.add_subplot(2, 5, k)
