@@ -16,7 +16,6 @@ with open(infile, 'r') as csvfile:
         values[(n, k)] = secs
 
 fig = plt.figure(figsize=figsize, dpi=dpi)
-plt.title('Formatted addition with rank fixed')
 xs = [2**i for i in xrange(nmin, nmin + 10)]
 for k in xrange(1, 11):
     ax = fig.add_subplot(2, 5, k)
@@ -28,7 +27,6 @@ plt.tight_layout()
 plt.savefig('rmat_addition_k_profile.png')
 
 fig = plt.figure(figsize=figsize, dpi=dpi)
-plt.title('Formatted addition with n fixed')
 ks = range(1, 11)
 for i in xrange(nmin, nmin + 10):
     ax = fig.add_subplot(2, 5, i - nmin + 1)
@@ -51,7 +49,6 @@ with open(infile, 'r') as csvfile:
         values[(n, k)] = secs
 
 fig = plt.figure(figsize=figsize, dpi=dpi)
-plt.title('Formatted subtraction with rank fixed')
 xs = [2**i for i in xrange(nmin, nmin + 10)]
 for k in xrange(1, 11):
     ax = fig.add_subplot(2, 5, k)
@@ -63,7 +60,6 @@ plt.tight_layout()
 plt.savefig('rmat_subtraction_k_profile.png')
 
 fig = plt.figure(figsize=figsize, dpi=dpi)
-plt.title('Formatted subtraction with n fixed')
 ks = range(1, 11)
 for i in xrange(nmin, nmin + 10):
     ax = fig.add_subplot(2, 5, i - nmin + 1)
@@ -85,7 +81,6 @@ with open(infile, 'r') as csvfile:
         values[(n, k)] = secs
 
 fig = plt.figure(figsize=figsize, dpi=dpi)
-plt.title('Multiplication with rank fixed')
 xs = [2**i for i in xrange(nmin, nmin + 10)]
 for k in xrange(1, 11):
     ax = fig.add_subplot(2, 5, k)
@@ -97,7 +92,6 @@ plt.tight_layout()
 plt.savefig('rmat_multiplication_k_profile.png')
 
 fig = plt.figure(figsize=figsize, dpi=dpi)
-plt.title('Formatted multiplication with n fixed')
 ks = range(1, 11)
 for i in xrange(nmin, nmin + 10):
     ax = fig.add_subplot(2, 5, i - nmin + 1)
