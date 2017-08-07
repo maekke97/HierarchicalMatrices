@@ -23,7 +23,7 @@ for k in xrange(1, 11):
     times = [values[(x, k)] for x in xs]
     ax.plot(xs, times)
     plt.title('k={0}'.format(k))
-plt.subplots_adjust(left=0.125, bottom=0.125, wspace=0.2, hspace=0.2)
+plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.2, hspace=0.2)
 
 plt.savefig('rmat_addition_k_profile.png')
 
