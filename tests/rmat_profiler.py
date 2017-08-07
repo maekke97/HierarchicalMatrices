@@ -6,7 +6,6 @@ import numpy as np
 from HierMat import *
 
 
-@profile
 def main(limit, rank):
     left1 = np.matrix(np.random.rand(limit, rank))
     right1 = np.matrix(np.random.rand(limit, rank))
