@@ -33,6 +33,8 @@ def main(limit, dimension):
     bct_rc_rc = build_block_cluster_tree(ct_rc, ct_rc)
     end = timer()
     print "BlockClusterTree build-up with RegularCuboid took {0} seconds." .format(end - start)
+    file_str = '/compute/nem/bct_{0}'.format(limit)
+    export(bct_rc_rc, form='bin', out_file=file_str)
 
 
 if __name__ == '__main__':
