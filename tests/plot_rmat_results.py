@@ -27,7 +27,7 @@ fig = plt.figure()
 plt.title('Formatted addition with n fixed')
 ks = range(1, 11)
 for i in xrange(4, 25):
-    ax = fig.add_subplot(4, 5, i)
+    ax = fig.add_subplot(3, 7, i-3)
     times = [values[(2**i, k)] for k in ks]
     ax.plot(ks, times)
     plt.title('n={0}'.format(2**i))
