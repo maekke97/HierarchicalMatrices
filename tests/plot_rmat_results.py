@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import csv
 
 nmin = 12
+figsize = (8, 6)
+dpi = 200
 
 infile = '/compute/nem/rmat_addition_profiler.csv'
 values = {}
@@ -13,7 +15,7 @@ with open(infile, 'r') as csvfile:
         secs = float(row[2])
         values[(n, k)] = secs
 
-fig = plt.figure(figsize=(8, 6), dpi=200)
+fig = plt.figure(figsize=figsize, dpi=dpi)
 plt.title('Formatted addition with rank fixed')
 xs = [2**i for i in xrange(nmin, nmin + 10)]
 for k in xrange(1, 11):
@@ -24,7 +26,7 @@ for k in xrange(1, 11):
 
 plt.savefig('rmat_addition_k_profile.png')
 
-fig = plt.figure(figsize=(8, 6), dpi=200)
+fig = plt.figure(figsize=figsize, dpi=dpi)
 plt.title('Formatted addition with n fixed')
 ks = range(1, 11)
 for i in xrange(nmin, nmin + 10):
@@ -46,7 +48,7 @@ with open(infile, 'r') as csvfile:
         secs = float(row[2])
         values[(n, k)] = secs
 
-fig = plt.figure(figsize=(8, 6), dpi=200)
+fig = plt.figure(figsize=figsize, dpi=dpi)
 plt.title('Formatted subtraction with rank fixed')
 xs = [2**i for i in xrange(nmin, nmin + 10)]
 for k in xrange(1, 11):
@@ -57,7 +59,7 @@ for k in xrange(1, 11):
 
 plt.savefig('rmat_subtraction_k_profile.png')
 
-fig = plt.figure(figsize=(8, 6), dpi=200)
+fig = plt.figure(figsize=figsize, dpi=dpi)
 plt.title('Formatted subtraction with n fixed')
 ks = range(1, 11)
 for i in xrange(nmin, nmin + 10):
@@ -78,7 +80,7 @@ with open(infile, 'r') as csvfile:
         secs = float(row[2])
         values[(n, k)] = secs
 
-fig = plt.figure(figsize=(8, 6), dpi=200)
+fig = plt.figure(figsize=figsize, dpi=dpi)
 plt.title('Multiplication with rank fixed')
 xs = [2**i for i in xrange(nmin, nmin + 10)]
 for k in xrange(1, 11):
@@ -89,7 +91,7 @@ for k in xrange(1, 11):
 
 plt.savefig('rmat_multiplication_k_profile.png')
 
-fig = plt.figure(figsize=(8, 6), dpi=200)
+fig = plt.figure(figsize=figsize, dpi=dpi)
 plt.title('Formatted multiplication with n fixed')
 ks = range(1, 11)
 for i in xrange(nmin, nmin + 10):
