@@ -8,11 +8,11 @@ from HierMat import *
 
 @profile
 def main(limit, rank):
-    left1 = np.matrix(np.random.rand((limit, rank)))
-    right1 = np.matrix(np.random.rand((limit, rank)))
+    left1 = np.matrix(np.random.rand(limit, rank))
+    right1 = np.matrix(np.random.rand(limit, rank))
     rmat1 = RMat(left_mat=left1, right_mat=right1, max_rank=rank)
-    left2 = np.matrix(np.random.rand((limit, rank)))
-    right2 = np.matrix(np.random.rand((limit, rank)))
+    left2 = np.matrix(np.random.rand(limit, rank))
+    right2 = np.matrix(np.random.rand(limit, rank))
     rmat2 = RMat(left_mat=left2, right_mat=right2, max_rank=rank)
     start = timer()
     add_res = rmat1 + rmat2
