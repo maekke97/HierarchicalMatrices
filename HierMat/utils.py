@@ -4,7 +4,7 @@ import math
 
 from HierMat.block_cluster_tree import BlockClusterTree
 from HierMat.cluster_tree import ClusterTree
-from HierMat.grid import Grid
+import matplotlib.pyplot as plt
 
 
 def export(obj, form='xml', out_file='out'):
@@ -52,7 +52,7 @@ def plot(obj, filename=None, **kwargs):
     """plot an object
     
     :param obj: object to plot
-    :type obj: BlockClusterTree or Grid
+    :type obj: BlockClusterTree
     :param filename: filename to save the plot to (if omitted, the plot will be displayed)
     :type filename: str
     :param kwargs: optional arguments to specific plot commands
@@ -85,7 +85,6 @@ def block_cluster_tree_plot(obj, filename=None, ticks=False, face_color='#133f52
         depends on :mod:`matplotlib.pyplot`
 
     """
-    import matplotlib.pyplot as plt
 
     plt.rc('axes', linewidth=0.5, labelsize=4)
     plt.rc('xtick', labelsize=4)
