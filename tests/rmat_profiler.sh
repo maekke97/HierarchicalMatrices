@@ -7,7 +7,7 @@ if [ -f ${OUTFILE} ];
 then
     rm -f ${OUTFILE}
 fi
-for e in `seq 8 17`;
+for e in `seq 12 21`;
 do
     for k in `seq 1 10`;
     do
