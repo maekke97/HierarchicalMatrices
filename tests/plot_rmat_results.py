@@ -13,7 +13,7 @@ with open(infile, 'r') as csvfile:
         values[(n, k)] = secs
 
 fig = plt.figure()
-xs = [2**i for i in xrange(2, 25)]
+xs = [2**i for i in xrange(4, 25)]
 for k in xrange(1, 11):
     ax = fig.add_subplot(2, 5, k)
     times = [values[(x, k)] for x in xs]
