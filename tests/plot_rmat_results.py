@@ -23,6 +23,7 @@ for k in xrange(1, 11):
     times = [values[(x, k)] for x in xs]
     ax.plot(xs, times)
     plt.title('k={0}'.format(k))
+plt.tight_layout()
 
 plt.savefig('rmat_addition_k_profile.png')
 
@@ -34,6 +35,7 @@ for i in xrange(nmin, nmin + 10):
     times = [values[(2**i, k)] for k in ks]
     ax.plot(ks, times)
     plt.title('n={0}'.format(2**i))
+plt.tight_layout()
 
 plt.savefig('rmat_addition_n_profile.png')
 
@@ -56,6 +58,7 @@ for k in xrange(1, 11):
     times = [values[(x, k)] for x in xs]
     ax.plot(xs, times)
     plt.title('k={0}'.format(k))
+plt.tight_layout()
 
 plt.savefig('rmat_subtraction_k_profile.png')
 
@@ -67,6 +70,7 @@ for i in xrange(nmin, nmin + 10):
     times = [values[(2**i, k)] for k in ks]
     ax.plot(ks, times)
     plt.title('n={0}'.format(2**i))
+plt.tight_layout()
 
 plt.savefig('rmat_subtraction_n_profile.png')
 
@@ -88,6 +92,7 @@ for k in xrange(1, 11):
     times = [values[(x, k)] for x in xs]
     ax.plot(xs, times)
     plt.title('k={0}'.format(k))
+plt.tight_layout()
 
 plt.savefig('rmat_multiplication_k_profile.png')
 
@@ -99,5 +104,6 @@ for i in xrange(nmin, nmin + 10):
     times = [values[(2**i, k)] for k in ks]
     ax.plot(ks, times)
     plt.title('n={0}'.format(2**i))
+plt.tight_layout()
 
 plt.savefig('rmat_multiplication_n_profile.png')
