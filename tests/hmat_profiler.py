@@ -29,15 +29,15 @@ def main(limit):
     start = timer()
     add_res = hmat + hmat
     end = timer()
-    print "Addition with n={0} and k={1} took {2} seconds.".format(limit, rank, end - start)
+    print "Addition with n={0} took {1} seconds.".format(limit, end - start)
     start = timer()
     add_res = hmat - hmat
     end = timer()
-    print "Subtraction with n={0} and k={1} took {2} seconds.".format(limit, rank, end - start)
+    print "Subtraction with n={0} and took {1} seconds.".format(limit, end - start)
     start = timer()
     mul_res = hmat * hmat
     end = timer()
-    print "Multiplication with n={0} and k={1} took {2} seconds.".format(limit, rank, end - start)
+    print "Multiplication with n={0} and took {1} seconds.".format(limit, end - start)
 
 
 if __name__ == '__main__':
@@ -51,4 +51,4 @@ if __name__ == '__main__':
         print '\n' + 'Finished run with n={0}'.format(args.limit)
         print '\n' + '*' * 74 + '\n'
     except SystemExit:
-        main(20)
+        main(10)
