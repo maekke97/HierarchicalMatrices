@@ -7,9 +7,9 @@ if [ -f ${OUTFILE} ];
 then
     rm -f ${OUTFILE}
 fi
-for e in `seq 12 21`;
+for e in `seq 2 20`;
 do
-    python cluster_tree_profiler.py 1 $(( 2**${e} )) >> ${OUTFILE}
+    python hmat_profiler.py $(( 2**${e} )) >> ${OUTFILE}
 done
 awk 'BEGIN{ OFS=","; FS="[ \t]+|=|" }/Addition/{ print $4, $7, $9}' ${OUTFILE} > ${ADDCSV}
 awk 'BEGIN{ OFS=","; FS="[ \t]+|=|" }/Subtraction/{ print $4, $7, $9}' ${OUTFILE} > ${SUBCSV}

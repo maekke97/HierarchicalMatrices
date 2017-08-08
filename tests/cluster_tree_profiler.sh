@@ -4,7 +4,7 @@ if [ -f ${OUTFILE} ];
 then
     rm -f ${OUTFILE}
 fi
-for e in `seq 12 21`;
+for e in `seq 2 20`;
 do
     python cluster_tree_profiler.py 1 $(( 2**${e} )) >> ${OUTFILE}
 done
