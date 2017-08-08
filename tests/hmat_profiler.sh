@@ -11,6 +11,6 @@ for e in `seq 2 20`;
 do
     python hmat_profiler.py $(( 2**${e} )) >> ${OUTFILE}
 done
-awk 'BEGIN{ OFS=","; FS="[ \t]+|=|" }/Addition/{ print $4, $7, $9}' ${OUTFILE} > ${ADDCSV}
-awk 'BEGIN{ OFS=","; FS="[ \t]+|=|" }/Subtraction/{ print $4, $7, $9}' ${OUTFILE} > ${SUBCSV}
-awk 'BEGIN{ OFS=","; FS="[ \t]+|=|" }/Multiplication/{ print $4, $7, $9}' ${OUTFILE} > ${MULCSV}
+awk 'BEGIN{ OFS=","; FS="[ \t]+|=|" }/Addition/{ print $4, $6}' ${OUTFILE} > ${ADDCSV}
+awk 'BEGIN{ OFS=","; FS="[ \t]+|=|" }/Subtraction/{ print $4, $6}' ${OUTFILE} > ${SUBCSV}
+awk 'BEGIN{ OFS=","; FS="[ \t]+|=|" }/Multiplication/{ print $4, $6}' ${OUTFILE} > ${MULCSV}

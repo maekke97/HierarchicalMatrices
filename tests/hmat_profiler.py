@@ -33,11 +33,11 @@ def main(limit):
     start = timer()
     add_res = hmat - hmat
     end = timer()
-    print "Subtraction with n={0} and took {1} seconds.".format(limit, end - start)
+    print "Subtraction with n={0} took {1} seconds.".format(limit, end - start)
     start = timer()
     mul_res = hmat * hmat
     end = timer()
-    print "Multiplication with n={0} and took {1} seconds.".format(limit, end - start)
+    print "Multiplication with n={0} took {1} seconds.".format(limit, end - start)
 
 
 if __name__ == '__main__':
