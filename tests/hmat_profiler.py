@@ -46,7 +46,7 @@ if __name__ == '__main__':
     try:
         args = parser.parse_args()
         print '\n' + '*' * 74 + '\n'
-        print 'Starting run with n={0} and k={1}'.format(args.limit, args.rank) + '\n'
+        print 'Starting run with n={0}'.format(args.limit) + '\n'
         main(args.limit)
         print '\n' + 'Finished run with n={0}'.format(args.limit)
         print '\n' + '*' * 74 + '\n'
