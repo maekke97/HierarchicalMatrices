@@ -194,7 +194,7 @@ class HMat(object):
             blocks = [self[index] + other[index] for index in self.block_structure()]
             return HMat(blocks=blocks, shape=self.shape, parent_index=self.parent_index)
         else:
-            raise ValueError('can not add {0} and {1}. number of blocks is different'.format(self, other))
+            raise ValueError('can not add {0} and {1}. number of blocks are different'.format(self, other))
 
     def _add_rmat(self, other):
         # TODO: What here?
