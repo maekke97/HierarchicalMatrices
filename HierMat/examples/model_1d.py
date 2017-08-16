@@ -52,11 +52,17 @@ def model_1d(n=2 ** 3, max_rank=1, n_min=1):
     return numpy.linalg.norm(hmat_full-galerkin_full)
 
 
-def kernel(x):
-    """
+def kerlog(x):
+    """kerlog function as in master thesis
 
-    :param x:
-    :return:
+    .. math::
+
+        kerlog(x):= x^2 \left( \log(\Vert x \Vert) - \\frac{1}{2} \\right)
+
+    :param x: real number
+    :type x: float
+    :return: :math:`x^2 ( \log(\Vert x \Vert) - \\frac{1}{2} )`
+    :rtype: float
     """
     out = x**2 * (numpy.log(abs(x))-0.5)
     if math.isnan(out):
@@ -132,7 +138,7 @@ def galerkin_1d_full(block_cluster_tree):
         for j in xrange(y_length):
             c, d = block_cluster_tree.left_clustertree.get_grid_item_support_by_index(i)
             a, b = block_cluster_tree.right_clustertree.get_grid_item_support_by_index(j)
-            out_matrix[i, j] = (-kernel(d-b)+kernel(c-b)+kernel(d-a)-kernel(c-a))/2+(a-b)*(d-c)
+            out_matrix[i, j] = (-kerlog(d - b) + kerlog(c - b) + kerlog(d - a) - kerlog(c - a)) / 2 + (a - b) * (d - c)
     return out_matrix
 
 
