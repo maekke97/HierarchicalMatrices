@@ -49,7 +49,7 @@ def model_1d(n=2 ** 3, max_rank=1, n_min=1):
     HierMat.export(hmat, form='bin', out_file='hmat.bin')
     numpy.savetxt('hmat_full.txt', hmat_full)
     numpy.savetxt('gallmat_full.txt', galerkin_full)
-    return numpy.linalg.norm(hmat_full-galerkin_full)
+    return 0
 
 
 def kerlog(x):
@@ -95,11 +95,10 @@ def galerkin_1d_rank_k(block_cluster_tree, max_rank):
     left_matrix = numpy.matrix(numpy.zeros((x_length, max_rank)))
     right_matrix = numpy.matrix(numpy.zeros((y_length, max_rank)))
     # determine the y-interval
-    y_low= block_cluster_tree.right_clustertree.get_grid_item_support_by_index(0)[0]
+    y_low = block_cluster_tree.right_clustertree.get_grid_item_support_by_index(0)[0]
     y_high = block_cluster_tree.right_clustertree.get_grid_item_support_by_index(-1)[1]
     # build Chebyshev nodes
-    y_nodes = numpy.array([(y_low + y_high + (y_high - y_low) * numpy.cos((2 * k - 1) * numpy.pi / 2 * max_rank)) / 2
-                           for k in xrange(max_rank + 1)])
+    y_nodes = get_chebyshev_interpol_points(max_rank, y_low, y_high)
     # build left_hand matrix
     y_count = 0
     for y_k in y_nodes:
@@ -142,8 +141,16 @@ def galerkin_1d_full(block_cluster_tree):
     return out_matrix
 
 
-def get_interpol_points(k):
-    return [math.cos((2*v+1)*math.pi/(2*k)) for v in xrange(k)].sort()
+def get_chebyshev_interpol_points(points, lower=0, upper=1):
+    """
+
+    :param points:
+    :param lower:
+    :param upper:
+    :return:
+    """
+    return [(lower + upper + (upper - lower) * numpy.cos((2 * k - 1) * numpy.pi / 2 * points)) / 2
+            for k in xrange(points)]
 
 
 if __name__ == '__main__':
