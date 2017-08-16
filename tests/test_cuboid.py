@@ -16,6 +16,8 @@ class TestCuboid(TestCase):
         self.assertEqual(type(self.cub1), Cuboid)
         self.assertEqual(type(self.cub2), Cuboid)
         self.assertEqual(type(self.cub3), Cuboid)
+        check = Cuboid(0, 1)
+        self.assertEqual(type(check), Cuboid)
         self.assertRaises(ValueError, Cuboid, [0], [0, 1])
 
     def test_len(self):
