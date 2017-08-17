@@ -7,3 +7,4 @@ from hmat import HMat, build_hmatrix
 from rmat import RMat
 from splitable import RegularCuboid, MinimalCuboid, Balanced, Splitable
 from utils import plot, export, load, divisor_generator
+from examples.model_1d import model_1d

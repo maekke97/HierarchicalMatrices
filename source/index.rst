@@ -75,13 +75,12 @@ The package is available on different platforms, so there are different ways to 
 
 Basic Usage
 -----------
-.. todo::
-
-    implement examples and show their usage here
+Best look at the examples section
 
 .. code-block:: python
 
-   import HierMat
+   from HierMat import *
+   model_1d(32, 2, 1)
 
 Links and references
 --------------------
@@ -103,5 +102,7 @@ Links and references
 .. _Markus Neumann: markus.neumann@math.uzh.ch
 
 .. rubric:: References
+
+.. todo:: Add thesis to bib
 
 .. bibliography:: thesis.bib

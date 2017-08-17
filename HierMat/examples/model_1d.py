@@ -1,18 +1,50 @@
-"""This is an implementation of the one-dimensional model example from :cite:`borm2003hierarchical`.
-It shows a basic use-case of hierarchical matrices:
+"""This is an implementation of the one-dimensional model example described in :cite:`thesis`.
+It shows a typical use-case of hierarchical matrices:
     
-.. admonition:: integral equation
-    
-    we start with the one-dimensional integral equation of the form
+.. admonition:: Integral Equation
     
     .. math::
         
-        u(x) + \int_0^1 \log |x-y| u(y) dy = g(x)
+        \int_0^1 \log |x-y| u(y) dy = g
     
     for :math:`x \in [0,1]`.
-    
-    
 
+    After Galerkin discretization, we end up with a linear system
+
+    .. math::
+
+        \mathbf{A}^{\\text{Gal}} \cdot \\alpha = \mathbf{g}
+
+    where
+
+    .. math::
+
+        \mathbf{A}^{\\text{Gal}}_{t,\\tau}:= \int_{t}\int_{\\tau} \log |x-y| dy dx
+
+    To determine admissible blocks we start by building the geometric objects:
+
+    .. code-block:: python
+
+        midpoints = [((i + 0.5)/n,) for i in xrange(n)]
+        intervals = {p: (p[0] - 0.5/n, p[0] + 0.5/n) for p in midpoints}
+        grid = HierMat.Grid(points=midpoints, supports=intervals)
+        cluster = HierMat.Cluster(grid=grid)
+        unit_cuboid = HierMat.Cuboid([0], [1])
+        strategy = HierMat.RegularCuboid(cluster=cluster, cuboid=unit_cuboid)
+        cluster_tree = HierMat.build_cluster_tree(splitable=strategy, max_leaf_size=n_min)
+        block_cluster_tree = HierMat.build_block_cluster_tree(left_cluster_tree=cluster_tree,
+                                                          right_cluster_tree=cluster_tree,
+                                                          admissible_function=HierMat.admissible
+                                                          )
+
+    With the structure established, we can produce the hierarchical matrix:
+
+    .. code-block:: python
+
+        hmat = HierMat.build_hmatrix(block_cluster_tree=block_cluster_tree,
+                                 generate_rmat_function=lambda bct: galerkin_1d_rank_k(bct, max_rank),
+                                 generate_full_matrix_function=galerkin_1d_full
+                                 )
 """
 import numpy
 import scipy.integrate as integrate
@@ -24,7 +56,16 @@ import math
 
 
 def model_1d(n=2 ** 3, max_rank=1, n_min=1):
-    """"""
+    """This is an implementation of the one-dimensional model example described in :cite:`thesis`.
+
+    :param n: number of discretization points
+    :type n: int
+    :param max_rank: max rank of the low-rank approximation
+    :type max_rank: int
+    :param n_min: minimal leaf size for cluster trees
+    :type n_min: int
+    :return: 0 (just for testing)
+    """
     midpoints = [((i + 0.5)/n,) for i in xrange(n)]
     intervals = {p: (p[0] - 0.5/n, p[0] + 0.5/n) for p in midpoints}
     grid = HierMat.Grid(points=midpoints, supports=intervals)
@@ -53,7 +94,7 @@ def model_1d(n=2 ** 3, max_rank=1, n_min=1):
 
 
 def kerlog(x):
-    """kerlog function as in master thesis
+    """kerlog function as in :cite:`thesis`.
 
     .. math::
 
@@ -72,17 +113,33 @@ def kerlog(x):
 
 
 def ker(x, y):
-    """
+    """Kernel to integrate
 
-    :param x:
-    :param y:
-    :return:
+    .. math::
+
+        ker(x, y):= \log\left(\Vert x - y \Vert\\right)
+
+    :param x: real number
+    :type x: float
+    :param y: real number
+    :type y: float
+    :return: :math:`\log\left(\Vert x - y \Vert\\right)`
+    :rtype: float
     """
     return numpy.log(abs(x - y))
 
 
 def galerkin_1d_rank_k(block_cluster_tree, max_rank):
-    """
+    """Low-rank approximation of the kernel
+
+    .. math::
+
+        R: &= A \cdot B^T
+
+        A_{\\tau, k}: &= \int_\\tau \log \Vert x-y_k\Vert dx
+
+        B_{\\tau, k}: &= \int_\\tau \mathcal{L}_k(y) dy
+
     
     :param block_cluster_tree: admissible block cluster tree
     :type block_cluster_tree: HierMat.BlockClusterTree
@@ -126,7 +183,7 @@ def galerkin_1d_full(block_cluster_tree):
 
         A_{i,j}=A_{\\tau,t}^{Gal}=\int_t\int_\\tau\log\Vert x-y\Vert \;dydx
     
-    :param block_cluster_tree:
+    :param block_cluster_tree: inadmissible block cluster tree
     :type block_cluster_tree: HierMat.BlockClusterTree
     :return: matrix with same shape as block_cluster_tree.shape()
     :rtype: numpy.matrix
@@ -142,14 +199,24 @@ def galerkin_1d_full(block_cluster_tree):
 
 
 def get_chebyshev_interpol_points(points, lower=0, upper=1):
-    """
+    """Get Chebyshev interpolation points on interval :math:`(a, b)`.
 
-    :param points:
-    :param lower:
-    :param upper:
-    :return:
+    .. math::
+
+        \\frac{1}{2} (a + b) + \\frac{1}{2} (b - a) \cos\left(\\frac{2k+1}{2n}\pi\\right)
+
+    for :math:`k=0, ..., \\text{points} - 1`
+
+    :param points: number of points
+    :type points: int
+    :param lower: :math:`a`, (default 0)
+    :type lower: float
+    :param upper: :math:`b`, (default 0)
+    :type upper: float
+    :return: :math:`\\frac{1}{2} (a + b) + \\frac{1}{2} (b - a) \cos\left(\\frac{2k+1}{2n}\pi\\right)`
+    :rtype: list(floats)
     """
-    return [(lower + upper + (upper - lower) * numpy.cos((2 * k - 1) * numpy.pi / 2 * points)) / 2
+    return [(lower + upper + (upper - lower) * numpy.cos((2 * k + 1) * numpy.pi / 2 * points)) / 2
             for k in xrange(points)]
 
 

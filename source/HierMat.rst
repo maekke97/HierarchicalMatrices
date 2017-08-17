@@ -84,10 +84,7 @@ utils module
     :undoc-members:
     :show-inheritance:
 
-Submodules
+Examples
 ----------
-
-* **example module**
-
-    .. automodule:: HierMat.examples
-        :members:
+.. automodule:: HierMat.examples
+    :members:
