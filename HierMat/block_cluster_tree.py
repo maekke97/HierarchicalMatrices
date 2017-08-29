@@ -6,7 +6,20 @@ from HierMat.cluster_tree import admissible, ClusterTree
 
 
 class BlockClusterTree(object):
-    """Compares two cluster trees level wise with respect to an admissibility condition and builds a tree
+    """Tree structure containing two :class:`ClusterTree` objects.
+
+    :param left_clustertree: "left side" cluster tree
+    :type left_clustertree: ClusterTree
+    :param right_clustertree: "right side" cluster tree
+    :type right_clustertree: ClusterTree
+    :param sons: sons if the current tree is not a leaf
+    :type sons: list(BlockClusterTree)
+    :param level: level of the current tree
+    :type level: int
+    :param is_admissible: whether the current tree is admissible or not
+    :type is_admissible: bool
+    :param plot_info: coordinates of the current tree
+    :type plot_info: tuple(int, int)
     """
     def __init__(self, left_clustertree, right_clustertree, sons=None, level=0, is_admissible=False, plot_info=None):
         # type: (ClusterTree, ClusterTree, list, int, bool, tuple) -> None
@@ -27,7 +40,7 @@ class BlockClusterTree(object):
         return left_len * right_len
 
     def __eq__(self, other):
-        """Test for equality
+        """Test for equality.
         :type other: BlockClusterTree
         """
         return (self.left_clustertree == other.left_clustertree
@@ -42,7 +55,9 @@ class BlockClusterTree(object):
         return not self == other
 
     def depth(self, root_level=None):
-        """Get depth of the tree
+        """Depth of the tree.
+
+        The root is at level 0 if not specified otherwise.
 
         :param root_level: internal use.
         :type root_level: int
@@ -61,9 +76,9 @@ class BlockClusterTree(object):
             return max([son.depth(root_level) for son in self.sons])
 
     def to_list(self):
-        """Give list representation for export
+        """List representation for export.
 
-        Return a list containing the object and a list with its sons
+        Return a list containing the object and a list with its sons.
 
         .. hint::
 
@@ -72,7 +87,7 @@ class BlockClusterTree(object):
         return [self, [son.to_list() for son in self.sons]]
 
     def shape(self):
-        """Return length of left and right cluster tree
+        """Return length of left and right cluster tree.
 
         :return: x and y dimension
         :rtype: tuple(int, int)
@@ -80,7 +95,7 @@ class BlockClusterTree(object):
         return len(self.left_clustertree), len(self.right_clustertree)
 
     def draw(self, axes, admissible_color='#1e26bc', inadmissible_color='#bc1d38'):
-        """Draw a patch into given axes
+        """Draw a patch into given axes.
 
         :param axes: axes instance to draw in
         :type axes: matplotlib.pyplot.axes
@@ -107,12 +122,14 @@ class BlockClusterTree(object):
             self.draw(axes, admissible_color=admissible_color, inadmissible_color=inadmissible_color)
 
     def to_xml(self):
-        """Return a string for xml representation"""
+        """Return a string for xml representation.
+        """
         out_list = self.to_list()
         return self._to_xml(out_list)
 
     def to_dot(self):
-        """Return a string for .dot representation"""
+        """Return a string for .dot representation.
+        """
         out_list = self.to_list()
         return self._to_dot(out_list)
 
@@ -147,7 +164,7 @@ class BlockClusterTree(object):
 
 
 def build_block_cluster_tree(left_cluster_tree, right_cluster_tree=None, start_level=0, admissible_function=admissible):
-    """Factory for building a block cluster tree
+    """Factory for building a block cluster tree.
 
     :param left_cluster_tree: "left side" cluster tree
     :type left_cluster_tree: ClusterTree
@@ -174,7 +191,7 @@ def build_block_cluster_tree(left_cluster_tree, right_cluster_tree=None, start_l
 
 
 def recursion_build_block_cluster_tree(current_tree, admissible_function):
-    """Recursion to :func:`build_block_cluster_tree`
+    """Recursion to :func:`build_block_cluster_tree`.
     """
     if not admissible_function(current_tree.left_clustertree, current_tree.right_clustertree):
         # get top left corner of current block

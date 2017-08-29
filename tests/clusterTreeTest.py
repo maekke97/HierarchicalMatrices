@@ -15,15 +15,15 @@ sys.setrecursionlimit(200)
 link_num = 2
 # ipoints1 = [np.array([i]) for i in xrange(lim1)]
 # ilinks1 = [[points1[l] for l in [random.randint(0, lim1 - 1) for x in xrange(link_num)]] for i in xrange(lim1)]
-# ipoints2 = [np.array([i, j]) for i in xrange(lim1) for j in xrange(lim2)]
-# ilinks2 = [[points2[l] for l in [random.randint(0, (lim1 - 1) * (lim2 - 2)) for x in xrange(link_num)]]
-#           for j in xrange(lim2) for i in xrange(lim1)]
+# ipoints2 = [np.array([i, j]) for i in xrange(lim1) for j in xrange(lim)]
+# ilinks2 = [[points[l] for l in [random.randint(0, (lim1 - 1) * (lim - 2)) for x in xrange(link_num)]]
+#           for j in xrange(lim) for i in xrange(lim1)]
 # ipoints3 = [np.array([i, j, k]) for i in xrange(lim1) for j in
-#            xrange(lim2)
+#            xrange(lim)
 #            for k in xrange(lim3)]
 # ilinks3 = [
-#     [points3[l] for l in [random.randint(0, (lim1 - 1) * (lim2 - 1) * (lim3 - 1)) for x in xrange(link_num)]]
-#     for k in xrange(lim3) for j in xrange(lim2) for i in xrange(lim1)]
+#     [points3[l] for l in [random.randint(0, (lim1 - 1) * (lim - 1) * (lim3 - 1)) for x in xrange(link_num)]]
+#     for k in xrange(lim3) for j in xrange(lim) for i in xrange(lim1)]
 # lim1 = 2 ** 8
 # points1 = [np.array([float(i) / lim1]) for i in xrange(lim1)]
 # links1 = [[points1[l] for l in [random.randint(0, lim1 - 1) for x in xrange(link_num)]] for i in xrange(lim1)]
@@ -36,11 +36,11 @@ link_num = 2
 # bct1.plot('plot_test1.png')
 
 lim2 = 2 ** 4
-# points2left = [np.array([0, float(i)/lim2]) for i in xrange(lim2)]
-# points2top = [np.array([float(i)/lim2, 1]) for i in xrange(lim2)]
-# points2right = [np.array([1, float(i)/lim2]) for i in xrange(lim2, 0, -1)]
-# points2bottom = [np.array([float(i)/lim2, 0]) for i in xrange(lim2, 0, -1)]
-# points2 = points2left + points2top + points2right + points2bottom
+# points2left = [np.array([0, float(i)/lim]) for i in xrange(lim)]
+# points2top = [np.array([float(i)/lim, 1]) for i in xrange(lim)]
+# points2right = [np.array([1, float(i)/lim]) for i in xrange(lim, 0, -1)]
+# points2bottom = [np.array([float(i)/lim, 0]) for i in xrange(lim, 0, -1)]
+# points = points2left + points2top + points2right + points2bottom
 
 points2 = [np.array([math.cos(2 * math.pi * (float(i)/lim2)), math.sin(2 * math.pi * (float(i)/lim2))])
            for i in xrange(lim2)]
@@ -55,7 +55,7 @@ rc2 = RegularCuboid(cluster2, )
 ct2 = build_cluster_tree(rc2)
 ct2.export('dot', 'out2.dot')
 bct2 = build_block_cluster_tree(ct2)
-# bct2.export('dot', 'out2.dot')
+# block_cluster_tree.export('dot', 'out2.dot')
 bct2.plot('plotUnitCircle256.png', face_color='#ffffff')
 
 # lim3 = 2 ** 2
