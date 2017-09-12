@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import matplotlib.pyplot as plt
+import math
 
 ct_secs_old = [0.001, 0.005, 0.007, 0.013, 0.031, 0.066, 0.144, 0.314, 0.618, 1.553, 3.115, 6.208, 13.39, 25.74, 53.16, 118.4, 237.4, 510.9, 1103, 2327, 4769, 11261, 28495]
 ct_mem_old = [0.039, 0.051, 0.062, 0.062, 0.094, 0.281, 0.820, 1.871, 4.031, 8.395, 17.15, 34.40, 69.07, 138.8, 278.7, 559.6, 1123, 2254, 4524, 9080, 18224, 36582, 73424]
@@ -12,34 +13,53 @@ bct_secs_new = [0.012, 0.033, 0.080, 0.175, 0.407, 0.772, 1.587, 3.167, 6.497, 1
 bct_mem_new = [0.0, 0.3, 0.4, 0.3, 0.8, 1.9, 3.8, 7.7, 15.4, 30.8, 61.5, 123.4, 148.0, 494.3, 988.8, 1979, 3957, 7914, 15824, 31651, 63299, 126592, 252873]
 
 xs = [2**i for i in xrange(2, 25)]
+ns = [float(x)/500 for x in xs]
+ns_low = [float(x)/1000 for x in xs]
 
 fig = plt.figure()
-ax = fig.add_subplot(2,2,1)
+ax = fig.add_subplot(2, 2, 1)
 
 ax.plot(xs, ct_secs_old)
 ax.plot(xs, ct_secs_new)
+ax.plot(xs, ns, 'k-')
+ax.plot(xs, ns_low, 'g-')
 plt.title('ClusterTree seconds')
-plt.legend(['old','new'])
+plt.legend(['old', 'new', 'n/500', 'n/1000'])
 
-ax = fig.add_subplot(2,2,2)
+ax = fig.add_subplot(2, 2, 2)
+
+ns = [float(x)/200 for x in xs]
+ns_low = [float(x)/300 for x in xs]
 
 ax.plot(xs, ct_mem_old)
 ax.plot(xs, ct_mem_new)
+ax.plot(xs, ns, 'k-')
+ax.plot(xs, ns_low, 'g-')
 plt.title('ClusterTree memory')
-plt.legend(['old','new'])
+plt.legend(['old', 'new', 'n/100', 'n/200'])
 
-ax = fig.add_subplot(2,2,3)
+ax = fig.add_subplot(2, 2, 3)
+
+ns = [float(x)/90 for x in xs]
+ns_low = [float(x)/200 for x in xs]
 
 ax.plot(xs, bct_secs_old)
 ax.plot(xs, bct_secs_new)
+ax.plot(xs, ns, 'k-')
+ax.plot(xs, ns_low, 'g-')
 plt.title('BlockClusterTree seconds')
-plt.legend(['old','new'])
+plt.legend(['old', 'new', 'n/90', 'n/200'])
 
-ax = fig.add_subplot(2,2,4)
+ax = fig.add_subplot(2, 2, 4)
+
+ns = [float(x)/50 for x in xs]
+ns_low = [float(x)/300 for x in xs]
 
 ax.plot(xs, bct_mem_old)
 ax.plot(xs, bct_mem_new)
+ax.plot(xs, ns, 'k-')
+ax.plot(xs, ns_low, 'g-')
 plt.title('BlockClusterTree memory')
-plt.legend(['old','new'])
+plt.legend(['old', 'new', 'n/50', 'n/300'])
 
 plt.show()

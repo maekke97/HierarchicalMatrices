@@ -5,7 +5,7 @@ It shows a typical use-case of hierarchical matrices:
     
     .. math::
         
-        \int_0^1 \log |x-y| u(y) dy = g
+        \int_0^1 \frac{1}{2\pi}\log |x-y| u(y) dy = g
     
     for :math:`x \in [0,1]`.
 
@@ -126,7 +126,7 @@ def ker(x, y):
     :return: :math:`\log\left(\Vert x - y \Vert\\right)`
     :rtype: float
     """
-    return numpy.log(abs(x - y))
+    return numpy.log(abs(x - y)) / (2 * numpy.pi)
 
 
 def galerkin_1d_rank_k(block_cluster_tree, max_rank):
@@ -194,7 +194,8 @@ def galerkin_1d_full(block_cluster_tree):
         for j in xrange(y_length):
             c, d = block_cluster_tree.left_clustertree.get_grid_item_support_by_index(i)
             a, b = block_cluster_tree.right_clustertree.get_grid_item_support_by_index(j)
-            out_matrix[i, j] = (-kerlog(d - b) + kerlog(c - b) + kerlog(d - a) - kerlog(c - a)) / 2 + (a - b) * (d - c)
+            out_matrix[i, j] = 1.0 / (2 * numpy.pi) * (-kerlog(d - b) + kerlog(c - b) + kerlog(d - a) - kerlog(c - a)) \
+                               / 2 + (a - b) * (d - c)
     return out_matrix
 
 
