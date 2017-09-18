@@ -138,7 +138,6 @@ class RMat(object):
         
         :type other: numpy.matrix
         """
-        # TODO: check if suitable
         addend = self.from_matrix(other, self.max_rank)
         return self + addend
 

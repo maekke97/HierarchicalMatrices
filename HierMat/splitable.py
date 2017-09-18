@@ -351,7 +351,7 @@ def minimal_cuboid(cluster):
     :return: minimal cuboid
     :rtype: Cuboid
     """
-    points = cluster.grid.points
+    points = [cluster.get_grid_item(item) for item in cluster.indices]
     low_corner = numpy.array(points[0], float, ndmin=1)
     high_corner = numpy.array(points[0], float, ndmin=1)
     for p in points:

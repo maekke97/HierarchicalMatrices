@@ -55,7 +55,7 @@ import os
 import math
 
 
-def model_1d(n=2 ** 3, max_rank=1, n_min=1):
+def model_1d(n=2 ** 3, max_rank=2, n_min=2):
     """This is an implementation of the one-dimensional model example described in :cite:`thesis`.
 
     :param n: number of discretization points
@@ -64,7 +64,7 @@ def model_1d(n=2 ** 3, max_rank=1, n_min=1):
     :type max_rank: int
     :param n_min: minimal leaf size for cluster trees
     :type n_min: int
-    :return: 0 (just for testing)
+    :return: error
     """
     midpoints = [((i + 0.5)/n,) for i in xrange(n)]
     intervals = {p: (p[0] - 0.5/n, p[0] + 0.5/n) for p in midpoints}
@@ -90,7 +90,8 @@ def model_1d(n=2 ** 3, max_rank=1, n_min=1):
     HierMat.export(hmat, form='bin', out_file='hmat.bin')
     numpy.savetxt('hmat_full.txt', hmat_full)
     numpy.savetxt('gallmat_full.txt', galerkin_full)
-    return 0
+    res = numpy.linalg.norm(hmat_full - galerkin_full)
+    return res
 
 
 def kerlog(x):
@@ -157,8 +158,7 @@ def galerkin_1d_rank_k(block_cluster_tree, max_rank):
     # build Chebyshev nodes
     y_nodes = get_chebyshev_interpol_points(max_rank, y_low, y_high)
     # build left_hand matrix
-    y_count = 0
-    for y_k in y_nodes:
+    for y_count, y_k in enumerate(y_nodes):
         for i in xrange(x_length):
             lower, upper = block_cluster_tree.left_clustertree.get_grid_item_support_by_index(i)
             left_matrix[i, y_count] = integrate.quad(lambda x: ker(x, y_k), lower, upper)[0]
@@ -194,8 +194,8 @@ def galerkin_1d_full(block_cluster_tree):
         for j in xrange(y_length):
             c, d = block_cluster_tree.left_clustertree.get_grid_item_support_by_index(i)
             a, b = block_cluster_tree.right_clustertree.get_grid_item_support_by_index(j)
-            out_matrix[i, j] = 1.0 / (2 * numpy.pi) * (-kerlog(d - b) + kerlog(c - b) + kerlog(d - a) - kerlog(c - a)) \
-                               / 2 + (a - b) * (d - c)
+            out_matrix[i, j] = (-kerlog(d - b) + kerlog(c - b) + kerlog(d - a) - kerlog(c - a)) / (4 * numpy.pi) \
+                               + (a - b) * (d - c) / (2 * numpy.pi)
     return out_matrix
 
 
@@ -217,9 +217,9 @@ def get_chebyshev_interpol_points(points, lower=0, upper=1):
     :return: :math:`\\frac{1}{2} (a + b) + \\frac{1}{2} (b - a) \cos\left(\\frac{2k+1}{2n}\pi\\right)`
     :rtype: list(floats)
     """
-    return [(lower + upper + (upper - lower) * numpy.cos((2 * k + 1) * numpy.pi / 2 * points)) / 2
+    return [(lower + upper + (upper - lower) * numpy.cos((2 * k + 1) * numpy.pi / (2 * points))) / 2
             for k in xrange(points)]
 
 
 if __name__ == '__main__':
-    model_1d(n=2**3, max_rank=2, n_min=1)
+    print model_1d(n=2**8, max_rank=5, n_min=8)

@@ -68,12 +68,14 @@ class Cluster(object):
         return self.grid.get_point(item)
 
     def get_grid_item_support_by_index(self, item):
-        """Return support of i-th item from grid.
+        """Return support of i-th item from the current index list.
+
+        This enables the user to get the support of the "last" item by calling get_grid_item_support_by_index(-1)
 
         :param item: index
         :type item: int
         """
-        return self.grid.get_support_by_index(item)
+        return self.grid.get_support_by_index(self.indices[item])
 
     def get_grid_item_support(self, item):
         """Return support of item from grid.
