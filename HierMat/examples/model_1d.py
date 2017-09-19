@@ -222,4 +222,4 @@ def get_chebyshev_interpol_points(points, lower=0, upper=1):
 
 
 if __name__ == '__main__':
-    print model_1d(n=2**8, max_rank=5, n_min=8)
+    model_1d(n=2**8, max_rank=5, n_min=8)
